@@ -35,6 +35,7 @@ class CreatePasienTable extends Migration
             $table->string('no_bpjs')->nullable();
             $table->string('alergi')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

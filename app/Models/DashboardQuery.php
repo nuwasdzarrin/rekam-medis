@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 
-class DashboardQuery 
+class DashboardQuery
 {
     public function totalObat()
     {
@@ -90,7 +90,7 @@ class DashboardQuery
     }
     public function totalPasien()
     {
-        
+
         return Pasien::whereNull('deleted_at')->count();
     }
     public function totalDoktor()
@@ -102,21 +102,21 @@ class DashboardQuery
       $filterBulan = date('Y-m');
       $data=  DB::select('
             select aa.*,ic.name_id from(
-            select diagnosa, count(diagnosa) as total
+            select sc.diagnosa, count(sc.diagnosa) as total
             from (
-           
-            select diagnosa
-            from rekam_diagnosa a 
+
+            select a.diagnosa
+            from rekam_diagnosa a
             LEFT JOIN rekam r ON r.id = a.rekam_id
-            where diagnosa is not null
+            where a.diagnosa is not null
             and r.tgl_rekam LIKE "%'.$filterBulan.'%"
 
             union all
-            select diagnosa
-            from rekam_gigi 
+            select rekam_gigi.diagnosa
+            from rekam_gigi
             where created_at LIKE "%'.$filterBulan.'%"
         ) sc
-        group by diagnosa)aa 
+        group by sc.diagnosa)aa
         left join icds ic on ic.code = aa.diagnosa
         order by total desc limit 10');
         return $data;
@@ -124,24 +124,22 @@ class DashboardQuery
     public function diagnosaYearly(){
         $filter = date('Y-');
         $data=  DB::select('
-              select aa.*,ic.name_id from(
-              select diagnosa, count(diagnosa) as total
-              from (
-             
-              select diagnosa
-              from rekam_diagnosa a
-              LEFT JOIN rekam r ON r.id = a.rekam_id
-              where diagnosa is not null
-              and r.tgl_rekam LIKE "%'.$filter.'%"
-  
-              union all
-              select diagnosa
-              from rekam_gigi 
-              where created_at LIKE "%'.$filter.'%"
-          ) sc
-          group by diagnosa)aa 
-          left join icds ic on ic.code = aa.diagnosa
-          order by total desc limit 10');
+              select aa.*, ic.name_id from(
+                  select sc.diagnosa, count(sc.diagnosa) as total
+                  from (
+                      select a.diagnosa
+                      from rekam_diagnosa a
+                      LEFT JOIN rekam r ON r.id = a.rekam_id
+                      where a.diagnosa is not null
+                      and r.tgl_rekam LIKE "%'.$filter.'%"
+                      union all
+                      select rekam_gigi.diagnosa
+                      from rekam_gigi
+                      where created_at LIKE "%'.$filter.'%"
+                  ) sc
+              group by sc.diagnosa) aa
+              left join icds ic on ic.code = aa.diagnosa
+              order by total desc limit 10');
           return $data;
       }
     function rekam_day(){
