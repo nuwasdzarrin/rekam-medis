@@ -18,7 +18,7 @@ class CreateObatTable extends Migration
             $table->string('kd_obat')->nullable();
             $table->string('nama');
             $table->string('satuan');
-            $table->integer('stock');
+            $table->integer('stok');
             $table->string('foto')->nullable();
             $table->integer('harga')->default(0);
             $table->integer('is_bpjs')->default(1);

@@ -15,7 +15,7 @@ class ObatController extends Controller
         if ($request->ajax()) {
             return DataTables::of(Obat::query())
                     ->addColumn('action',function($data){
-                        $button = '<a href="javascript:void(0)" 
+                        $button = '<a href="javascript:void(0)"
                             data-id="'.$data->id.'"
                             data-code="'.$data->kd_obat.'"
                             data-nama="'.$data->nama.'"
@@ -30,7 +30,7 @@ class ObatController extends Controller
         }
         return DataTables::of(Obat::query())
         ->addColumn('action',function($data){
-            $button = '<a href="javascript:void(0)" 
+            $button = '<a href="javascript:void(0)"
                 data-id="'.$data->kd_obat.'"
                 data-code="'.$data->id.'"
                 data-nama="'.$data->nama.'"
@@ -83,5 +83,5 @@ class ObatController extends Controller
             Obat::find($id)->delete();
         }
         return redirect()->route('obat')->with('sukses','Data berhasil dihapus');
-    } 
+    }
 }

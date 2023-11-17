@@ -27,6 +27,9 @@ class DokterController extends Controller
             'poli' => 'required',
             'password' => 'required'
         ]);
+        $is_phone_available = User::query()->where('phone', $request->no_hp)->first();
+        if ($is_phone_available)
+            return redirect()->route('dokter')->with('gagal','Nomor HP telah terdaftar');
         DB::beginTransaction();
         try {
             $user = User::create([
@@ -44,10 +47,8 @@ class DokterController extends Controller
             return redirect()->route('dokter')->with('sukses','Data berhasil ditambahkan');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('dokter')->with('gagal','Data gagal ditambahkan');
+            return redirect()->route('dokter')->with('gagal','Data gagal ditambahkan'. $th->getMessage());
         }
-        DB::rollBack();
-        return redirect()->route('dokter')->with('gagal','Data gagal ditambahkan');
     }
 
     public function update(Request $request,$id)
@@ -55,13 +56,15 @@ class DokterController extends Controller
         $this->validate($request,[
             'nama' => 'required',
             'no_hp' => 'required',
-            'poli' => 'required',
-            'password' => 'required'
+            'poli' => 'required'
         ]);
         DB::beginTransaction();
         try {
-          
             $dokter = Dokter::find($id);
+            $is_phone_available = User::query()->where('phone', $request->no_hp)
+                ->where('id', '!=', $dokter->user_id)->first();
+            if ($is_phone_available)
+                return redirect()->route('dokter')->with('gagal','Nomor HP telah terdaftar');
             $dokter->update($request->all());
             $user = User::find($dokter->user_id);
             $user->update([
@@ -72,10 +75,8 @@ class DokterController extends Controller
             return redirect()->route('dokter')->with('sukses','Data berhasil diperbaharui');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('dokter')->with('gagal','Data gagal diperbaharui');
+            return redirect()->route('dokter')->with('gagal','Data gagal diperbaharui '. $th->getMessage());
         }
-        DB::rollBack();
-        return redirect()->route('dokter')->with('gagal','Data gagal diperbaharui');
     }
 
     public function delete(Request $request,$id)
@@ -88,16 +89,16 @@ class DokterController extends Controller
             ]);
             User::find($dokter->user_id)->update([
                 'status' => 0
-            ]);   
+            ]);
             return redirect()->route('dokter')->with('sukses','Data dokter di non aktifkan');
 
         }else{
             $dokter = Dokter::find($id);
             $dokter->delete();
-            User::find($dokter->user_id)->delete();    
+            User::find($dokter->user_id)->delete();
         }
         return redirect()->route('dokter')->with('sukses','Data berhasil dihapus');
-    }    
+    }
 
     public function getDokter(Request $request)
     {
@@ -116,7 +117,7 @@ class DokterController extends Controller
             'password' => 'required|min:6',
             'password_konfirm' => 'required_with:password|same:password|min:6'
         ]);
-      
+
         $password = bcrypt($request->password);
         User::where('id', $id)->update(['password' => $password,
         'updated_at'=>Carbon::now()->format('Y-m-d H:i:s')]);

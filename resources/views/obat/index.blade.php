@@ -24,7 +24,7 @@
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
-                       
+
                     </div>
                     <div class="form-group">
                         <label class="text-black font-w500">Nama Obat*</label>
@@ -33,7 +33,7 @@
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
-                       
+
                     </div>
                    <div class="row">
                     <div class="col-md-6">
@@ -44,7 +44,7 @@
                             <div class="invalid-feedback animated fadeInUp"
                             style="display: block;">{{$message}}</div>
                             @enderror
-                           
+
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -63,7 +63,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="text-black font-w500">Harga*</label>
-                                <input type="number" name="harga" required class="form-control" value="{{old('harga')?old('harga') :'0'}}">
+                                <input type="number" name="harga" required class="form-control" value="{{old('harga')?old('harga') :''}}">
                                 @error('harga')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
@@ -84,10 +84,10 @@
                             </div>
                         </div>
                    </div>
-                    
-                   
-                    
-                    
+
+
+
+
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">BUAT</button>
                     </div>
@@ -123,7 +123,7 @@
                     <table  class="table table-responsive-md">
                         <thead>
                             <tr>
-                                
+
                                 <th>No</th>
                                 <th>Kd Obat</th>
                                 <th>Nama Obat</th>
@@ -147,7 +147,7 @@
                                     <td>
                                         <div class="d-flex">
                                             <a href="javascript:void(0)" data-toggle="modal" data-target="#editPoli{{$row->id}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-pencil"></i></a>
-                                            <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('dokter.delete',$row->id)}}"
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('obat.delete',$row->id)}}"
                                              r-name="{{$row->nama}}" r-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
 
                                             <div class="modal fade" id="editPoli{{$row->id}}">
@@ -168,7 +168,7 @@
                                                                     <div class="invalid-feedback animated fadeInUp"
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
-                                                                   
+
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="text-black font-w500">Nama Obat*</label>
@@ -177,7 +177,7 @@
                                                                     <div class="invalid-feedback animated fadeInUp"
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
-                                                                   
+
                                                                 </div>
                                                                <div class="row">
                                                                 <div class="col-md-6">
@@ -188,7 +188,7 @@
                                                                         <div class="invalid-feedback animated fadeInUp"
                                                                         style="display: block;">{{$message}}</div>
                                                                         @enderror
-                                                                       
+
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
@@ -202,7 +202,7 @@
                                                                     </div>
                                                                 </div>
                                                                </div>
-                                            
+
                                                                <div class="row">
                                                                     <div class="col-md-6">
                                                                         <div class="form-group">
@@ -228,7 +228,7 @@
                                                                         </div>
                                                                     </div>
                                                                </div>
-                                                                
+
                                                                 <div class="form-group">
                                                                     <button type="submit" class="btn btn-primary">UPDATE</button>
                                                                 </div>
@@ -242,7 +242,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+
                     </table>
                     <div class="dataTables_info" id="example_info" role="status"
                      aria-live="polite">Showing {{$datas->firstItem()}} to {{$datas->perPage() * $datas->currentPage()}} of {{$datas->total()}} entries</div>

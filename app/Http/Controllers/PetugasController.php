@@ -18,28 +18,29 @@ class PetugasController extends Controller
     {
         $this->validate($request,[
             'name' => 'required',
-            'phone' => 'required|unique:users',
+            'phone' => 'required',
             'password' => 'required',
             'role' => 'required'
         ]);
+        $is_phone_available = User::query()->where('phone', $request->phone)->first();
+        if ($is_phone_available)
+            return redirect()->route('petugas')->with('gagal','Nomor HP telah terdaftar');
         DB::beginTransaction();
         try {
-            $user = User::create([
+            User::create([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'password' => bcrypt($request->password),
                 'role' => $request->role,
                 'status' => 1
             ]);
-            
+
             DB::commit();
             return redirect()->route('petugas')->with('sukses','Data berhasil ditambahkan');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan');
+            return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan '.$th->getMessage());
         }
-        DB::rollBack();
-        return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan');
     }
 
     public function update(Request $request,$id)
@@ -47,8 +48,11 @@ class PetugasController extends Controller
         $this->validate($request,[
             'name' => 'required',
             'phone' => 'required',
-            'password' => 'required'
         ]);
+        $is_phone_available = User::query()->where('phone', $request->phone)
+            ->where('id', '!=', $id)->first();
+        if ($is_phone_available)
+            return redirect()->route('petugas')->with('gagal','Nomor HP telah terdaftar');
         DB::beginTransaction();
         try {
             $user = User::find($id);
@@ -58,20 +62,18 @@ class PetugasController extends Controller
                 'role' => $request->role,
                 'status' => 1
             ]);
-            
+
             DB::commit();
             return redirect()->route('petugas')->with('sukses','Data berhasil ditambahkan');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan');
+            return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan'. $th->getMessage());
         }
-        DB::rollBack();
-        return redirect()->route('petugas')->with('gagal','Data gagal ditambahkan');
     }
 
     public function delete(Request $request,$id)
     {
         User::find($id)->delete();
         return redirect()->route('petugas')->with('sukses','Data berhasil dihapus');
-    }    
+    }
 }
