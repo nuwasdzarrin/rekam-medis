@@ -118,6 +118,7 @@
                                 <p>{{ $rekam->cara_bayar }}</p>
                             </div>
                         </div>
+                        <hr/>
                         <div class="d-flex align-items-center">
                             <span class="fs-12 col-6 p-0 text-black">
                                 Keluhan
@@ -126,6 +127,7 @@
                                 <p>{!! $rekam->keluhan !!}</p>
                             </div>
                         </div>
+                        <hr/>
                         <div class="d-flex align-items-center">
                             <span class="fs-12 col-6 p-0 text-black">
                                 Diagnosa
@@ -142,6 +144,7 @@
                                 @endif
                             </div>
                         </div>
+                        <hr/>
                         <div class="d-flex align-items-center">
                             <span class="fs-12 col-6 p-0 text-black">
                                 {{$rekam->poli=="Poli Gigi" ? 'Resep Obat' : 'Tindakan'}}
@@ -166,12 +169,7 @@
                     <h4 class="fs-20 text-black mb-0">Pemberian Obat</h4>
                     @if ($rekam)
                         @if ($rekam->status==3)
-                            @if (auth()->user()->role_display()=="Admin")
-                                <a href="{{Route('rekam.status',[$rekam->id,5])}}" class="btn btn-success">
-                                    Selesaikan Proses Ini Tanpa Pemberian Obat
-                                    <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                                </a>
-                            @elseif (auth()->user()->role_display()=="Apotek")
+                            @if (in_array(auth()->user()->role_display(), ["Admin", "Apotek"]))
                                 <a href="{{Route('rekam.status',[$rekam->id,5])}}" class="btn btn-success">
                                     Selesaikan Proses Ini Tanpa Pemberian Obat
                                     <span class="btn-icon-right"><i class="fa fa-check"></i></span>
@@ -179,34 +177,28 @@
                             @endif
                         @endif
                     @endif
-
                 </div>
                 <div class="card-body pt-3">
                     <div class="row">
                         <div class="col-md-4">
                             <form method="POST">
-                                {{-- <input type="hidden" class="form-control " id="obat_id"/> --}}
+                                 <input type="hidden" class="form-control " id="obat_id"/>
                                 <input type="hidden" class="form-control " id="stok"/>
                                 <input type="hidden" class="form-control " id="obat_code"/>
-
                                 <div class="form-group">
                                     <label class="text-black font-w500">Nama Obat*</label>
                                     <div class="input-group transparent-append">
-                                        <input type="text" id="obat_id" class="form-control"
+                                        <input type="text" id="nama_obat" class="form-control"
                                                data-toggle="modal" data-target="#modalObat"
-                                               name="obat_id" placeholder="Pilih Obat..">
-                                        <div class="input-group-append show-pass"  data-toggle="modal"
-                                             data-target="#modalObat">
-                                                    <span class="input-group-text">
-                                                        <a href="javascript:void(0)"  data-toggle="modal"
-                                                           data-target="#modalObat"><i class="fa fa-search"></i></a>
-                                                    </span>
+                                               name="nama_obat" placeholder="Pilih Obat..">
+                                        <div class="input-group-append show-pass"  data-toggle="modal" data-target="#modalObat">
+                                            <span class="input-group-text">
+                                                <a href="javascript:void(0)"  data-toggle="modal" data-target="#modalObat">
+                                                    <i class="fa fa-search"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-black font-w500">Nama Obat </label>
-                                    <input type="text" id="nama_obat" class="form-control" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-black font-w500">Jumlah* </label>
@@ -296,15 +288,11 @@
                                             <td>{{$item->keterangan}}</td>
                                         </tr>
                                     @endforeach
-
                                     </tbody>
-
                                 </table>
-
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -400,12 +388,14 @@
 
         $("#harga").val(harga);
         $("#stok").val(stok);
+        $("#jumlah").val("");
+        $("#keterangan").val("");
 
         // $("#cara_bayar").val(metode).change();
 
         $("#modalObat").modal('hide');
 
-        // toastr.success("Obat "+nama+" telah dipilih", "Sukses",{timeOut: 3000})
+        toastr.success("Obat "+nama+" telah dipilih", "Sukses",{timeOut: 3000})
     });
 
 

@@ -23,7 +23,7 @@
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
-                       
+
                     </div>
                     <div class="form-group">
                         <label class="text-black font-w500">Nama ICD (Indo)*</label>
@@ -32,7 +32,7 @@
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
-                       
+
                     </div>
                     <div class="form-group">
                         <label class="text-black font-w500">Nama ICD (English)*</label>
@@ -41,9 +41,9 @@
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
-                       
+
                     </div>
-                    
+
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">BUAT</button>
                     </div>
@@ -57,10 +57,9 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                {{-- <div class="form-group col-lg-6" style="float: left">
+                <div class="form-group col-lg-6" style="float: left">
                     <a href="javascript:void(0)" class="btn btn-primary mr-3" data-toggle="modal" data-target="#addOrderModal">+Tambah ICD</a>
-
-                </div> --}}
+                </div>
                 <div class="form-group col-lg-6" style="float: right">
                     <form method="get" action="{{ url()->current() }}">
                         <div class="input-group">
@@ -79,7 +78,7 @@
                     <table  class="table table-responsive-md">
                         <thead>
                             <tr>
-                            
+
                                 <th>No</th>
                                 <th>Kode</th>
                                 <th>Nama (Ind)</th>
@@ -96,7 +95,7 @@
                                     <td>{{$row->name_en}}</td>
                                     {{-- <td>
                                         <div class="d-flex">
-                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#editPoli{{$row->code}}" 
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#editPoli{{$row->code}}"
                                                 class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-pencil"></i></a>
                                             <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('icd.delete',$row->code)}}"
                                             r-name="{{$row->name_id}}" r-id="{{$row->code}}"><i class="fa fa-trash"></i></a>
@@ -124,7 +123,7 @@
                                                                     <label class="text-black font-w500">Nama (Eng)*</label>
                                                                     <input type="text" name="name_en" value="{{$row->name_en}}" required class="form-control">
                                                                 </div>
-                                                                
+
                                                                 <div class="form-group">
                                                                     <button type="submit" class="btn btn-primary">UPDATE</button>
                                                                 </div>
@@ -138,7 +137,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+
                     </table>
                     <div class="dataTables_info" id="example_info" role="status"
                      aria-live="polite">Showing {{$datas->firstItem()}} to {{$datas->perPage() * $datas->currentPage()}} of {{$datas->total()}} entries</div>

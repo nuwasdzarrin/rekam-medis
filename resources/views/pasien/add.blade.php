@@ -16,18 +16,18 @@
                 <div class="basic-form">
                     <form action="{{Route('pasien.store')}}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                       
+
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Nama Pasien*</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="nama" 
+                                <input type="text" class="form-control" name="nama"
                                id="nama"  required value="{{old('nama')}}">
                                 @error('nama')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
-                            
+
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">No.RM*</label>
@@ -70,14 +70,14 @@
                             <label class="col-sm-2 col-form-label">Jenis Kelamin*</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="jk" class="form-check-input" 
+                                    <input type="radio" name="jk" class="form-check-input"
                                     value="Laki-Laki">
-                                    <label class="form-check-label">Laki-Laki</label>     
+                                    <label class="form-check-label">Laki-Laki</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="jk" class="form-check-input"
                                     value="Perempuan">
-                                    <label class="form-check-label">Perempuan</label>   
+                                    <label class="form-check-label">Perempuan</label>
                                 </div>
                                 @error('jk')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -86,7 +86,7 @@
                             </div>
                             <label class="col-sm-2 col-form-label">Status Menikah</label>
                             <div class="col-sm-4">
-                               
+
                                 <select name="status_menikah" class="form-control" required>
                                     <option value="">--Pilih--</option>
                                     <option value="Belum Menikah">Belum Menikah</option>
@@ -160,7 +160,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Alamat Lengkap</label>
                             <div class="col-sm-10">
-                            
+
                                 <textarea name="alamat_lengkap" class="form-control" rows="4">{{old('alamat_lengkap')}}</textarea>
                                 @error('alamat_lengkap')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -218,14 +218,14 @@
                             <label class="col-sm-3 col-form-label">Kewarganegaraan</label>
                             <div class="col-sm-3">
                                 <div class="form-check">
-                                    <input type="radio" name="kewarganegaraan" class="form-check-input" 
+                                    <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNI" checked>
-                                    <label class="form-check-label">WNI</label>     
+                                    <label class="form-check-label">WNI</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNA">
-                                    <label class="form-check-label">WNA</label>   
+                                    <label class="form-check-label">WNA</label>
                                 </div>
                                 @error('kewarganegaraan')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -238,23 +238,23 @@
                             <label class="col-sm-2 col-form-label">Cara Bayar *</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="cara_bayar" class="form-check-input" 
+                                    <input type="radio" name="cara_bayar" class="form-check-input"
                                     value="Umum/Mandiri">
-                                    <label class="form-check-label">Umum/Mandiri</label>     
+                                    <label class="form-check-label">Umum/Mandiri</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="cara_bayar" class="form-check-input"
                                     value="Jaminan Kesehatan">
-                                    <label class="form-check-label">Jaminan Kesehatan</label>   
+                                    <label class="form-check-label">Jaminan Kesehatan</label>
                                 </div>
                                 @error('cara_bayar')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
-                            <label class="col-sm-2 col-form-label" id="no_bpjs_label">No. BPJS / KTP</label>
+                            <label class="col-sm-2 col-form-label" id="no_bpjs_label">No. BPJS / KTP*</label>
                             <div class="col-sm-4">
-                                <input type="number" class="form-control" id="no_bpjs" name="no_bpjs" value="{{old('no_bpjs')}}">
+                                <input type="number" class="form-control" id="no_bpjs" name="no_bpjs" value="{{old('no_bpjs')}}" required>
                                 @error('no_bpjs')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
@@ -286,7 +286,7 @@
                             <button type="submit" class="btn btn-primary">SIMPAN</button>
                         </div>
 
-                        
+
                     </form>
                 </div>
             </div>
@@ -297,7 +297,7 @@
 @section('script')
 <script>
      $(function () {
-       
+
 
         $("#nama").change(function(){
            checkedChard();
