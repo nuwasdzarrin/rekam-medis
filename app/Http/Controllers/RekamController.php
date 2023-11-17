@@ -61,7 +61,8 @@ class RekamController extends Controller
     public function add(Request $request)
     {
         $poli = Poli::all();
-        return view('rekam.add',compact('poli'));
+        $dokter = Dokter::all();
+        return view('rekam.add',compact('poli', 'dokter'));
     }
 
     public function edit(Request $request,$id)
@@ -71,11 +72,11 @@ class RekamController extends Controller
         return view('rekam.edit',compact('data','poli'));
     }
 
-   
+
     public function detail(Request $request,$pasien_id)
     {
         $pasien = Pasien::find($pasien_id);
-        
+
         $rekamLatest = Rekam::latest()
                                 ->where('status','!=',5)
                                 ->where('pasien_id',$pasien_id)
@@ -90,7 +91,7 @@ class RekamController extends Controller
                         $query->where('poli', 'LIKE', "%{$request->poli}%");
                     })
                     ->paginate(5);
-                    
+
         if($rekamLatest){
            auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
         //   dd($data);
@@ -155,7 +156,7 @@ class RekamController extends Controller
             return redirect()->back()->withInput($request->input())
                                 ->withErrors(['pasien_id' => 'Data Pasien Tidak Ditemukan']);
         }
-        
+
         $rekam = Rekam::find($id);
         $rekam->update($request->all());
         return redirect()->route('rekam.detail',$request->pasien_id)
@@ -230,7 +231,7 @@ class RekamController extends Controller
             'deleted_at'=> Carbon::now()
         ]);
         return redirect()->route('rekam')->with('sukses','Data berhasil dihapus');
-    } 
+    }
 
-   
+
 }

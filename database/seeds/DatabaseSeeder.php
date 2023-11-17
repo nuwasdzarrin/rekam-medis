@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
          $this->call([
              UserTableSeeder::class,
              PoliTableSeeder::class,
+             DokterTableSeeder::class,
+             PasienTableSeeder::class,
          ]);
     }
 }

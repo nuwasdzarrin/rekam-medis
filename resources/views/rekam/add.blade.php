@@ -20,7 +20,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive card-table"> 
+                <div class="table-responsive card-table">
                     <table class="display white-border table-responsive-sm"
                             style="width: 100%"
                         id="pasien-table">
@@ -35,8 +35,8 @@
                                 <th>No BPJS/KTP</th>
                             </tr>
                         </thead>
-                        
-                        
+
+
                     </table>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                                       data-toggle="modal" data-target="#modalPasien" value="{{old('pasien_nama') ? old('pasien_nama') : ''}}"
                                      name="pasien_nama" placeholder="Pilih Pasien..">
                                     <div class="input-group-append show-pass"  data-toggle="modal" data-target="#modalPasien">
-                                        <span class="input-group-text"> 
+                                        <span class="input-group-text">
                                             <a href="javascript:void(0)"  data-toggle="modal" data-target="#modalPasien"><i class="fa fa-search"></i></a>
                                         </span>
                                     </div>
@@ -109,7 +109,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
 
                         <div class="form-group row">
@@ -129,14 +129,11 @@
                             <label class="col-sm-2 col-form-label">Poli Tujuan*</label>
                             <div class="col-sm-4">
                                 <select name="poli" id="poli" class="form-control" required>
-                                    <option value="">--Pilih Poli--</option>
                                     @foreach ($poli as $item)
                                         @if (old('poli') == $item->nama)
                                             <option value="{{$item->nama}}" selected>{{$item->nama}}</option>
-
-                                        @else 
+                                        @else
                                             <option value="{{$item->nama}}">{{$item->nama}}</option>
-
                                         @endif
                                     @endforeach
                                 </select>
@@ -149,7 +146,13 @@
                             <label class="col-sm-2 col-form-label">Pilih Dokter*</label>
                             <div class="col-sm-4">
                                 <select name="dokter_id" id="dokter_id" class="form-control">
-                                  
+                                    @foreach ($dokter as $item)
+                                        @if (old('poli') == $item->id)
+                                            <option value="{{$item->id}}" selected>{{$item->nama}}</option>
+                                        @else
+                                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
                                 @error('dokter_id')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -157,13 +160,13 @@
                                 @enderror
                             </div>
                         </div>
-                       
+
                         <hr>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">SIMPAN</button>
                         </div>
 
-                        
+
                     </form>
                 </div>
             </div>
@@ -193,7 +196,7 @@
                 {data: 'no_bpjs', name: 'no_bpjs'}  ,
             ]
         });
-        
+
     });
     $( document ).ready(function() {
         $("#poli").change(function(e) {
@@ -225,7 +228,7 @@
         $("#cara_bayar").val(metode).change();
 
         $("#modalPasien").modal('hide');
-        
+
         toastr.success("Pasien "+nama+" telah dipilih", "Sukses",{timeOut: 3000})
     });
 </script>

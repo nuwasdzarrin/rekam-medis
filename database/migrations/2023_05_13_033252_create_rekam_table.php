@@ -24,10 +24,10 @@ class CreateRekamTable extends Migration
             $table->string('pemeriksaan')->nullable();
             $table->string('diagnosa')->nullable();
             $table->string('tindakan')->nullable();
-            $table->integer('biaya_pemeriksaan')->defaul(0);
-            $table->integer('biaya_tindakan')->defaul(0);
-            $table->integer('biaya_obat')->defaul(0);
-            $table->integer('total_biaya')->defaul(0);
+            $table->integer('biaya_pemeriksaan')->default(0);
+            $table->integer('biaya_tindakan')->default(0);
+            $table->integer('biaya_obat')->default(0);
+            $table->integer('total_biaya')->default(0);
             $table->string('cara_bayar')->nullable();
             $table->integer('status')->default(1);
             $table->integer('petugas_id')->unsigned();
