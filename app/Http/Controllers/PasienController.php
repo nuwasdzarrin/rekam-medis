@@ -19,7 +19,7 @@ class PasienController extends Controller
         if ($request->ajax()) {
             return DataTables::of(Pasien::query())
                     ->addColumn('action',function($data){
-                        $button = '<a href="javascript:void(0)" 
+                        $button = '<a href="javascript:void(0)"
                             data-id="'.$data->id.'"
                             data-nama="'.$data->nama.'"
                             data-no="'.$data->no_rm.'"
@@ -32,7 +32,7 @@ class PasienController extends Controller
         }
         return DataTables::of(Pasien::query())
         ->addColumn('action',function($data){
-            $button = '<a href="javascript:void(0)" 
+            $button = '<a href="javascript:void(0)"
                 data-id="'.$data->id.'"
                 data-nama="'.$data->nama.'"
                 data-no="'.$data->no_rm.'"
@@ -74,13 +74,13 @@ class PasienController extends Controller
         $this->validate($request,[
             'nama' => 'required',
             'no_hp' => 'required',
-            'cara_bayar' => 'required',
-            'jk' => 'required',
-            'no_rm' => 'required|unique:pasien',
-            'no_bpjs' => 'unique:pasien'
+            'tipe_pasien' => 'required',
+            'jenis_kelamin' => 'required',
+//            'no_rm' => 'required|unique:pasien'
         ]);
-
-        $pasien = Pasien::create($request->all());
+        $pasien = Pasien::create($request->all() + [
+            'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien
+            ]);
         if ($request->hasFile('file')) {
             $originName = $request->file('file')->getClientOriginalName();
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
@@ -130,7 +130,7 @@ class PasienController extends Controller
             PengeluaranObat::where('pasien_id',$id)->delete();
        }
         return redirect()->route('pasien')->with('sukses','Data berhasil dihapus');
-    } 
+    }
 
     function getLastRM(Request $request)
     {
@@ -159,7 +159,7 @@ class PasienController extends Controller
                 ],400);
             }
         }
-            
+
         return response()->json([ 'success' => false],400);
     }
 }

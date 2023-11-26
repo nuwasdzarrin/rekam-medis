@@ -70,16 +70,16 @@
                             <label class="col-sm-2 col-form-label">Jenis Kelamin*</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="jk" class="form-check-input"
-                                    value="Laki-Laki">
+                                    <input type="radio" name="jenis_kelamin" class="form-check-input"
+                                    value="Laki-Laki" checked required>
                                     <label class="form-check-label">Laki-Laki</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="radio" name="jk" class="form-check-input"
-                                    value="Perempuan">
+                                    <input type="radio" name="jenis_kelamin" class="form-check-input"
+                                    value="Perempuan" required>
                                     <label class="form-check-label">Perempuan</label>
                                 </div>
-                                @error('jk')
+                                @error('jenis_kelamin')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror
@@ -87,7 +87,7 @@
                             <label class="col-sm-2 col-form-label">Status Menikah</label>
                             <div class="col-sm-4">
 
-                                <select name="status_menikah" class="form-control" required>
+                                <select name="status_menikah" class="form-control">
                                     <option value="">--Pilih--</option>
                                     <option value="Belum Menikah">Belum Menikah</option>
                                     <option value="Menikah">Menikah</option>
@@ -235,26 +235,26 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Cara Bayar *</label>
+                            <label class="col-sm-2 col-form-label">Tipe Pasien *</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="cara_bayar" class="form-check-input"
+                                    <input type="radio" name="tipe_pasien" required class="form-check-input"
                                     value="Umum/Mandiri">
                                     <label class="form-check-label">Umum/Mandiri</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="radio" name="cara_bayar" class="form-check-input"
+                                    <input type="radio" name="tipe_pasien" required checked class="form-check-input"
                                     value="Jaminan Kesehatan">
                                     <label class="form-check-label">Jaminan Kesehatan</label>
                                 </div>
-                                @error('cara_bayar')
+                                @error('tipe_pasien')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
                             <label class="col-sm-2 col-form-label" id="no_bpjs_label">No. BPJS / KTP*</label>
                             <div class="col-sm-4">
-                                <input type="number" class="form-control" id="no_bpjs" name="no_bpjs" value="{{old('no_bpjs')}}" required>
+                                <input type="number" class="form-control" id="no_bpjs" name="no_bpjs" value="{{old('no_bpjs')}}">
                                 @error('no_bpjs')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>

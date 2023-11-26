@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRekamDiagnosaTable extends Migration
+class CreateRekamResepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateRekamDiagnosaTable extends Migration
      */
     public function up()
     {
-        Schema::create('rekam_diagnosis', function (Blueprint $table) {
+        Schema::create('rekam_reseps', function (Blueprint $table) {
             $table->id();
             $table->integer('rekam_id');
             $table->integer('pasien_id');
-            $table->string('diagnosa_utama')->nullable();
-            $table->string('diagnosa_sekunder')->nullable();
-            $table->string('diagnosa_tambahan')->nullable();
-            $table->string('terapi')->nullable();
-            $table->string('edukasi')->nullable();
+            $table->integer('obat_id');
+            $table->string('nama')->nullable();
+            $table->integer('harga_satuan')->nullable();
+            $table->string('satuan')->nullable();
+            $table->integer('quantity')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateRekamDiagnosaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rekam_diagnosis');
+        Schema::dropIfExists('rekam_reseps');
     }
 }
