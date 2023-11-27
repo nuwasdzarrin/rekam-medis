@@ -9,7 +9,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         if(auth()->user()->role_display()=="Admin"){
-
             return view('dashboard.admin');
         }else if(auth()->user()->role_display()=="Pendaftaran"){
             return view('dashboard.registrasi');

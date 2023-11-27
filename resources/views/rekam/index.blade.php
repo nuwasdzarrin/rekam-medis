@@ -7,7 +7,7 @@
             <div class="card-body">
                 <ul class="nav nav-tabs" >
                     <div class="form-group col-lg-6" style="float: left">
-                        <a href="{{Route('rekam.add')}}" class="btn btn-primary mr-3">+Rekam Medis Baru</a>    
+                        <a href="{{Route('rekam.add')}}" class="btn btn-primary mr-3">+Rekam Medis Baru</a>
                     </div>
                     <div class="form-group col-lg-6" style="float: right">
                         <form method="get" action="{{ url()->current() }}">
@@ -21,7 +21,7 @@
                                 </div>
                             </div>
                         </form>
-    
+
                     </div>
                     {{-- @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
                         <li class="nav-item">
@@ -36,12 +36,12 @@
                             <a href="{{Route('rekam',['tab'=>3])}}" class="nav-link {{Request('tab')==3 ? 'active' :''}}" >
                                 <i class="la la-phone mr-2"></i> Menunggu Obat</a>
                         </li>
-                    
+
                         <li class="nav-item ">
                             <a href="{{Route('rekam',['tab'=>5])}}" class="nav-link {{Request('tab')==5 ? 'active' :''}}">
                                 <i class="la la-envelope mr-2"></i> Selesai</a>
                         </li>
-                    
+
                     @else --}}
                     @if(auth()->user()->role_display()=="Dokter")
                         <li class="nav-item">
@@ -53,53 +53,51 @@
                                 <i class="la la-envelope mr-2"></i> Selesai Diperiksa</a>
                         </li>
                     @endif
-                    
+
                 </ul>
 
-                <div class="table-responsive card-table"> 
+                <div class="table-responsive card-table">
                     <table class="table table-responsive-md">
                         <thead>
                             <tr>
-                                
+
                                 <th>No</th>
-                                <th>Tanggal</th>
+                                <th>ID Rekam</th>
                                 <th>Nama Pasien</th>
                                 <th>Poli &<br>Dokter</th>
-                                <th>Keluhan </th>
                                 <th>Cara Bayar</th>
                                 <th>Status</th>
+                                <th>Tanggal</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rekams as $key=>$row)
+                            @foreach ($rekams as $key => $row)
                                 <tr>
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
-                                <td>{{$row->no_rekam}}<br/>{{$row->tgl_rekam}}</td>
-                                <td><a href="{{Route('rekam.detail',$row->pasien_id)}}">{{$row->pasien->nama}}</a></td>
-                                <td>{{$row->poli}}
-                                    <br><strong>{{$row->dokter->nama}}</strong>
-                                </td>
-                                <td>{{$row->keluhan}}</td>
-                                <td>{{$row->cara_bayar}}</td>
-                                <td>{!!$row->status_display()!!}</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <a href="{{Route('rekam.detail',$row->pasien_id)}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-user-md"></i></a>
-                                        @if (auth()->user()->role_display()=="Admin" && $row->status==2)
-                                             <a href="{{Route('rekam.edit',$row->id)}}"  class="btn btn-info shadow btn-xs sharp mr-1">
-                                            <i class="fa fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('rekam.delete',$row->id)}}"
-                                         r-name="{{$row->pasien->nama}}" r-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
-                                        @endif
-
-                                       
-                                    </div>
-                                </td>
+                                    <td>{{$row->no_rekam}}</td>
+                                    <td><a href="{{Route('rekam.detail',$row->pasien_id)}}">{{$row->pasien->nama}}</a></td>
+                                    <td>{{$row->poli}}
+                                        <br><strong>{{$row->dokter->nama}}</strong>
+                                    </td>
+                                    <td>{{$row->cara_bayar}}</td>
+                                    <td>{!!$row->status_display()!!}</td>
+                                    <td>{{$row->tgl_rekam}}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="{{Route('rekam.detail',$row->pasien_id)}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-user-md"></i></a>
+                                            @if (auth()->user()->role_display()=="Admin" && $row->status==2)
+                                                 <a href="{{Route('rekam.edit',$row->id)}}"  class="btn btn-info shadow btn-xs sharp mr-1">
+                                                <i class="fa fa-pencil"></i></a>
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('rekam.delete',$row->id)}}"
+                                             r-name="{{$row->pasien->nama}}" r-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
+                                            @endif
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+
                     </table>
                     {{ $rekams->appends(request()->except('page'))->links() }}
 
@@ -137,5 +135,5 @@
             });
         } );
     </script>
-    
+
 @endsection

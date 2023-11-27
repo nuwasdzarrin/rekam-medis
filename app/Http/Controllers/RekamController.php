@@ -21,6 +21,17 @@ use Illuminate\Support\Facades\Notification as Notification;
 
 class RekamController extends Controller
 {
+    public static function fields(): array
+    {
+        return [
+            "detail" => [
+                "umum" => [
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_utama', 'label' => ucwords('keluhan_utama'), 'required' => true ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_tambahan', 'label' => ucwords('keluhan_tambahan'), 'required' => true ],
+                ]
+            ]
+        ];
+    }
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -104,18 +115,11 @@ class RekamController extends Controller
     function store(Request $request){
         $this->validate($request,[
             'tgl_rekam' => 'required',
-            'pasien_id' => 'required',
-            'pasien_nama' => 'required',
-            'keluhan' => 'required',
-            'poli' => 'required',
+            'pasien_id' => 'required|exists:pasien,id',
+            'poli_id' => 'required|exists:poli,id',
+            'dokter_id' => 'required|exists:dokter,id',
             'cara_bayar' => 'required',
-            'dokter_id' => 'required'
         ]);
-        $pasien = Pasien::where('id',$request->pasien_id)->first();
-        if(!$pasien){
-            return redirect()->back()->withInput($request->input())
-                                ->withErrors(['pasien_id' => 'Data Pasien Tidak Ditemukan']);
-        }
         $rekam_ada = Rekam::where('pasien_id',$request->pasien_id)
                             ->whereIn('status',[1,2,3,4])
                             ->first();
@@ -134,7 +138,7 @@ class RekamController extends Controller
             'no_rekam' => "REG#".date('Ymd').$request->pasien_id,
             'petugas_id' => auth()->user()->id
         ]);
-        Rekam::create($request->all());
+        Rekam::query()->create($request->all());
         return redirect()->route('rekam.detail',$request->pasien_id)
                         ->with('sukses','Pendaftaran Berhasil,
                          Silakan lakukan pemeriksaan dan teruskan ke dokter terkait');

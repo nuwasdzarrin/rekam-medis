@@ -88,11 +88,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/rekam/add', [RekamController::class, 'add'])->name('rekam.add');
     Route::get('/rekam/{id}/edit', [RekamController::class, 'edit'])->name('rekam.edit');
 
-    Route::post('/rekam/pasie/store', [RekamController::class, 'store'])->name('rekam.store');
-    Route::get('/rekam/pasien/{id}', [RekamController::class, 'detail'])->name('rekam.detail');
+    Route::post('/rekam', [RekamController::class, 'store'])->name('rekam.store');
+    Route::get('/rekam/{id}', [RekamController::class, 'detail'])->name('rekam.detail');
 
     Route::get('/rekam/{id}/delete', [RekamController::class, 'delete'])->name('rekam.delete');
-    Route::post('/rekam/pasien/{id}/update', [RekamController::class, 'update'])->name('rekam.update');
+    Route::post('/rekam/{id}/update', [RekamController::class, 'update'])->name('rekam.update');
 
     Route::get('/rekam/gigi/{id}', [RekamGigiController::class, 'index'])->name('rekam.gigi.add');
     Route::post('/rekam/gigi/{id}/store', [RekamGigiController::class, 'store'])->name('rekam.gigi.store');

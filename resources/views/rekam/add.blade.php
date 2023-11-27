@@ -44,6 +44,15 @@
     </div>
 </div>
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 <div class="row">
     <div class="col-xl-12">
@@ -113,31 +122,18 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Anemnesa / <br>Keluhan*</label>
-                            <div class="col-sm-10">
-                                <textarea name="keluhan" required class="form-control"
-                                rows="4">{{old('keluhan')}}</textarea>
-                                {{-- <input type="text" name="keluhan" required class="form-control"> --}}
-                                @error('keluhan')
-                                <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Poli Tujuan*</label>
                             <div class="col-sm-4">
-                                <select name="poli" id="poli" class="form-control" required>
+                                <select name="poli_id" id="poli" class="form-control" required>
                                     @foreach ($poli as $item)
-                                        @if (old('poli') == $item->nama)
-                                            <option value="{{$item->nama}}" selected>{{$item->nama}}</option>
+                                        @if (old('poli_id') == $item->id)
+                                            <option value="{{$item->id}}" selected>{{$item->nama}}</option>
                                         @else
-                                            <option value="{{$item->nama}}">{{$item->nama}}</option>
+                                            <option value="{{$item->id}}">{{$item->nama}}</option>
                                         @endif
                                     @endforeach
                                 </select>
-                                @error('poli')
+                                @error('poli_id')
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror

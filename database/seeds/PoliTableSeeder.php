@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Poli;
 
 class PoliTableSeeder extends Seeder
 {
@@ -11,8 +12,8 @@ class PoliTableSeeder extends Seeder
      */
     public function run()
     {
-        if (\App\Models\Poli::count() == 0) {
-            \App\Models\Poli::create([
+        if (Poli::query()->count() == 0) {
+            Poli::query()->create([
                 'nama'           => 'Gigi dan Mulut',
             ]);
         }
