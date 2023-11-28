@@ -24,10 +24,33 @@ class RekamController extends Controller
     public static function fields(): array
     {
         return [
-            "detail" => [
-                "umum" => [
-                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_utama', 'label' => ucwords('keluhan_utama'), 'required' => true ],
-                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_tambahan', 'label' => ucwords('keluhan_tambahan'), 'required' => true ],
+            "edit" => [
+                "general" => [
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_utama',
+                        'label' => ucwords(str_replace('_', ' ', 'keluhan_utama')),
+                        'required' => true ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'keluhan_tambahan',
+                        'label' => ucwords(str_replace('_', ' ', 'keluhan_tambahan')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'nadi',
+                        'label' => ucwords(str_replace('_', ' ', 'nadi')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'suhu',
+                        'label' => ucwords(str_replace('_', ' ', 'suhu')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'pernafasan',
+                        'label' => ucwords(str_replace('_', ' ', 'pernafasan')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'tekanan_darah',
+                        'label' => ucwords(str_replace('_', ' ', 'tekanan_darah')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'tinggi_badan',
+                        'label' => ucwords(str_replace('_', ' ', 'tinggi_badan')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'berat_badan',
+                        'label' => ucwords(str_replace('_', ' ', 'berat_badan')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'kelainan',
+                        'label' => ucwords(str_replace('_', ' ', 'kelainan')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'penyakit_penyerta',
+                        'label' => ucwords(str_replace('_', ' ', 'penyakit_penyerta')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'alergi',
+                        'label' => ucwords(str_replace('_', ' ', 'alergi')) ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'oral_habit',
+                        'label' => ucwords(str_replace('_', ' ', 'oral_habit')) ],
                 ]
             ]
         ];
@@ -80,7 +103,10 @@ class RekamController extends Controller
     {
         $poli = Poli::all();
         $data = Rekam::find($id);
-        return view('rekam.edit',compact('data','poli'));
+        return view('rekam.edit', [
+            'poli' => $poli,
+            'data' => $data,
+        ]);
     }
 
 
@@ -105,11 +131,20 @@ class RekamController extends Controller
 
         if($rekamLatest){
            auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
-        //   dd($data);
         }
         $poli = Poli::where('status',1)->get();
+        $fields = [];
+        if ($request->filled('section')) {
+            if ($request->section == 'general') $fields = $this->fields()['edit']['general'];
+        }
 
-        return view('rekam.detail-rekam',compact('pasien','rekams','rekamLatest','poli'));
+        return view('rekam.detail-rekam', [
+            'pasien' => $pasien,
+            'rekams' => $rekams,
+            'rekamLatest' => $rekamLatest,
+            'poli' => $poli,
+            'fields' => $fields
+        ]);
     }
 
     function store(Request $request){

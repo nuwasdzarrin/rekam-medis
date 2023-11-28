@@ -180,30 +180,65 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Data Medis Umum</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">EO, IO, Radiografi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Odontogram</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Odontogram</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Diagnosis & Terapi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Resep Elektronik</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Pembayaran</a>
-                        </li>
-                    </ul>
-                    <div>
+                    @if(request()->filled('section'))
+                    <div class="py-3 w-100 overflow-auto">
+                        <ul class="nav nav-tabs" style="flex-wrap: unset">
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'general' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'general'])}}">Data Medis Umum</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'radiografi' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'radiografi'])}}">EO, IO, Radiografi</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'odontogram' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'odontogram'])}}">Odontogram</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'diagnosis' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'diagnosis'])}}">Diagnosis & Terapi</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'resep' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'resep'])}}">Resep Elektronik</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'payment' ? 'active' : ''}} disabled"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'payment'])}}">Pembayaran</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="py-4">
+                        @if(request()->section == 'general')
+                        <form>
+                            @csrf
+                            @foreach($fields as $field)
+                                <div class="form-group row">
+                                    <label class="col-lg-2 col-form-label">
+                                        {{$field['label']}}
+                                        @if(isset($field['required']) && $field['required'])
+                                            <span class='text-danger'>*</span>
+                                        @endif
+                                    </label>
+                                    <div class="col-lg-10">
+                                        <input type="{{$field['type']}}" name="{{$field['name']}}"
+                                               {{isset($field['required']) && $field['required'] ? 'required' : ''}}
+                                               value="{{old($field['name'])}}" class="form-control">
+                                        @error($field['name'])
+                                        <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endforeach
+                            <div class="form-group mt-5">
+                                <button class="btn btn-primary btn-sm btn-block">Submit</button>
+                            </div>
+                        </form>
+                        @endif
+                    </div>
+                    @endif
+                <div>
 {{--                        <div class="table-responsive card-table">--}}
 {{--                            <div class="form-group col-lg-6" style="float: right">--}}
 {{--                                <form method="get" action="{{ url()->current() }}">--}}
