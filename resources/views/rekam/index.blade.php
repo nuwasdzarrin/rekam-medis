@@ -85,7 +85,9 @@
                                     <td>{{$row->tgl_rekam}}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="{{Route('rekam.detail',$row->pasien_id)}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-user-md"></i></a>
+                                            <a href="{{Route('rekam.detail', ['id'=>$row->id, 'section'=>'general'])}}" class="btn btn-primary shadow btn-xs sharp mr-1">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             @if (auth()->user()->role_display()=="Admin" && $row->status==2)
                                                  <a href="{{Route('rekam.edit',$row->id)}}"  class="btn btn-info shadow btn-xs sharp mr-1">
                                                 <i class="fa fa-pencil"></i></a>

@@ -10,6 +10,7 @@ use App\Models\PengeluaranObat;
 use App\Models\Poli;
 use App\Models\Rekam;
 use App\Models\RekamGigi;
+use App\Models\RekamUmum;
 use App\Models\Tindakan;
 use App\Notifications\RekamUpdateNotification;
 use App\User;
@@ -18,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as Notification;
+use Illuminate\Support\Str;
 
 class RekamController extends Controller
 {
@@ -286,9 +288,20 @@ class RekamController extends Controller
                 'noted' => 'string|max:255',
             ],
             'update' => [
-                //'parent_id' => 'exists:parents,id',
-                'name' => 'string|max:255',
-                'noted' => 'string|max:255',
+                'general' => [
+                    'keluhan_utama' => 'string|max:255',
+                    'keluhan_tambahan' => 'string|max:255',
+                    'nadi' => 'string|max:255',
+                    'suhu' => 'string|max:255',
+                    'pernafasan' => 'string|max:255',
+                    'tekanan_darah' => 'string|max:255',
+                    'tinggi_badan' => 'string|max:255',
+                    'berat_badan' => 'string|max:255',
+                    'kelainan' => 'string|max:255',
+                    'penyakit_penyerta' => 'string|max:255',
+                    'alergi' => 'string|max:255',
+                    'oral_habit' => 'string|max:255',
+                ],
             ]
         ];
     }
@@ -347,43 +360,36 @@ class RekamController extends Controller
     }
 
 
-    public function detail(Request $request,$pasien_id)
+    public function detail(Request $request, $id)
     {
-        $pasien = Pasien::find($pasien_id);
+        $rekam = Rekam::query()->find($id);
+        $pasien = Pasien::find($rekam->pasien_id);
 
         $rekamLatest = Rekam::latest()
                                 ->where('status','!=',5)
-                                ->where('pasien_id',$pasien_id)
+                                ->where('pasien_id',$rekam->pasien_id)
                                 ->first();
-
-        $rekams = Rekam::latest()
-                    ->where('pasien_id',$pasien_id)
-                    ->when($request->keyword, function ($query) use ($request) {
-                        $query->where('tgl_rekam', 'LIKE', "%{$request->keyword}%");
-                    })
-                    ->when($request->poli, function ($query) use ($request) {
-                        $query->where('poli', 'LIKE', "%{$request->poli}%");
-                    })
-                    ->paginate(5);
-
         if($rekamLatest){
            auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
         }
-        $poli = Poli::where('status',1)->get();
         $fields = [];
+        $data_section = [];
         if ($request->filled('section')) {
-            if ($request->section == 'general') $fields = self::fields()['edit']['general'];
+            if ($request->section == 'general') {
+                $fields = self::fields()['edit']['general'];
+                $data_section = RekamUmum::query()->where('rekam_id', $id)->first();
+            }
             if ($request->section == 'radiograph') $fields = self::fields()['edit']['radiograph'];
             if ($request->section == 'odontogram') $fields = self::fields()['edit']['odontogram'];
             if ($request->section == 'diagnosis') $fields = self::fields()['edit']['diagnosis'];
         }
 
         return view('rekam.detail-rekam', [
+            'rekam' => $rekam,
             'pasien' => $pasien,
-            'rekams' => $rekams,
             'rekamLatest' => $rekamLatest,
-            'poli' => $poli,
-            'fields' => $fields
+            'fields' => $fields,
+            'data_section' => $data_section
         ]);
     }
 
@@ -442,6 +448,24 @@ class RekamController extends Controller
                         ->with('sukses','Berhasil diperbaharui,
                          Silakan lakukan pemeriksaan dan teruskan ke dokter terkait');
 
+    }
+
+    public function update_general(Request $request, $rekam_id){
+        $request->validate(self::rules()['update']['general']);
+        $model = RekamUmum::query()->findOrNew($request->filled('id') ? $request->id : '');
+        foreach (self::rules()['update'] as $key => $value) {
+            if (Str::contains($value, [ 'file', 'image', 'mimetypes', 'mimes' ])) {
+                if ($request->hasFile($key)) {
+                    $model->{$key} = $request->file($key)->store('rekam_generals');
+                } elseif ($request->exists($key)) {
+                    $model->{$key} = $request->{$key};
+                }
+            } elseif ($request->exists($key)) {
+                $model->{$key} = $request->{$key};
+            }
+        }
+        $model->save();
+        return response()->redirectToRoute('rekam.detail', $request->rekam_id)->with('status', __('Success'));
     }
 
     public function rekam_status(Request $request, $id, $status)
