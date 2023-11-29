@@ -200,6 +200,10 @@
                                    href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'diagnosis'])}}">Diagnosis & Terapi</a>
                             </li>
                             <li class="nav-item text-nowrap">
+                                <a class="nav-link {{request()->section == 'tindakan' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'tindakan'])}}">Tindakan</a>
+                            </li>
+                            <li class="nav-item text-nowrap">
                                 <a class="nav-link {{request()->section == 'resep' ? 'active' : ''}}"
                                    href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'resep'])}}">Resep Elektronik</a>
                             </li>
@@ -210,7 +214,7 @@
                         </ul>
                     </div>
                     <div class="py-4">
-                        @if(in_array(request()->section, ['general', 'radiograph', 'odontogram']))
+                        @if(in_array(request()->section, ['general', 'radiograph', 'odontogram', 'diagnosis']))
                         <form>
                             @csrf
                             @foreach($fields as $field)

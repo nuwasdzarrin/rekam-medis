@@ -256,6 +256,23 @@ class RekamController extends Controller
                     [ 'field' => 'input', 'type' => 'text', 'name' => 'lr_48',
                         'label' => ucwords(str_replace('_', ' ', '48')),
                     ]
+                ],
+                "diagnosis" => [
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'diagnosa_utama', 'required' => true,
+                        'label' => ucwords(str_replace('_', ' ', 'diagnosa_utama')),
+                    ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'diagnosa_sekunder',
+                        'label' => ucwords(str_replace('_', ' ', 'diagnosa_sekunder')),
+                    ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'diagnosa_tambahan',
+                        'label' => ucwords(str_replace('_', ' ', 'diagnosa_tambahan')),
+                    ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'terapi',
+                        'label' => ucwords(str_replace('_', ' ', 'terapi')),
+                    ],
+                    [ 'field' => 'input', 'type' => 'text', 'name' => 'edukasi',
+                        'label' => ucwords(str_replace('_', ' ', 'edukasi')),
+                    ],
                 ]
             ]
         ];
@@ -343,6 +360,7 @@ class RekamController extends Controller
             if ($request->section == 'general') $fields = $this->fields()['edit']['general'];
             if ($request->section == 'radiograph') $fields = $this->fields()['edit']['radiograph'];
             if ($request->section == 'odontogram') $fields = $this->fields()['edit']['odontogram'];
+            if ($request->section == 'diagnosis') $fields = $this->fields()['edit']['diagnosis'];
         }
 
         return view('rekam.detail-rekam', [
