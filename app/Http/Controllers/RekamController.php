@@ -277,6 +277,21 @@ class RekamController extends Controller
             ]
         ];
     }
+    public static function rules(): array
+    {
+        return [
+            'store' => [
+                //'parent_id' => 'required|exists:parents,id',
+                'name' => 'required|string|max:255',
+                'noted' => 'string|max:255',
+            ],
+            'update' => [
+                //'parent_id' => 'exists:parents,id',
+                'name' => 'string|max:255',
+                'noted' => 'string|max:255',
+            ]
+        ];
+    }
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -357,10 +372,10 @@ class RekamController extends Controller
         $poli = Poli::where('status',1)->get();
         $fields = [];
         if ($request->filled('section')) {
-            if ($request->section == 'general') $fields = $this->fields()['edit']['general'];
-            if ($request->section == 'radiograph') $fields = $this->fields()['edit']['radiograph'];
-            if ($request->section == 'odontogram') $fields = $this->fields()['edit']['odontogram'];
-            if ($request->section == 'diagnosis') $fields = $this->fields()['edit']['diagnosis'];
+            if ($request->section == 'general') $fields = self::fields()['edit']['general'];
+            if ($request->section == 'radiograph') $fields = self::fields()['edit']['radiograph'];
+            if ($request->section == 'odontogram') $fields = self::fields()['edit']['odontogram'];
+            if ($request->section == 'diagnosis') $fields = self::fields()['edit']['diagnosis'];
         }
 
         return view('rekam.detail-rekam', [
