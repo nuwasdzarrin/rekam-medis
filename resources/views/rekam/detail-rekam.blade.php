@@ -188,8 +188,8 @@
                                    href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'general'])}}">Data Medis Umum</a>
                             </li>
                             <li class="nav-item text-nowrap">
-                                <a class="nav-link {{request()->section == 'radiografi' ? 'active' : ''}}"
-                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'radiografi'])}}">EO, IO, Radiografi</a>
+                                <a class="nav-link {{request()->section == 'radiograph' ? 'active' : ''}}"
+                                   href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'radiograph'])}}">EO, IO, Radiografi</a>
                             </li>
                             <li class="nav-item text-nowrap">
                                 <a class="nav-link {{request()->section == 'odontogram' ? 'active' : ''}}"
@@ -210,10 +210,20 @@
                         </ul>
                     </div>
                     <div class="py-4">
-                        @if(request()->section == 'general')
+                        @if(in_array(request()->section, ['general', 'radiograph', 'odontogram']))
                         <form>
                             @csrf
                             @foreach($fields as $field)
+                                @if($field['field'] == 'subtitle')
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            <hr />
+                                            @if($field['label'])
+                                                <h6>{{$field['label']}}</h6>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-form-label">
                                         {{$field['label']}}
@@ -230,6 +240,7 @@
                                         @enderror
                                     </div>
                                 </div>
+                                @endif
                             @endforeach
                             <div class="form-group mt-5">
                                 <button class="btn btn-primary btn-sm btn-block">Submit</button>
