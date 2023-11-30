@@ -9,7 +9,10 @@ use App\Models\Pasien;
 use App\Models\PengeluaranObat;
 use App\Models\Poli;
 use App\Models\Rekam;
+use App\Models\RekamDiagnosa;
 use App\Models\RekamGigi;
+use App\Models\RekamOdontogram;
+use App\Models\RekamRadiologi;
 use App\Models\RekamUmum;
 use App\Models\Tindakan;
 use App\Notifications\RekamUpdateNotification;
@@ -289,18 +292,18 @@ class RekamController extends Controller
             ],
             'update' => [
                 'general' => [
-                    'keluhan_utama' => 'string|max:255',
-                    'keluhan_tambahan' => 'string|max:255',
-                    'nadi' => 'string|max:255',
-                    'suhu' => 'string|max:255',
-                    'pernafasan' => 'string|max:255',
-                    'tekanan_darah' => 'string|max:255',
-                    'tinggi_badan' => 'string|max:255',
-                    'berat_badan' => 'string|max:255',
-                    'kelainan' => 'string|max:255',
-                    'penyakit_penyerta' => 'string|max:255',
-                    'alergi' => 'string|max:255',
-                    'oral_habit' => 'string|max:255',
+                    'keluhan_utama' => 'required|string|max:255',
+                    'keluhan_tambahan' => 'string|max:255|nullable',
+                    'nadi' => 'string|max:255|nullable',
+                    'suhu' => 'string|max:255|nullable',
+                    'pernafasan' => 'string|max:255|nullable',
+                    'tekanan_darah' => 'string|max:255|nullable',
+                    'tinggi_badan' => 'string|max:255|nullable',
+                    'berat_badan' => 'string|max:255|nullable',
+                    'kelainan' => 'string|max:255|nullable',
+                    'penyakit_penyerta' => 'string|max:255|nullable',
+                    'alergi' => 'string|max:255|nullable',
+                    'oral_habit' => 'string|max:255|nullable',
                 ],
             ]
         ];
@@ -374,14 +377,40 @@ class RekamController extends Controller
         }
         $fields = [];
         $data_section = [];
+        $update_url = '';
         if ($request->filled('section')) {
             if ($request->section == 'general') {
                 $fields = self::fields()['edit']['general'];
                 $data_section = RekamUmum::query()->where('rekam_id', $id)->first();
+                $update_url = route('rekam.update_general', [
+                    'id' => $id,
+                    'redirect' => route('rekam', ['id' => $id, 'section' => 'radiograph'])
+                ]);
             }
-            if ($request->section == 'radiograph') $fields = self::fields()['edit']['radiograph'];
-            if ($request->section == 'odontogram') $fields = self::fields()['edit']['odontogram'];
-            if ($request->section == 'diagnosis') $fields = self::fields()['edit']['diagnosis'];
+            if ($request->section == 'radiograph') {
+                $fields = self::fields()['edit']['radiograph'];
+                $data_section = RekamRadiologi::query()->where('rekam_id', $id)->first();
+                $update_url = route('rekam.update_general', [
+                    'id' => $id,
+                    'redirect' => route('rekam', ['id' => $id, 'section' => 'odontogram'])
+                ]);
+            }
+            if ($request->section == 'odontogram') {
+                $fields = self::fields()['edit']['odontogram'];
+                $data_section = RekamOdontogram::query()->where('rekam_id', $id)->first();
+                $update_url = route('rekam.update_general', [
+                    'id' => $id,
+                    'redirect' => route('rekam', ['id' => $id, 'section' => 'diagnosis'])
+                ]);
+            }
+            if ($request->section == 'diagnosis') {
+                $fields = self::fields()['edit']['diagnosis'];
+                $data_section = RekamDiagnosa::query()->where('rekam_id', $id)->first();
+                $update_url = route('rekam.update_general', [
+                    'id' => $id,
+                    'redirect' => route('rekam', ['id' => $id, 'section' => 'odontogram'])
+                ]);
+            }
         }
 
         return view('rekam.detail-rekam', [
@@ -389,7 +418,8 @@ class RekamController extends Controller
             'pasien' => $pasien,
             'rekamLatest' => $rekamLatest,
             'fields' => $fields,
-            'data_section' => $data_section
+            'data_section' => $data_section,
+            'update_url' => $update_url
         ]);
     }
 
@@ -452,8 +482,15 @@ class RekamController extends Controller
 
     public function update_general(Request $request, $rekam_id){
         $request->validate(self::rules()['update']['general']);
-        $model = RekamUmum::query()->findOrNew($request->filled('id') ? $request->id : '');
-        foreach (self::rules()['update'] as $key => $value) {
+        $rekam = Rekam::query()->find($rekam_id);
+        if (!$rekam)
+            return back()->withInput()->with('message', "Rekam not found")->with('status_type', 'danger');
+        $model = RekamUmum::query()->find($request->filled('id') ? $request->id : '');
+        if (!($model->rekam_id && $model->pasien_id)) {
+            $model->rekam_id = $rekam->id;
+            $model->pasien_id = $rekam->pasien_id;
+        }
+        foreach (self::rules()['update']['general'] as $key => $value) {
             if (Str::contains($value, [ 'file', 'image', 'mimetypes', 'mimes' ])) {
                 if ($request->hasFile($key)) {
                     $model->{$key} = $request->file($key)->store('rekam_generals');
@@ -465,7 +502,8 @@ class RekamController extends Controller
             }
         }
         $model->save();
-        return response()->redirectToRoute('rekam.detail', $request->rekam_id)->with('status', __('Success'));
+        return response()->redirectToRoute('rekam.detail', ['id' => $rekam_id, 'section' => 'general'])
+            ->with('message', __('Success update data'))->with('status_type', 'success');
     }
 
     public function rekam_status(Request $request, $id, $status)

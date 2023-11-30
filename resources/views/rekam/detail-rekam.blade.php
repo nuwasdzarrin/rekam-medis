@@ -11,130 +11,140 @@
 
 {{-- DATA --}}
 <div class="row">
-    <div class="col-sm-12 col-sm-5 col-lg-5">
-            <div class="card">
-                <div class="card-header border-0 pb-0">
-                    <h4 class="fs-20 text-black mb-0">Detail Pasien</h4>
-                    <div class="dropdown">
-                        RM#  {{$pasien->no_rm}}
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="media mb-4 align-items-center">
-                        <div class="media-body">
-                            <input type="hidden" id="pasien_id" value="{{$pasien->id}}">
-                            <input type="hidden" id="rekam_id" value="{{$rekamLatest ? $rekamLatest->id : '' }}">
-
-                            <h3 class="fs-18 font-w600 mb-1"><a href="javascript:void(0)"
-                                 class="text-black">{{$pasien->nama}}</a></h3>
-                            <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.", ".$pasien->tgl_lahir}}</h4>
-                            @php
-                                $b_day = \Carbon\Carbon::parse($pasien->tgl_lahir); // Tanggal Lahir
-                                $now = \Carbon\Carbon::now();
-                            @endphp
-                            <h4 class="fs-14 font-w600 mb-1">{{"Usia : ".$b_day->diffInYears($now) }}</h4>
-
-                            <h4 class="fs-14 font-w600 mb-1">{{$pasien->jk.", ".$pasien->status_menikah}}</h4>
-                            <span class="fs-14">{{$pasien->alamat_lengkap}}</span>
-                            <span class="fs-14">{{$pasien->keluhan.", ".$pasien->kecamatan.", ".$pasien->kabupaten.", ".$pasien->kewarganegaraan}}</span>
-                            {{-- <textarea name="analysis" class="form-control" id="editor" cols="30" rows="10"></textarea> --}}
-                            <br>
-                            @if ($pasien->isRekamGigi())
-                                <a href="{{Route('rekam.gigi.odontogram',$pasien->id)}}" style="width: 120px"
-                                    class="btn-rounded btn-info btn-xs "><i class="fa fa-eye"></i> Odontogram</a>
-                            @endif
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+    @if(session()->has('message'))
+        <div class="alert alert-{{session()->get('status_type')}} alert-dismissible fade show w-100" role="alert">
+            {{ session()->get('message') }}
+            <button type="button" class="close" style="top: 5px;" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-    <div class="col-sm-12 col-sm-7 col-lg-7">
-            <div class="card">
-                <div class="card-header border-0 pb-0">
-                    <h4 class="fs-20 text-black mb-0">Info Pasien</h4>
-                    <div class="dropdown">
-                         @if ($rekamLatest)
-                            {!! $rekamLatest->status_display() !!}
-                        @endif
-                        @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
-                        <a href="{{Route('pasien.edit',$pasien->id)}}" style="width: 120px"
-                            class="btn-rounded btn-info btn-xs "><i class="fa fa-pencil"></i> Edit Pasien</a>
-                        @endif
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row align-items-center">
-
-                        <div class="col-xl-12 col-xxl-6 col-sm-6">
-                            <div class="d-flex mb-3 align-items-center">
-                                <span class="fs-12 col-6 p-0 text-black">
-                                    <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="19" height="19" fill="#5F74BF"/>
-                                    </svg>
-                                    No HP
-                                </span>
-                                <div class="col-8 p-0">
-                                   <p>{{$pasien->no_hp}}</p>
-                                </div>
-                            </div>
-
-                            <div class="d-flex align-items-center">
-                                <span class="fs-12 col-6 p-0 text-black">
-                                    <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="19" height="19" fill="#5FBF91"/>
-                                    </svg>
-                                    Pembayaran
-                                </span>
-                                <div class="col-8 p-0">
-                                   @if ($rekamLatest)
-                                    <p>{{$rekamLatest->cara_bayar}}</p>
-                                    <p>{{$pasien->no_bpjs}}</p>
-                                   @else
-                                    <p>{{$pasien->cara_bayar}}</p>
-                                    <p>{{$pasien->no_bpjs}}</p>
-                                   @endif
-
-                                </div>
-                            </div>
-                            <div class="d-flex mb-3 align-items-center">
-                                <span class="fs-12 col-6 p-0 text-black">
-                                    <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="19" height="19" fill="#5F74BF"/>
-                                    </svg>
-                                    Alergi
-                                </span>
-                                <div class="col-8 p-0">
-                                   <p>{{$pasien->alergi}}</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <span class="fs-12 col-6 p-0 text-black">
-                                    <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="19" height="19" fill="#5FBF91"/>
-                                    </svg>
-                                    File General
-                                </span>
-                                <div class="col-8 p-0">
-                                  @if ($pasien->general_uncent != null)
-                                    <a style="width: 120px"
-                                    class="btn-rounded btn-info btn-xs " href="{{$pasien->getGeneralUncent()}}"
-                                    target="__BLANK" view>Lihat Data</a>
-
-                                  @else
-                                    Belum Tersedia
-                                  @endif
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    @endif
 </div>
-<div class="row yayayaa nunu">
+<div class="row">
+    <div class="col-sm-12 col-sm-5 col-lg-5">
+        <div class="card">
+            <div class="card-header border-0 pb-0">
+                <h4 class="fs-20 text-black mb-0">Detail Pasien</h4>
+                <div class="dropdown">
+                    RM#  {{$pasien->no_rm}}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="media mb-4 align-items-center">
+                    <div class="media-body">
+                        <input type="hidden" id="pasien_id" value="{{$pasien->id}}">
+                        <input type="hidden" id="rekam_id" value="{{$rekamLatest ? $rekamLatest->id : '' }}">
+
+                        <h3 class="fs-18 font-w600 mb-1"><a href="javascript:void(0)"
+                             class="text-black">{{$pasien->nama}}</a></h3>
+                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.", ".$pasien->tgl_lahir}}</h4>
+                        @php
+                            $b_day = \Carbon\Carbon::parse($pasien->tgl_lahir); // Tanggal Lahir
+                            $now = \Carbon\Carbon::now();
+                        @endphp
+                        <h4 class="fs-14 font-w600 mb-1">{{"Usia : ".$b_day->diffInYears($now) }}</h4>
+
+                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->jk.", ".$pasien->status_menikah}}</h4>
+                        <span class="fs-14">{{$pasien->alamat_lengkap}}</span>
+                        <span class="fs-14">{{$pasien->keluhan.", ".$pasien->kecamatan.", ".$pasien->kabupaten.", ".$pasien->kewarganegaraan}}</span>
+                        {{-- <textarea name="analysis" class="form-control" id="editor" cols="30" rows="10"></textarea> --}}
+                        <br>
+                        @if ($pasien->isRekamGigi())
+                            <a href="{{Route('rekam.gigi.odontogram',$pasien->id)}}" style="width: 120px"
+                                class="btn-rounded btn-info btn-xs "><i class="fa fa-eye"></i> Odontogram</a>
+                        @endif
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-sm-7 col-lg-7">
+        <div class="card">
+            <div class="card-header border-0 pb-0">
+                <h4 class="fs-20 text-black mb-0">Info Pasien</h4>
+                <div class="dropdown">
+                     @if ($rekamLatest)
+                        {!! $rekamLatest->status_display() !!}
+                    @endif
+                    @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
+                    <a href="{{Route('pasien.edit',$pasien->id)}}" style="width: 120px"
+                        class="btn-rounded btn-info btn-xs "><i class="fa fa-pencil"></i> Edit Pasien</a>
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+
+                    <div class="col-xl-12 col-xxl-6 col-sm-6">
+                        <div class="d-flex mb-3 align-items-center">
+                            <span class="fs-12 col-6 p-0 text-black">
+                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="19" height="19" fill="#5F74BF"/>
+                                </svg>
+                                No HP
+                            </span>
+                            <div class="col-8 p-0">
+                               <p>{{$pasien->no_hp}}</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <span class="fs-12 col-6 p-0 text-black">
+                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="19" height="19" fill="#5FBF91"/>
+                                </svg>
+                                Pembayaran
+                            </span>
+                            <div class="col-8 p-0">
+                               @if ($rekamLatest)
+                                <p>{{$rekamLatest->cara_bayar}}</p>
+                                <p>{{$pasien->no_bpjs}}</p>
+                               @else
+                                <p>{{$pasien->cara_bayar}}</p>
+                                <p>{{$pasien->no_bpjs}}</p>
+                               @endif
+
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3 align-items-center">
+                            <span class="fs-12 col-6 p-0 text-black">
+                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="19" height="19" fill="#5F74BF"/>
+                                </svg>
+                                Alergi
+                            </span>
+                            <div class="col-8 p-0">
+                               <p>{{$pasien->alergi}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="fs-12 col-6 p-0 text-black">
+                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="19" height="19" fill="#5FBF91"/>
+                                </svg>
+                                File General
+                            </span>
+                            <div class="col-8 p-0">
+                              @if ($pasien->general_uncent != null)
+                                <a style="width: 120px"
+                                class="btn-rounded btn-info btn-xs " href="{{$pasien->getGeneralUncent()}}"
+                                target="__BLANK" view>Lihat Data</a>
+
+                              @else
+                                Belum Tersedia
+                              @endif
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header border-0 pb-0">
@@ -208,8 +218,9 @@
                 </div>
                 <div class="py-4">
                     @if(in_array(request()->section, ['general', 'radiograph', 'odontogram', 'diagnosis']))
-                    <form>
+                    <form method="post" action="{{$update_url}}">
                         @csrf
+                        <input type="hidden" name="id" value="{{$data_section ? $data_section['id'] : ''}}">
                         @foreach($fields as $field)
                             @if($field['field'] == 'subtitle')
                                 <div class="form-group row">
@@ -229,7 +240,11 @@
                                     @endif
                                 </label>
                                 <div class="col-lg-10">
-                                    <input type="{{$field['type']}}" name="{{$field['name']}}" {{isset($field['required']) && $field['required'] ? 'required' : ''}} value="{{old($field['name'])}}" class="form-control">
+                                    <input
+                                        type="{{$field['type']}}" name="{{$field['name']}}"
+                                       {{isset($field['required']) && $field['required'] ? 'required' : ''}}
+                                       value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
+                                        class="form-control">
                                     @error($field['name'])
                                     <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
                                     @enderror
@@ -245,8 +260,6 @@
                 </div>
                 @endif
             </div>
-            </div>
-            <div>
         </div>
     </div>
 </div>
