@@ -338,9 +338,20 @@
                                                     <td>{{$option->stok}}</td>
                                                     <td class="d-flex justify-content-center">
                                                         <div class="d-flex justify-content-between align-items-center">
-                                                            <button class="btn btn-rounded btn-xs btn-outline-success">-</button>
-                                                            <input class="form-control text-center mx-2" type="number" value="2" readonly style="min-width: 50px;max-width: 80px;">
-                                                            <button class="btn btn-rounded btn-xs btn-outline-success">+</button>
+                                                            <button data-id="{{$option->id}}"
+                                                                    class="btn btn-rounded btn-xs btn-outline-success minusQuantity">
+                                                                -
+                                                            </button>
+                                                            <input
+                                                                id="quantityViewer{{$option->id}}"
+                                                                class="form-control text-center mx-2"
+                                                                type="number" value="0" readonly
+                                                                style="min-width: 58px;max-width: 80px;"
+                                                            >
+                                                            <button data-id="{{$option->id}}"
+                                                                class="btn btn-rounded btn-xs btn-outline-success plusQuantity" >
+                                                                +
+                                                            </button>
                                                         </div>
                                                     </td>
                                                     <td class="text-right">
@@ -351,7 +362,8 @@
                                                             <input type="hidden" name="kode" value="{{$option->kode}}">
                                                             <input type="hidden" name="nama" value="{{$option->nama}}">
                                                             <input type="hidden" name="harga" value="{{$option->harga}}">
-                                                            <button type="submit" class="btn btn-success btn-rounded btn-sm">
+                                                            <button type="submit" id="submitSelected{{$option->id}}" disabled
+                                                                    class="btn btn-success btn-rounded btn-sm">
                                                                 Pilih
                                                             </button>
                                                         </form>
@@ -413,4 +425,18 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+    <script>
+        $(document).on("click", ".plusQuantity", function () {
+            let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
+            quantityViewer.val(parseInt(quantityViewer.val())+1)
+            $(`#submitSelected${$(this).data("id")}`).prop("disabled", false)
+        })
+        $(document).on("click", ".minusQuantity", function () {
+            let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
+            if (quantityViewer.val() > 0) quantityViewer.val(parseInt(quantityViewer.val()) - 1)
+            if (quantityViewer.val() < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
+        })
+    </script>
 @endsection
