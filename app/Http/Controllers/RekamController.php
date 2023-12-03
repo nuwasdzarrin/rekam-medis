@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\StatusRekamUpdate;
 use App\Models\Dokter;
 use App\Models\KondisiGigi;
+use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\PengeluaranObat;
 use App\Models\Poli;
@@ -13,6 +14,8 @@ use App\Models\RekamDiagnosa;
 use App\Models\RekamGigi;
 use App\Models\RekamOdontogram;
 use App\Models\RekamRadiologi;
+use App\Models\RekamResep;
+use App\Models\RekamTindakan;
 use App\Models\RekamUmum;
 use App\Models\Tindakan;
 use App\Notifications\RekamUpdateNotification;
@@ -380,6 +383,12 @@ class RekamController extends Controller
                     'terapi' => 'string|max:255|nullable',
                     'edukasi' => 'string|max:255|nullable',
                 ],
+                'tindakan' => [
+                    'tindakan_id' => 'required|string|max:255',
+                    'kode' => 'string|max:255|nullable',
+                    'nama' => 'string|max:255|nullable',
+                    'harga' => 'string|max:255|nullable',
+                ],
             ]
         ];
     }
@@ -443,15 +452,12 @@ class RekamController extends Controller
         $rekam = Rekam::query()->find($id);
         $pasien = Pasien::find($rekam->pasien_id);
 
-        $rekamLatest = Rekam::latest()
-                                ->where('status','!=',5)
-                                ->where('pasien_id',$rekam->pasien_id)
-                                ->first();
-        if($rekamLatest){
-           auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
-        }
+        $rekamLatest = Rekam::latest()->where('status','!=',5)->where('pasien_id',$rekam->pasien_id)->first();
+        if($rekamLatest) auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
+
         $fields = [];
         $data_section = [];
+        $data_options = [];
         $update_url = '';
         if ($request->filled('section')) {
             if ($request->section == 'general') {
@@ -462,7 +468,7 @@ class RekamController extends Controller
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'general'])
                 ]);
             }
-            if ($request->section == 'radiograph') {
+            elseif ($request->section == 'radiograph') {
                 $fields = self::fields()['edit']['radiograph'];
                 $data_section = RekamRadiologi::query()->where('rekam_id', $id)->first();
                 $update_url = route('rekam.update_radiograph', [
@@ -470,7 +476,7 @@ class RekamController extends Controller
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'radiograph'])
                 ]);
             }
-            if ($request->section == 'odontogram') {
+            elseif ($request->section == 'odontogram') {
                 $fields = self::fields()['edit']['odontogram'];
                 $data_section = RekamOdontogram::query()->where('rekam_id', $id)->first();
                 $update_url = route('rekam.update_odontogram', [
@@ -478,12 +484,36 @@ class RekamController extends Controller
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'odontogram'])
                 ]);
             }
-            if ($request->section == 'diagnosis') {
+            elseif ($request->section == 'diagnosis') {
                 $fields = self::fields()['edit']['diagnosis'];
                 $data_section = RekamDiagnosa::query()->where('rekam_id', $id)->first();
                 $update_url = route('rekam.update_diagnosis', [
                     'id' => $id,
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'diagnosis'])
+                ]);
+            }
+            elseif ($request->section == 'diagnosis') {
+                $fields = self::fields()['edit']['diagnosis'];
+                $data_section = RekamDiagnosa::query()->where('rekam_id', $id)->first();
+                $update_url = route('rekam.update_diagnosis', [
+                    'id' => $id,
+                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'diagnosis'])
+                ]);
+            }
+            elseif ($request->section == 'tindakan') {
+                $data_section = RekamTindakan::query()->where('rekam_id', $id)->get();
+                $data_options = Tindakan::query()->select(['id', 'kode', 'nama', 'harga'])->get();
+                $update_url = route('rekam.update_tindakan', [
+                    'id' => $id,
+                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'tindakan'])
+                ]);
+            }
+            elseif ($request->section == 'resep') {
+                $data_section = RekamResep::query()->where('rekam_id', $id)->get();
+                $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga'])->get();
+                $update_url = route('rekam.update_tindakan', [
+                    'id' => $id,
+                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
                 ]);
             }
         }
@@ -494,6 +524,7 @@ class RekamController extends Controller
             'rekamLatest' => $rekamLatest,
             'fields' => $fields,
             'data_section' => $data_section,
+            'data_options' => $data_options,
             'update_url' => $update_url
         ]);
     }
@@ -571,6 +602,10 @@ class RekamController extends Controller
                 $model = RekamOdontogram::query()->findOrNew($request->filled('id') ? $request->id : '');
             elseif ($section == 'diagnosis')
                 $model = RekamDiagnosa::query()->findOrNew($request->filled('id') ? $request->id : '');
+            elseif ($section == 'tindakan')
+                $model = RekamTindakan::query()->findOrNew($request->filled('id') ? $request->id : '');
+            elseif ($section == 'resep')
+                $model = RekamResep::query()->findOrNew($request->filled('id') ? $request->id : '');
             else
                 $model = null;
             if (!$model)
@@ -580,13 +615,7 @@ class RekamController extends Controller
                 $model->pasien_id = $rekam->pasien_id;
             }
             foreach (self::rules()['update'][$section] as $key => $value) {
-                if (Str::contains($value, [ 'file', 'image', 'mimetypes', 'mimes' ])) {
-                    if ($request->hasFile($key)) {
-                        $model->{$key} = $request->file($key)->store('rekam_generals');
-                    } elseif ($request->exists($key)) {
-                        $model->{$key} = $request->{$key};
-                    }
-                } elseif ($request->exists($key)) {
+                if ($request->exists($key)) {
                     $model->{$key} = $request->{$key};
                 }
             }
@@ -611,6 +640,20 @@ class RekamController extends Controller
     }
     public function update_diagnosis(Request $request, $rekam_id){
         return self::update_section($request, $rekam_id, 'diagnosis');
+    }
+    public function update_tindakan(Request $request, $rekam_id){
+        return self::update_section($request, $rekam_id, 'tindakan');
+    }
+    public function destroy_tindakan(Request $request, $rekam_id){
+        try {
+            RekamTindakan::query()->find($request->id)->delete();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return back()->withInput()->with('message', $exception->getMessage())->with('status-type', 'danger');
+        }
+        $response = $request->filled('redirect') ? response()->redirectTo($request->redirect)
+            : response()->redirectToRoute('rekam.detail', ['id' => $rekam_id, 'section' => 'general']);
+        return $response->with('message', __('Success delete data'))->with('status_type', 'success');
     }
 
     public function rekam_status(Request $request, $id, $status)

@@ -1,14 +1,6 @@
 @extends('layout.apps')
 @section('content')
 
-{{--@include('rekam.partial.modal-pemeriksaan')--}}
-{{-- MODAL TINAKAN --}}
-{{--@include('rekam.partial.modal-tindakan')--}}
-{{-- MODAL Diagnosa --}}
-{{--@include('rekam.partial.modal-diagnosa')--}}
-{{-- MODAL OBAT --}}
-{{--@include('rekam.partial.modal-resep-obat')--}}
-
 {{-- DATA --}}
 <div class="row">
     @if(session()->has('message'))
@@ -256,6 +248,164 @@
                             <button class="btn btn-primary btn-sm btn-block">Submit</button>
                         </div>
                     </form>
+                    @elseif(request()->section == 'tindakan')
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Daftar Tindakan</b></div>
+                                    <div class="card-body">
+                                        @foreach($data_options as $option)
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>{{$option->nama . ' (' . $option->kode . ')'}}</div>
+                                                    <form method="post" action="{{$update_url}}">
+                                                        @csrf
+                                                        <input type="hidden" name="id" value="{{$option->id}}">
+                                                        <input type="hidden" name="tindakan_id" value="{{$option->id}}">
+                                                        <input type="hidden" name="kode" value="{{$option->kode}}">
+                                                        <input type="hidden" name="nama" value="{{$option->nama}}">
+                                                        <input type="hidden" name="harga" value="{{$option->harga}}">
+                                                        <button type="submit" class="btn btn-success btn-rounded btn-sm">
+                                                            Pilih
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <hr/>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Tindakan Terpilih</b></div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col" class="text-right">Price</th>
+                                                    <th scope="col" class="text-right">Remove</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($data_section as $key => $ds)
+                                                    <tr>
+                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$ds->nama}}</td>
+                                                        <td class="text-right">{{number_format($ds->harga, 0, '', '.')}}</td>
+                                                        <td class="text-right">
+                                                            <form method="post" action="{{route('rekam.destroy_tindakan', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'tindakan'])])}}">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{$ds->id}}">
+                                                                <button
+                                                                    class="btn btn-danger btn-rounded btn-sm"
+                                                                    title="Delete" type="submit" name="_method"
+                                                                    value="delete"
+                                                                >
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(request()->section == 'resep')
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Daftar Obat</b></div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tr>
+                                                    <td><b>Nama</b></td>
+                                                    <td><b>Stok</b></td>
+                                                    <td class="text-center"><b>Qty</b></td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                @foreach($data_options as $option)
+                                                <tr>
+                                                    <td style="min-width: 100px;">{{$option->nama . ' (' . $option->kd_obat . ')'}}</td>
+                                                    <td>{{$option->stok}}</td>
+                                                    <td class="d-flex justify-content-center">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <button class="btn btn-rounded btn-xs btn-outline-success">-</button>
+                                                            <input class="form-control text-center mx-2" type="number" value="2" readonly style="min-width: 50px;max-width: 80px;">
+                                                            <button class="btn btn-rounded btn-xs btn-outline-success">+</button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <form method="post" action="{{$update_url}}">
+                                                            @csrf
+                                                            <input type="hidden" name="id" value="{{$option->id}}">
+                                                            <input type="hidden" name="tindakan_id" value="{{$option->id}}">
+                                                            <input type="hidden" name="kode" value="{{$option->kode}}">
+                                                            <input type="hidden" name="nama" value="{{$option->nama}}">
+                                                            <input type="hidden" name="harga" value="{{$option->harga}}">
+                                                            <button type="submit" class="btn btn-success btn-rounded btn-sm">
+                                                                Pilih
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Obat Terpilih</b></div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col" class="text-right">Price</th>
+                                                    <th scope="col" class="text-right">Remove</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($data_section as $key => $ds)
+                                                    <tr>
+                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$ds->nama}}</td>
+                                                        <td class="text-right">{{number_format($ds->harga, 0, '', '.')}}</td>
+                                                        <td class="text-right">
+                                                            <form method="post" action="{{route('rekam.destroy_tindakan', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'tindakan'])])}}">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{$ds->id}}">
+                                                                <button
+                                                                    class="btn btn-danger btn-rounded btn-sm"
+                                                                    title="Delete" type="submit" name="_method"
+                                                                    value="delete"
+                                                                >
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @endif
                 </div>
                 @endif
@@ -263,150 +413,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('script')
-<script src="{{asset('vendor/ckeditor/ckeditor.js')}}"></script>
-<script>
-    $(function () {
-        var table = $('#icd-table').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-            paging:true,
-            select: false,
-            pageLength: 5,
-            lengthChange:false ,
-            ajax: "{{ route('icd.data') }}",
-            columns: [
-                {data: 'action', name: 'action'},
-                {data: 'code', name: 'code'},
-                {data: 'name_id', name: 'name_id'}
-            ]
-        });
-    });
-
-    CKEDITOR.addCss('.cke_editable p { margin: 0 !important; }');
-    CKEDITOR.replace('editor', {
-        height  : '250px',
-        // filebrowserUploadUrl: "{{route('rekam.upload', ['_token' => csrf_token() ])}}",
-        filebrowserUploadMethod: 'form',
-        toolbarGroups: [
-		{ name: 'document',	   groups: [ 'mode', 'document' ] },
- 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-        // { name: 'insert', groups: [ 'Image'] },
-	]
-    });
-
-    CKEDITOR.replace('editor2', {
-        height  : '250px',
-        // filebrowserUploadUrl: "{{route('rekam.upload', ['_token' => csrf_token() ])}}",
-        filebrowserUploadMethod: 'form',
-        toolbarGroups: [
-		{ name: 'document',	   groups: [ 'mode', 'document' ] },
- 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-        // { name: 'insert', groups: [ 'Image'] },
-	]
-    });
-
-    CKEDITOR.replace('editor3', {
-        height  : '250px',
-        // filebrowserUploadUrl: "{{route('rekam.upload', ['_token' => csrf_token() ])}}",
-        filebrowserUploadMethod: 'form',
-        toolbarGroups: [
-		{ name: 'document',	   groups: [ 'mode', 'document' ] },
- 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-        // { name: 'insert', groups: [ 'Image'] },
-	]
-    });
-
-    $(document).on("click", ".addPemeriksaan", function () {
-        var rekamId = $(this).data('id');
-        var pemeriksaan = $(this).data('pemeriksaan');
-        $(".modal-body #rekamId").val( rekamId );
-        if(pemeriksaan=="--"){
-            pemeriksaan = '<table border="0" cellpadding="0" cellspacing="0" style="width:100%">'+
-                    '<tbody>'+
-                        '<tr>'+
-                            '<td style="width:20%">TD</td>'+
-                            '<td style="width:2%">:</td>'+
-                            '<td>&nbsp;</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td>Temp</td>'+
-                            '<td>:</td>'+
-                            '<td>&nbsp;</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td>Resp</td>'+
-                            '<td>:</td>'+
-                            '<td>&nbsp;</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td>Nadi</td>'+
-                            '<td>:</td>'+
-                            '<td>&nbsp;</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td>BB</td>'+
-                            '<td>:</td>'+
-                            '<td>&nbsp;</td>'+
-                        '</tr>'+
-
-                    '</tbody>'+
-                '</table>'+
-                '<p>&nbsp;</p>';
-        }
-        CKEDITOR.instances.editor.setData( pemeriksaan );
-
-    });
-
-    $(document).on("click", ".pilihIcd", function () {
-        var diagnosa_id = $(this).data('id');
-        var rekam_id = $("#rekam_id").val();
-        var pasien_id = $("#pasien_id").val();
-        var token = '{{csrf_token()}}';
-        $("#addDiagnosa").modal('hide');
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-           type:'POST',
-           url:"{{ route('diagnosa.update') }}",
-           data:{rekam_id:rekam_id, pasien_id:pasien_id, diagnosa:diagnosa_id,_token:token},
-           success:function(data){
-                location.reload();
-           }
-        });
-
-
-    });
-
-    $(document).on("click", ".addTindakan", function () {
-        var rekamId = $(this).data('id');
-        var tindakan = $(this).data('tindakan');
-        $(".modal-body #rekamId").val( rekamId );
-        CKEDITOR.instances.editor2.setData( tindakan );
-    });
-
-    $(document).on("click", ".addDiagnosa", function () {
-        var rekamId = $(this).data('id');
-        var diagnosa = $(this).data('diagnosa');
-        $(".modal-body #rekamId").val( rekamId );
-        CKEDITOR.instances.editor.setData( diagnosa );
-
-    });
-
-    $(document).on("click", ".addResep", function () {
-        var rekamId = $(this).data('id');
-        var resep = $(this).data('resep');
-        $(".modal-body #rekamId").val( rekamId );
-        CKEDITOR.instances.editor3.setData( resep );
-
-    });
-
-
-</script>
 @endsection
