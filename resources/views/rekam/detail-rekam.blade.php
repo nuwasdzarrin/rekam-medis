@@ -250,7 +250,7 @@
                     </form>
                     @elseif(request()->section == 'tindakan')
                         <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-lg-4 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Daftar Tindakan</b></div>
                                     <div class="card-body">
@@ -275,7 +275,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-8 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Tindakan Terpilih</b></div>
                                     <div class="card-body">
@@ -283,10 +283,10 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col" class="text-right">Price</th>
-                                                    <th scope="col" class="text-right">Remove</th>
+                                                    <td><b>No</b></td>
+                                                    <td><b>Name</b></td>
+                                                    <td class="text-right"><b>Price</b></td>
+                                                    <td class="text-right"><b>Remove</b></td>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -319,7 +319,7 @@
                         </div>
                     @elseif(request()->section == 'resep')
                         <div class="row">
-                            <div class="col-lg-5">
+                            <div class="col-lg-5 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Daftar Obat</b></div>
                                     <div class="card-body">
@@ -375,7 +375,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-7">
+                            <div class="col-lg-7 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Obat Terpilih</b></div>
                                     <div class="card-body">
@@ -383,12 +383,12 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col" class="text-right">Price (@)</th>
-                                                    <th scope="col" class="text-right">Quantity</th>
-                                                    <th scope="col" class="text-right">Sub Total</th>
-                                                    <th scope="col" class="text-right">Remove</th>
+                                                    <td><b>No</b></td>
+                                                    <td><b>Name</b></td>
+                                                    <td class="text-right"><b>Price (@)</b></td>
+                                                    <td class="text-right"><b>Quantity</b></td>
+                                                    <td class="text-right"><b>Sub Total</b></td>
+                                                    <td class="text-right"><b>Remove</b></td>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -417,6 +417,84 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(request()->section == 'payment')
+                        <div class="row">
+                            <div class="col-lg-8 mb-4">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Transaksi</b></div>
+                                    <div class="card-body">
+                                        <h5 class="mb-3">Tindakan</h5>
+                                        <div class="table-responsive mb-5">
+                                            <table class="table">
+                                                <tr>
+                                                    <td><b>No</b></td>
+                                                    <td><b>Nama</b></td>
+                                                    <td><b>Kode</b></td>
+                                                    <td class="text-right"><b>Price</b></td>
+                                                </tr>
+                                                @foreach($data_options as $key => $ds)
+                                                    <tr>
+                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$ds->nama}}</td>
+                                                        <td>{{$ds->kode}}</td>
+                                                        <td class="text-right">{{number_format($ds->harga, 0, '', '.')}}</td>
+                                                    </tr>
+                                                @endforeach
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td><b>Sub Total</b></td>
+                                                    <td>&nbsp;</td>
+                                                    <td class="text-right">
+                                                        <b>{{ number_format($data_options->sum('harga'), 0, '', '.') }}</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5 class="mb-3">Resep</h5>
+                                        <div class="table-responsive mb-5">
+                                            <table class="table">
+                                                <tr>
+                                                    <td><b>No</b></td>
+                                                    <td><b>Nama</b></td>
+                                                    <td class="text-right"><b>Harga(@)</b></td>
+                                                    <td class="text-right"><b>Qty</b></td>
+                                                    <td class="text-right"><b>Harga</b></td>
+                                                </tr>
+                                                @foreach($data_section as $key => $ds)
+                                                    <tr>
+                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$ds->nama}}</td>
+                                                        <td class="text-right">
+                                                            {{number_format($ds->harga_satuan, 0, '', '.')}}
+                                                        </td>
+                                                        <td class="text-right">{{$ds->quantity}}</td>
+                                                        <td class="text-right">
+                                                            {{number_format($ds->harga_satuan * $ds->quantity, 0, '', '.')}}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td><b>Sub Total</b></td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td class="text-right">
+                                                        <b>{{ number_format($data_section->sum(function ($ds) {return $ds->harga_satuan * $ds->quantity;}), 0, '', '.') }}</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <div class="border rounded-xl">
+                                    <div class="card-header"><b>Pembayaran</b></div>
+                                    <div class="card-body">
                                     </div>
                                 </div>
                             </div>

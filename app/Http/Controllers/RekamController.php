@@ -525,7 +525,8 @@ class RekamController extends Controller
                 ]);
             }
             elseif ($request->section == 'payment') {
-                $data_options = RekamTindakan::query()->select(['nama', 'harga'])->where('rekam_id', $id)->get();
+                $data_options = RekamTindakan::query()->select(['nama', 'harga', 'kode'])->where('rekam_id', $id)
+                    ->get();
                 $data_section = RekamResep::query()->select(['nama', 'harga_satuan', 'quantity'])
                     ->where('rekam_id', $id)->get();
                 $update_url = route('rekam.update_resep', [
