@@ -389,6 +389,12 @@ class RekamController extends Controller
                     'nama' => 'string|max:255|nullable',
                     'harga' => 'string|max:255|nullable',
                 ],
+                'resep' => [
+                    'obat_id' => 'required|string|max:255',
+                    'nama' => 'string|max:255|nullable',
+                    'satuan' => 'string|max:255|nullable',
+                    'harga_satuan' => 'string|max:255|nullable',
+                ],
             ]
         ];
     }
@@ -510,8 +516,8 @@ class RekamController extends Controller
             }
             elseif ($request->section == 'resep') {
                 $data_section = RekamResep::query()->where('rekam_id', $id)->get();
-                $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga'])->get();
-                $update_url = route('rekam.update_tindakan', [
+                $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga', 'satuan'])->get();
+                $update_url = route('rekam.update_resep', [
                     'id' => $id,
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
                 ]);
@@ -602,10 +608,19 @@ class RekamController extends Controller
                 $model = RekamOdontogram::query()->findOrNew($request->filled('id') ? $request->id : '');
             elseif ($section == 'diagnosis')
                 $model = RekamDiagnosa::query()->findOrNew($request->filled('id') ? $request->id : '');
-            elseif ($section == 'tindakan')
-                $model = RekamTindakan::query()->findOrNew($request->filled('id') ? $request->id : '');
-            elseif ($section == 'resep')
-                $model = RekamResep::query()->findOrNew($request->filled('id') ? $request->id : '');
+            elseif ($section == 'tindakan') {
+                $model = RekamTindakan::query()->where('rekam_id', $rekam_id)->where('tindakan_id', $request->tindakan_id)->first();
+                if (!$model) $model = new RekamTindakan;
+            }
+            elseif ($section == 'resep') {
+                $model = RekamResep::query()->where('rekam_id', $rekam_id)->where('obat_id', $request->obat_id)->first();
+                if ($model) {
+                    $model->quantity = $model->quantity + $request->quantity;
+                } else {
+                    $model = new RekamResep;
+                    $model->quantity = $request->quantity;
+                }
+            }
             else
                 $model = null;
             if (!$model)
@@ -620,6 +635,11 @@ class RekamController extends Controller
                 }
             }
             $model->save();
+            if ($section == 'resep') {
+                $obat = Obat::query()->find($request->obat_id);
+                $obat->stok = $obat->stok - $request->quantity;
+                $obat->save();
+            }
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -647,6 +667,24 @@ class RekamController extends Controller
     public function destroy_tindakan(Request $request, $rekam_id){
         try {
             RekamTindakan::query()->find($request->id)->delete();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return back()->withInput()->with('message', $exception->getMessage())->with('status-type', 'danger');
+        }
+        $response = $request->filled('redirect') ? response()->redirectTo($request->redirect)
+            : response()->redirectToRoute('rekam.detail', ['id' => $rekam_id, 'section' => 'general']);
+        return $response->with('message', __('Success delete data'))->with('status_type', 'success');
+    }
+    public function update_resep(Request $request, $rekam_id){
+        return self::update_section($request, $rekam_id, 'resep');
+    }
+    public function destroy_resep(Request $request, $rekam_id){
+        try {
+            $rekam_resep = RekamResep::query()->find($request->id);
+            $obat = Obat::query()->find($rekam_resep->obat_id);
+            $obat->stok = $obat->stok + $rekam_resep->quantity;
+            $obat->save();
+            $rekam_resep->delete();
         } catch (\Exception $exception) {
             DB::rollBack();
             return back()->withInput()->with('message', $exception->getMessage())->with('status-type', 'danger');

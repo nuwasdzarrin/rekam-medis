@@ -203,7 +203,7 @@
                                href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'resep'])}}">Resep Elektronik</a>
                         </li>
                         <li class="nav-item text-nowrap">
-                            <a class="nav-link {{request()->section == 'payment' ? 'active' : ''}} disabled"
+                            <a class="nav-link {{request()->section == 'payment' ? 'active' : ''}}"
                                href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'payment'])}}">Pembayaran</a>
                         </li>
                     </ul>
@@ -260,7 +260,6 @@
                                                     <div>{{$option->nama . ' (' . $option->kode . ')'}}</div>
                                                     <form method="post" action="{{$update_url}}">
                                                         @csrf
-                                                        <input type="hidden" name="id" value="{{$option->id}}">
                                                         <input type="hidden" name="tindakan_id" value="{{$option->id}}">
                                                         <input type="hidden" name="kode" value="{{$option->kode}}">
                                                         <input type="hidden" name="nama" value="{{$option->nama}}">
@@ -348,7 +347,7 @@
                                                                 type="number" value="0" readonly
                                                                 style="min-width: 58px;max-width: 80px;"
                                                             >
-                                                            <button data-id="{{$option->id}}"
+                                                            <button data-id="{{$option->id}}" data-stock="{{$option->stok}}"
                                                                 class="btn btn-rounded btn-xs btn-outline-success plusQuantity" >
                                                                 +
                                                             </button>
@@ -357,11 +356,11 @@
                                                     <td class="text-right">
                                                         <form method="post" action="{{$update_url}}">
                                                             @csrf
-                                                            <input type="hidden" name="id" value="{{$option->id}}">
-                                                            <input type="hidden" name="tindakan_id" value="{{$option->id}}">
-                                                            <input type="hidden" name="kode" value="{{$option->kode}}">
+                                                            <input type="hidden" name="obat_id" value="{{$option->id}}">
                                                             <input type="hidden" name="nama" value="{{$option->nama}}">
-                                                            <input type="hidden" name="harga" value="{{$option->harga}}">
+                                                            <input type="hidden" name="harga_satuan" value="{{$option->harga}}">
+                                                            <input type="hidden" name="satuan" value="{{$option->satuan}}">
+                                                            <input type="hidden" name="quantity" id="inputQuantity{{$option->id}}" value="0">
                                                             <button type="submit" id="submitSelected{{$option->id}}" disabled
                                                                     class="btn btn-success btn-rounded btn-sm">
                                                                 Pilih
@@ -386,7 +385,9 @@
                                                 <tr>
                                                     <th scope="col">No</th>
                                                     <th scope="col">Name</th>
-                                                    <th scope="col" class="text-right">Price</th>
+                                                    <th scope="col" class="text-right">Price (@)</th>
+                                                    <th scope="col" class="text-right">Quantity</th>
+                                                    <th scope="col" class="text-right">Sub Total</th>
                                                     <th scope="col" class="text-right">Remove</th>
                                                 </tr>
                                                 </thead>
@@ -395,9 +396,11 @@
                                                     <tr>
                                                         <td>{{$key+1}}</td>
                                                         <td>{{$ds->nama}}</td>
-                                                        <td class="text-right">{{number_format($ds->harga, 0, '', '.')}}</td>
+                                                        <td class="text-right">{{number_format($ds->harga_satuan, 0, '', '.')}}</td>
+                                                        <td class="text-right">{{$ds->quantity}}</td>
+                                                        <td class="text-right">{{number_format($ds->harga_satuan * $ds->quantity, 0, '', '.')}}</td>
                                                         <td class="text-right">
-                                                            <form method="post" action="{{route('rekam.destroy_tindakan', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'tindakan'])])}}">
+                                                            <form method="post" action="{{route('rekam.destroy_resep', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'resep'])])}}">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{$ds->id}}">
                                                                 <button
@@ -430,13 +433,21 @@
     <script>
         $(document).on("click", ".plusQuantity", function () {
             let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
-            quantityViewer.val(parseInt(quantityViewer.val())+1)
-            $(`#submitSelected${$(this).data("id")}`).prop("disabled", false)
+            if ($(this).data("stock") > parseInt(quantityViewer.val())){
+                const qty = parseInt(quantityViewer.val())+1
+                quantityViewer.val(qty)
+                $(`#inputQuantity${$(this).data("id")}`).val(qty)
+                $(`#submitSelected${$(this).data("id")}`).prop("disabled", false)
+            }
         })
         $(document).on("click", ".minusQuantity", function () {
             let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
-            if (quantityViewer.val() > 0) quantityViewer.val(parseInt(quantityViewer.val()) - 1)
-            if (quantityViewer.val() < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
+            const qty = parseInt(quantityViewer.val())
+            if (qty > 0) {
+                quantityViewer.val(qty - 1)
+                $(`#inputQuantity${$(this).data("id")}`).val(qty - 1)
+            }
+            if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
         })
     </script>
 @endsection
