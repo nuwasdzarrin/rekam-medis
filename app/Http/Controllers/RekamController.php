@@ -507,7 +507,8 @@ class RekamController extends Controller
                 ]);
             }
             elseif ($request->section == 'tindakan') {
-                $data_section = RekamTindakan::query()->where('rekam_id', $id)->get();
+                $data_section = RekamTindakan::query()->select(['id', 'nama', 'harga'])->where('rekam_id', $id)
+                    ->get();
                 $data_options = Tindakan::query()->select(['id', 'kode', 'nama', 'harga'])->get();
                 $update_url = route('rekam.update_tindakan', [
                     'id' => $id,
@@ -515,8 +516,18 @@ class RekamController extends Controller
                 ]);
             }
             elseif ($request->section == 'resep') {
-                $data_section = RekamResep::query()->where('rekam_id', $id)->get();
+                $data_section = RekamResep::query()->select(['id', 'nama', 'harga_satuan', 'quantity'])
+                    ->where('rekam_id', $id)->get();
                 $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga', 'satuan'])->get();
+                $update_url = route('rekam.update_resep', [
+                    'id' => $id,
+                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
+                ]);
+            }
+            elseif ($request->section == 'payment') {
+                $data_options = RekamTindakan::query()->select(['nama', 'harga'])->where('rekam_id', $id)->get();
+                $data_section = RekamResep::query()->select(['nama', 'harga_satuan', 'quantity'])
+                    ->where('rekam_id', $id)->get();
                 $update_url = route('rekam.update_resep', [
                     'id' => $id,
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
