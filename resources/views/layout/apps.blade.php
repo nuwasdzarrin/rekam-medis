@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Klinik Medishina</title>
+    <title>Inp Dentist</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('images/logo.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('images/logo_inpdentist.png')}}">
 	<link rel="stylesheet" href="{{asset('vendor/chartist/css/chartist.min.css')}}">
 	<!-- Datatable -->
     <link href="{{asset('vendor/datatables/css/jquery.dataTables.min.css')}}" rel="stylesheet">
@@ -19,7 +19,7 @@
     p {
         margin: 0;
     }
-    
+
     </style>
     @yield('header')
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
@@ -33,17 +33,17 @@
             <div class="sk-child sk-bounce3"></div>
         </div>
     </div>
-    
+
     <div id="main-wrapper">
 
-     
+
         <div class="nav-header">
             <a href="#" class="brand-logo">
                 {{-- <h3 class="brand-title">Klinik Medishina</h3> --}}
                 {{-- <h2 class="logo-compact">Klinik Medishina</h2> --}}
-                 <img class="logo-abbr" src="{{asset('images/logo.png')}}" alt="">
-                 <img class="logo-compact" src="{{asset('images/logo-text.png')}}" alt=""> 
-                <img class="brand-title" src="{{asset('images/logo-text.png')}}" alt="">  
+                 <img class="logo-abbr" src="{{asset('images/logo_inpdentist.png')}}" alt="">
+{{--                 <img class="logo-compact" src="{{asset('images/logo-text.png')}}" alt="">--}}
+{{--                <img class="brand-title" src="{{asset('images/logo-text.png')}}" alt="">--}}
             </a>
 
             <div class="nav-control">
@@ -52,8 +52,8 @@
                 </div>
             </div>
         </div>
-       
-		
+
+
 		<!--**********************************
             Header start
         ***********************************-->
@@ -69,7 +69,7 @@
         <!--**********************************
             Sidebar end
         ***********************************-->
-		
+
 		<!--**********************************
             Content body start
         ***********************************-->
@@ -87,10 +87,10 @@
             Footer start
         ***********************************-->
         @include('layout.partial.footer')
-     
+
 
     </div>
- 
+
     <script src="{{asset('vendor/global/global.min.js')}}"></script>
 	<script src="{{asset('vendor/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
 	<script src="{{asset('vendor/chart.js/Chart.bundle.min.js')}}"></script>
@@ -102,7 +102,7 @@
     <script src="{{asset('vendor/toastr/js/toastr.min.js')}}"></script>
     <script src="{{asset('vendor/sweetalert2/dist/sweetalert2.min.js')}}"></script>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    
+
 
 	<script>
         @if(Session::has('sukses'))
@@ -143,7 +143,7 @@
             var newNotificationHtml = `
             <li>
                 <div class="timeline-panel">
-                   
+
                     <div class="media-body">
                         <h6 class="mb-1">`+data.no_rekam+`</h6>
                         <h6 class="mb-1">`+data.message+`</h6>
@@ -161,7 +161,7 @@
             // $("#data-count").html(notificationsCount);
             notificationsWrapper.show();
 
-            
+
             if(role=="Dokter"){
                 var listPeriksaDokter = `
                     <div class="d-flex pb-3 border-bottom mb-3 align-items-end">
@@ -173,7 +173,7 @@
                                 <li><i class="las la-user"></i>`+data.message+`</li>
                             </ul>
                         </div>
-                        <a href="`+data.link+`" 
+                        <a href="`+data.link+`"
                             class="btn-rounded btn-primary btn-xs"><i class="fa fa-user-md"></i> Periksa</a>
                     </div>`;
 
@@ -189,30 +189,30 @@
                                 <li><i class="las la-user"></i>`+data.message+`</li>
                             </ul>
                         </div>
-                        <a href="`+data.link+`" 
+                        <a href="`+data.link+`"
                             class="btn-rounded btn-primary btn-xs"><i class="fa fa-user-md"></i> Berikan Obat</a>
                     </div>`;
 
                     $("#obat-list-notif").append(listPermintaanObat);
             }
-        
 
-           
+
+
         });
         //end pusher
-        
+
 		// (function($) {
 		// 	var table = $('#example5').DataTable({
 		// 		searching: true,
 		// 		paging:true,
 		// 		select: false,
-		// 		//info: false,         
-		// 		lengthChange:false 
-				
+		// 		//info: false,
+		// 		lengthChange:false
+
 		// 	});
 		// 	$('#example tbody').on('click', 'tr', function () {
 		// 		var data = table.row( this ).data();
-				
+
 		// 	});
 		// })(jQuery);
 	</script>

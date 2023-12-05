@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Klinik Medishina</title>
+    <title>Inp Dentist</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('images/logo.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('images/logo_inpdentist.png')}}">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('vendor/toastr/css/toastr.min.css')}}">
 
@@ -27,9 +27,9 @@
 										{{-- <a href="#">
                                             <h2 class="text-white">Klinik Medishina</h2>
                                         </a> --}}
-                                        <img class="logo-abbr" src="{{asset('images/logo.png')}}" alt="">
-                                        <img class="logo-compact" src="{{asset('images/logo-text.png')}}" alt=""> 
-                
+                                        <img class="logo-abbr" src="{{asset('images/logo_inpdentist.png')}}" alt="">
+{{--                                        <img class="logo-compact" src="{{asset('images/logo-text.png')}}" alt="">--}}
+
 									</div>
                                     {{-- <h4 class="text-center mb-4 text-white">Sign in your account</h4> --}}
                                     <br><br>
@@ -43,12 +43,12 @@
                                             <label class="mb-1 text-white"><strong>Password</strong></label>
                                             <input type="password" class="form-control"  placeholder="password" value="" required name="password">
                                         </div>
-                                       
+
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-rounded bg-white text-primary btn-primary form-control">Masuk</button>
                                         </div>
                                     </form>
-                                   
+
                                 </div>
                             </div>
                         </div>

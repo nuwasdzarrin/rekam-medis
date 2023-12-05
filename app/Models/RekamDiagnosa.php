@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RekamDiagnosa extends Model
 {
-    protected $table = "rekam_diagnosa";
-    protected $fillable = ["rekam_id","pasien_id","diagnosa"];
+    protected $table = "rekam_diagnosis";
 
     function rekam(){
         return $this->belongsTo(Rekam::class);
