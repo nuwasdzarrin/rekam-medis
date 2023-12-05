@@ -16,11 +16,11 @@ class CreateRekamTable extends Migration
         Schema::create('rekam', function (Blueprint $table) {
             $table->id();
             $table->string('no_rekam');
-            $table->string('tgl_rekam');
             $table->integer('pasien_id')->unsigned();
             $table->integer('dokter_id')->unsigned();
             $table->integer('petugas_id')->unsigned();
             $table->integer('poli_id');
+            $table->string('tgl_rekam');
             $table->integer('biaya_tindakan')->default(0);
             $table->integer('biaya_resep')->default(0);
             $table->integer('diskon')->default(0);

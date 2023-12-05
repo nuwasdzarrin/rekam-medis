@@ -294,6 +294,20 @@ class RekamController extends Controller
                 'noted' => 'string|max:255',
             ],
             'update' => [
+                'parent' => [
+                    'pasien_id' => 'numeric|exists:pasiens,id|nullable',
+                    'dokter_id' => 'numeric|exists:dokters,id|nullable',
+                    'poli_id' => 'numeric|exists:polis,id|nullable',
+                    'tgl_rekam' => 'date|date_format:Y-m-d H:i:s|nullable',
+                    'biaya_tindakan' => 'numeric|nullable',
+                    'biaya_resep' => 'numeric|nullable',
+                    'diskon' => 'numeric|nullable',
+                    'jumlah_uang' => 'numeric|nullable',
+                    'tipe_pasien' => 'string|max:255|nullable',
+                    'cara_bayar' => 'string|max:255|nullable',
+                    'platform_pembayaran' => 'string|max:255|nullable',
+                    'status' => 'numeric|nullable',
+                ],
                 'general' => [
                     'keluhan_utama' => 'required|string|max:255',
                     'keluhan_tambahan' => 'string|max:255|nullable',
@@ -529,9 +543,9 @@ class RekamController extends Controller
                     ->get();
                 $data_section = RekamResep::query()->select(['nama', 'harga_satuan', 'quantity'])
                     ->where('rekam_id', $id)->get();
-                $update_url = route('rekam.update_resep', [
+                $update_url = route('rekam.update', [
                     'id' => $id,
-                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
+                    'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'payment'])
                 ]);
             }
         }
@@ -581,27 +595,17 @@ class RekamController extends Controller
     }
 
     function update(Request $request,$id){
-        $this->validate($request,[
-            'tgl_rekam' => 'required',
-            'pasien_id' => 'required',
-            'pasien_nama' => 'required',
-            'keluhan' => 'required',
-            'poli' => 'required',
-            'cara_bayar' => 'required',
-            'dokter_id' => 'required'
-        ]);
-        $pasien = Pasien::where('id',$request->pasien_id)->first();
-        if(!$pasien){
-            return redirect()->back()->withInput($request->input())
-                                ->withErrors(['pasien_id' => 'Data Pasien Tidak Ditemukan']);
+        $request->validate(self::rules()['update']['parent']);
+        $rekam = Rekam::query()->find($id);
+        foreach (self::rules()['update']['parent'] as $key => $value) {
+            if ($request->exists($key)) {
+                $rekam->{$key} = $request->{$key};
+            }
         }
-
-        $rekam = Rekam::find($id);
-        $rekam->update($request->all());
-        return response()->redirectToRoute('rekam.detail', ['id' => $rekam->id, 'section' => 'general'])
-                        ->with('sukses','Berhasil diperbaharui,
-                         Silakan lakukan pemeriksaan dan teruskan ke dokter terkait');
-
+        $rekam->save();
+        $response = $request->filled('redirect') ? response()->redirectTo($request->redirect)
+            : response()->redirectToRoute('rekam.detail', ['id' => $rekam->id, 'section' => 'general']);
+        return $response->with('message', __('Success update data'))->with('status_type', 'success');
     }
 
     function update_section($request, $rekam_id, $section): \Illuminate\Http\RedirectResponse

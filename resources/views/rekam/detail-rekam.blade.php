@@ -503,9 +503,17 @@
                                             @csrf
                                             <input type="hidden" name="total_tagihan" id="totalTagihan"
                                                    value="{{$total_tindakan + $total_resep}}">
-                                            <h5 class="mb-2">Total Pembayaran</h5>
-                                            <h2 class="text-success mb-5">
+                                            <h5 class="mb-2">Tagihan</h5>
+                                            <h2 class="text-success mb-4">
                                                 Rp {{ number_format($total_tindakan + $total_resep, 0, '', '.') }}
+                                            </h2>
+                                            <div class="form-group">
+                                                <label>Diskon</label>
+                                                <input type="number" class="form-control formatNumber" name="diskon">
+                                            </div>
+                                            <h5 class="mb-2">Total Tagihan</h5>
+                                            <h2 class="text-success mb-4">
+                                                Rp <span id="totalTagihan">{{ number_format($total_tindakan + $total_resep, 0, '', '.') }}</span>
                                             </h2>
                                             <h5 class="mb-2">Metode Pembayaran</h5>
                                             <div class="d-flex mb-4">
@@ -533,6 +541,7 @@
         </div>
     </div>
 </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -555,6 +564,8 @@
             if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
         })
 
+        let jumlahUang = 0
+        let discount = 0
         $("input.formatNumber").each((i,ele)=>{
             let clone=$(ele).clone(false)
             clone.attr("type","text")
@@ -574,11 +585,14 @@
                 if(clone.val()!=newv){
                     clone.val(newv)
                 }
+                if (ele1.attr('name') === 'diskon') discount = Number(ele1.val())
+                if (ele1.attr('name') === 'jumlah_uang') jumlahUang = Number(ele1.val())
+                console.log(ele1.attr('name'), discount, jumlahUang)
                 if (Number(ele1.val()) > Number(totalTagihan)) {
                     totalKembalian.val((Number(ele1.val()) - Number(totalTagihan)).toLocaleString("id"))
                 } else
                     totalKembalian.val('')
-            },1000)
+            },2000)
             $(ele).mouseleave(()=>{
                 $(clone).show()
                 $(ele1).hide()
