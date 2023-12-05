@@ -573,8 +573,8 @@ class RekamController extends Controller
             'no_rekam' => "REG#".date('Ymd').$request->pasien_id,
             'petugas_id' => auth()->user()->id
         ]);
-        Rekam::query()->create($request->all());
-        return redirect()->route('rekam.detail',$request->pasien_id)
+        $rekam = Rekam::query()->create($request->all());
+        return response()->redirectToRoute('rekam.detail', ['id' => $rekam->id, 'section' => 'general'])
                         ->with('sukses','Pendaftaran Berhasil,
                          Silakan lakukan pemeriksaan dan teruskan ke dokter terkait');
 
@@ -598,7 +598,7 @@ class RekamController extends Controller
 
         $rekam = Rekam::find($id);
         $rekam->update($request->all());
-        return redirect()->route('rekam.detail',$request->pasien_id)
+        return response()->redirectToRoute('rekam.detail', ['id' => $rekam->id, 'section' => 'general'])
                         ->with('sukses','Berhasil diperbaharui,
                          Silakan lakukan pemeriksaan dan teruskan ke dokter terkait');
 

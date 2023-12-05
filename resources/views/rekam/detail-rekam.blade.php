@@ -422,6 +422,10 @@
                             </div>
                         </div>
                     @elseif(request()->section == 'payment')
+                        @php
+                        $total_tindakan = $data_options->sum('harga');
+                        $total_resep = $data_section->sum(function ($ds) {return $ds->harga_satuan * $ds->quantity;});
+                        @endphp
                         <div class="row">
                             <div class="col-lg-8 mb-4">
                                 <div class="border rounded-xl">
@@ -449,7 +453,7 @@
                                                     <td><b>Sub Total</b></td>
                                                     <td>&nbsp;</td>
                                                     <td class="text-right">
-                                                        <b>{{ number_format($data_options->sum('harga'), 0, '', '.') }}</b>
+                                                        <b>{{ number_format($total_tindakan, 0, '', '.') }}</b>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -483,7 +487,7 @@
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td class="text-right">
-                                                        <b>{{ number_format($data_section->sum(function ($ds) {return $ds->harga_satuan * $ds->quantity;}), 0, '', '.') }}</b>
+                                                        <b>{{ number_format($total_resep, 0, '', '.') }}</b>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -495,6 +499,29 @@
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Pembayaran</b></div>
                                     <div class="card-body">
+                                        <form>
+                                            @csrf
+                                            <input type="hidden" name="total_tagihan" id="totalTagihan"
+                                                   value="{{$total_tindakan + $total_resep}}">
+                                            <h5 class="mb-2">Total Pembayaran</h5>
+                                            <h2 class="text-success mb-5">
+                                                Rp {{ number_format($total_tindakan + $total_resep, 0, '', '.') }}
+                                            </h2>
+                                            <h5 class="mb-2">Metode Pembayaran</h5>
+                                            <div class="d-flex mb-4">
+                                                <button class="btn btn-outline-success btn-rounded btn-sm mr-3 active">Tunai</button>
+                                                <button class="btn btn-outline-success btn-rounded btn-sm">Non Tunai</button>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Jumlah Uang</label>
+                                                <input type="number" class="form-control formatNumber" name="jumlah_uang">
+                                            </div>
+                                            <div class="form-group mb-5">
+                                                <label>Kembalian</label>
+                                                <input type="text" class="form-control" id="totalKembalian" disabled>
+                                            </div>
+                                            <button class="btn btn-success btn-rounded btn-block">Konfirmasi Pembayaran</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -526,6 +553,36 @@
                 $(`#inputQuantity${$(this).data("id")}`).val(qty - 1)
             }
             if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
+        })
+
+        $("input.formatNumber").each((i,ele)=>{
+            let clone=$(ele).clone(false)
+            clone.attr("type","text")
+            clone.attr("name","")
+            let ele1=$(ele)
+            clone.val(Number(ele1.val()).toLocaleString("id"))
+            $(ele).after(clone)
+            $(ele).hide()
+            clone.mouseenter(()=>{
+                ele1.show()
+                clone.hide()
+            })
+            let totalTagihan = $('#totalTagihan').val()
+            let totalKembalian = $('#totalKembalian')
+            setInterval(()=>{
+                let newv=Number(ele1.val()).toLocaleString("id")
+                if(clone.val()!=newv){
+                    clone.val(newv)
+                }
+                if (Number(ele1.val()) > Number(totalTagihan)) {
+                    totalKembalian.val((Number(ele1.val()) - Number(totalTagihan)).toLocaleString("id"))
+                } else
+                    totalKembalian.val('')
+            },1000)
+            $(ele).mouseleave(()=>{
+                $(clone).show()
+                $(ele1).hide()
+            })
         })
     </script>
 @endsection

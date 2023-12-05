@@ -24,8 +24,10 @@ class CreateRekamTable extends Migration
             $table->integer('biaya_tindakan')->default(0);
             $table->integer('biaya_resep')->default(0);
             $table->integer('diskon')->default(0);
+            $table->integer('jumlah_uang')->default(0);
+            $table->string('tipe_pasien')->nullable();
             $table->string('cara_bayar')->nullable();
-            $table->integer('uang')->default(0);
+            $table->string('platform_pembayaran')->nullable();
             $table->integer('status')->default(1);
 
             $table->timestamps();
