@@ -601,7 +601,7 @@ class RekamController extends Controller
         $rekam = Rekam::query()->find($id);
         $rekam->petugas_id = auth()->user()->id;
         $rekam->platform_pembayaran = $request->exists('cara_bayar') ? $request->platform_pembayaran : null;
-        if ($rekam->jumlah_uang) $rekam->status = 5;
+        if ($rekam->jumlah_uang && $rekam->status < 5) $rekam->status = 5;
         foreach (self::rules()['update']['parent'] as $key => $value) {
             if ($request->exists($key)) {
                 $rekam->{$key} = $request->{$key};
@@ -622,28 +622,28 @@ class RekamController extends Controller
         try {
             DB::beginTransaction();
             if ($section == 'general') {
-                $rekam->status = 2;
+                if ($rekam->status < 2) $rekam->status = 2;
                 $model = RekamUmum::query()->findOrNew($request->filled('id') ? $request->id : '');
             }
             elseif ($section == 'radiograph') {
-                $rekam->status = 2;
+                if ($rekam->status < 2) $rekam->status = 2;
                 $model = RekamRadiologi::query()->findOrNew($request->filled('id') ? $request->id : '');
             }
             elseif ($section == 'odontogram') {
-                $rekam->status = 2;
+                if ($rekam->status < 2) $rekam->status = 2;
                 $model = RekamOdontogram::query()->findOrNew($request->filled('id') ? $request->id : '');
             }
             elseif ($section == 'diagnosis') {
-                $rekam->status = 2;
+                if ($rekam->status < 2) $rekam->status = 2;
                 $model = RekamDiagnosa::query()->findOrNew($request->filled('id') ? $request->id : '');
             }
             elseif ($section == 'tindakan') {
-                $rekam->status = 3;
+                if ($rekam->status < 3) $rekam->status = 3;
                 $model = RekamTindakan::query()->where('rekam_id', $rekam_id)->where('tindakan_id', $request->tindakan_id)->first();
                 if (!$model) $model = new RekamTindakan;
             }
             elseif ($section == 'resep') {
-                $rekam->status = 4;
+                if ($rekam->status < 4) $rekam->status = 4;
                 $model = RekamResep::query()->where('rekam_id', $rekam_id)->where('obat_id', $request->obat_id)->first();
                 if ($model) {
                     $model->quantity = $model->quantity + $request->quantity;
