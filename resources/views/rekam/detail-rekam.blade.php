@@ -501,26 +501,24 @@
                                     <div class="card-body">
                                         <form>
                                             @csrf
-                                            <input type="hidden" name="total_tagihan" id="totalTagihan"
-                                                   value="{{$total_tindakan + $total_resep}}">
                                             <h5 class="mb-2">Tagihan</h5>
                                             <h2 class="text-success mb-4">
+                                                <input type="hidden" class="form-control" id="tagihan"
+                                                       value="{{$total_tindakan + $total_resep}}">
                                                 Rp {{ number_format($total_tindakan + $total_resep, 0, '', '.') }}
                                             </h2>
-                                            <div class="form-group">
+                                            <div class="form-group mb-4">
                                                 <label>Diskon</label>
                                                 <input type="number" class="form-control formatNumber" name="diskon">
                                             </div>
                                             <h5 class="mb-2">Total Tagihan</h5>
-                                            <h2 class="text-success mb-4">
-                                                Rp <span id="totalTagihan">{{ number_format($total_tindakan + $total_resep, 0, '', '.') }}</span>
-                                            </h2>
+                                            <h2 class="text-success mb-4" id="totalTagihan">Rp 0</h2>
                                             <h5 class="mb-2">Metode Pembayaran</h5>
                                             <div class="d-flex mb-4">
                                                 <button class="btn btn-outline-success btn-rounded btn-sm mr-3 active">Tunai</button>
                                                 <button class="btn btn-outline-success btn-rounded btn-sm">Non Tunai</button>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group mb-4">
                                                 <label>Jumlah Uang</label>
                                                 <input type="number" class="form-control formatNumber" name="jumlah_uang">
                                             </div>
@@ -566,6 +564,9 @@
 
         let jumlahUang = 0
         let discount = 0
+        let tagihan = Number($('#tagihan').val())
+        let totalTagihan = $('#totalTagihan')
+        totalTagihan.text(`Rp ${tagihan.toLocaleString('id')}`)
         $("input.formatNumber").each((i,ele)=>{
             let clone=$(ele).clone(false)
             clone.attr("type","text")
@@ -578,18 +579,20 @@
                 ele1.show()
                 clone.hide()
             })
-            let totalTagihan = $('#totalTagihan').val()
             let totalKembalian = $('#totalKembalian')
             setInterval(()=>{
                 let newv=Number(ele1.val()).toLocaleString("id")
                 if(clone.val()!=newv){
                     clone.val(newv)
                 }
-                if (ele1.attr('name') === 'diskon') discount = Number(ele1.val())
+                if (ele1.attr('name') === 'diskon') {
+                    discount = Number(ele1.val())
+                    totalTagihan.text(`Rp ${(tagihan-discount).toLocaleString('id')}`)
+                }
                 if (ele1.attr('name') === 'jumlah_uang') jumlahUang = Number(ele1.val())
                 console.log(ele1.attr('name'), discount, jumlahUang)
-                if (Number(ele1.val()) > Number(totalTagihan)) {
-                    totalKembalian.val((Number(ele1.val()) - Number(totalTagihan)).toLocaleString("id"))
+                if (Number(ele1.val()) > tagihan) {
+                    totalKembalian.val((Number(ele1.val()) - tagihan).toLocaleString("id"))
                 } else
                     totalKembalian.val('')
             },2000)
