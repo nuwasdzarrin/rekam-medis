@@ -22314,7 +22314,7 @@ svg text {
 .custom-file-label {
   height: 40px;
   padding: 0.5rem 0.75rem;
-  border-radius: 0; }
+  border-radius: 7px; }
 
 .input-group-prepend .btn,
 .input-group-append .btn {
@@ -22349,7 +22349,7 @@ svg text {
 
 .custom-file-label {
   background: #fff;
-  border-color: #f0f1f5; }
+  border-color: #dbdbdb; }
   [data-theme-version="dark"] .custom-file-label {
     background: #181f39;
     border-color: #333a54; }

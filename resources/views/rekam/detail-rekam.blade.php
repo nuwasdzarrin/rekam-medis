@@ -151,45 +151,149 @@
                     </ul>
                 </div>
                 <div class="py-4">
-                    @if(in_array(request()->section, ['general', 'radiograph', 'odontogram', 'diagnosis']))
-                    <form method="post" action="{{$update_url}}">
-                        @csrf
-                        <input type="hidden" name="id" value="{{$data_section ? $data_section['id'] : ''}}">
-                        @foreach($fields as $field)
-                            @if($field['field'] == 'subtitle')
+                    @if(in_array(request()->section, ['general', 'radiograph', 'diagnosis']))
+                        <form method="post" action="{{$update_url}}">
+                            @csrf
+                            <input type="hidden" name="id" value="{{$data_section ? $data_section['id'] : ''}}">
+                            @foreach($fields as $field)
+                                @if($field['field'] == 'subtitle')
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            <hr />
+                                            @if($field['label'])
+                                                <h6>{{$field['label']}}</h6>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
                                 <div class="form-group row">
-                                    <div class="col-12">
-                                        <hr />
-                                        @if($field['label'])
-                                            <h6>{{$field['label']}}</h6>
+                                    <label class="col-lg-2 col-form-label">
+                                        {{$field['label']}}
+                                        @if(isset($field['required']) && $field['required'])
+                                            <span class='text-danger'>*</span>
                                         @endif
+                                    </label>
+                                    <div class="col-lg-10">
+                                        <input
+                                            type="{{$field['type']}}" name="{{$field['name']}}"
+                                           {{isset($field['required']) && $field['required'] ? 'required' : ''}}
+                                           value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
+                                            class="form-control">
+                                        @error($field['name'])
+                                        <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                        @enderror
                                     </div>
                                 </div>
-                            @else
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-form-label">
-                                    {{$field['label']}}
-                                    @if(isset($field['required']) && $field['required'])
-                                        <span class='text-danger'>*</span>
-                                    @endif
-                                </label>
-                                <div class="col-lg-10">
-                                    <input
-                                        type="{{$field['type']}}" name="{{$field['name']}}"
-                                       {{isset($field['required']) && $field['required'] ? 'required' : ''}}
-                                       value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
-                                        class="form-control">
-                                    @error($field['name'])
-                                    <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
-                                    @enderror
-                                </div>
+                                @endif
+                            @endforeach
+                            <div class="form-group mt-5">
+                                <button class="btn btn-primary btn-sm btn-block">Submit</button>
                             </div>
+                        </form>
+                    @elseif(request()->section == 'odontogram')
+                        <form method="post" action="{{$update_url}}" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="id" value="{{$data_section ? $data_section['id'] : ''}}">
+                            @if($fields['upper'])
+                                <div class="row">
+                                    @foreach($fields['upper'] as $columns)
+                                        <div class="col-md-6 mb-3">
+                                            @foreach($columns as $key => $field)
+                                                @if($field['field'] == 'subtitle')
+                                                    <div class="form-group row">
+                                                        <div class="col-12">
+                                                            <hr />
+                                                            @if($field['label'])
+                                                                <h6>{{$field['label']}}</h6>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-2 col-form-label">
+                                                            {{$field['label']}}
+                                                            @if(isset($field['required']) && $field['required'])
+                                                                <span class='text-danger'>*</span>
+                                                            @endif
+                                                        </label>
+                                                        <div class="col-lg-10">
+                                                            <input
+                                                                type="{{$field['type']}}" name="{{$field['name']}}"
+                                                                {{isset($field['required']) && $field['required'] ? 'required' : ''}}
+                                                                value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
+                                                                class="form-control">
+                                                            @error($field['name'])
+                                                            <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
                             @endif
-                        @endforeach
-                        <div class="form-group mt-5">
-                            <button class="btn btn-primary btn-sm btn-block">Submit</button>
-                        </div>
-                    </form>
+                            <img src="{{asset('images/odontogram/master_odontogram.jpeg')}}" alt="odontogram" class="img-fluid" />
+                            @if($fields['lower'])
+                                <div class="row">
+                                    @foreach($fields['lower'] as $columns)
+                                        <div class="col-md-6 mb-3">
+                                            @foreach($columns as $key => $field)
+                                                @if($field['field'] == 'subtitle')
+                                                    <div class="form-group row">
+                                                        <div class="col-12">
+                                                            <hr />
+                                                            @if($field['label'])
+                                                                <h6>{{$field['label']}}</h6>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-2 col-form-label">
+                                                            {{$field['label']}}
+                                                            @if(isset($field['required']) && $field['required'])
+                                                                <span class='text-danger'>*</span>
+                                                            @endif
+                                                        </label>
+                                                        <div class="col-lg-10">
+                                                            <input
+                                                                type="{{$field['type']}}" name="{{$field['name']}}"
+                                                                {{isset($field['required']) && $field['required'] ? 'required' : ''}}
+                                                                value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
+                                                                class="form-control">
+                                                            @error($field['name'])
+                                                            <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                            <hr />
+                            <div class="form-group">
+                                <label>File tambahan</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="additional_file" accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                                @error('additional_file')
+                                <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                @enderror
+                                @if($data_section['additional_file'])
+                                    <div class="text-right mt-1">
+                                        <a href="{{asset('app/public/'.$data_section['additional_file'])}}" target="_blank"
+                                           class="text-primary">Show</a>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group mt-5">
+                                <button class="btn btn-primary btn-sm btn-block">Submit</button>
+                            </div>
+                        </form>
                     @elseif(request()->section == 'tindakan')
                         <div class="row">
                             <div class="col-lg-4 mb-4">
