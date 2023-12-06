@@ -25,8 +25,6 @@
                 <div class="media mb-4 align-items-center">
                     <div class="media-body">
                         <input type="hidden" id="pasien_id" value="{{$pasien->id}}">
-                        <input type="hidden" id="rekam_id" value="{{$rekamLatest ? $rekamLatest->id : '' }}">
-
                         <h3 class="fs-18 font-w600 mb-1"><a href="javascript:void(0)"
                              class="text-black">{{$pasien->nama}}</a></h3>
                         <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.", ".$pasien->tgl_lahir}}</h4>
@@ -57,9 +55,7 @@
             <div class="card-header border-0 pb-0">
                 <h4 class="fs-20 text-black mb-0">Info Pasien</h4>
                 <div class="dropdown">
-                     @if ($rekamLatest)
-                        {!! $rekamLatest->status_display() !!}
-                    @endif
+                    {!! $rekam->status_display() !!}
                     @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
                     <a href="{{Route('pasien.edit',$pasien->id)}}" style="width: 120px"
                         class="btn-rounded btn-info btn-xs "><i class="fa fa-pencil"></i> Edit Pasien</a>
@@ -90,25 +86,8 @@
                                 Pembayaran
                             </span>
                             <div class="col-8 p-0">
-                               @if ($rekamLatest)
-                                <p>{{$rekamLatest->cara_bayar}}</p>
-                                <p>{{$pasien->no_bpjs}}</p>
-                               @else
                                 <p>{{$pasien->cara_bayar}}</p>
                                 <p>{{$pasien->no_bpjs}}</p>
-                               @endif
-
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3 align-items-center">
-                            <span class="fs-12 col-6 p-0 text-black">
-                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="19" height="19" fill="#5F74BF"/>
-                                </svg>
-                                Alergi
-                            </span>
-                            <div class="col-8 p-0">
-                               <p>{{$pasien->alergi}}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -120,10 +99,8 @@
                             </span>
                             <div class="col-8 p-0">
                               @if ($pasien->general_uncent != null)
-                                <a style="width: 120px"
-                                class="btn-rounded btn-info btn-xs " href="{{$pasien->getGeneralUncent()}}"
-                                target="__BLANK" view>Lihat Data</a>
-
+                                <a style="width: 120px" class="btn-rounded btn-info btn-xs "
+                                   href="{{$pasien->getGeneralUncent()}}" target="_blank">Lihat Data</a>
                               @else
                                 Belum Tersedia
                               @endif
@@ -139,41 +116,6 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
-            <div class="card-header border-0 pb-0">
-                <h4 class="fs-20 text-black mb-0">Rekam Medis Pasien</h4>
-                @if ($rekamLatest)
-                    @if ($rekamLatest->status==1)
-                        @if (auth()->user()->role_display()=="Admin" ||
-                             auth()->user()->role_display()=="Pendaftaran")
-                            <a href="{{Route('rekam.status',[$rekamLatest->id,2])}}" class="btn btn-primary btn-sm">
-                                Lanjutkan Ke Dokter
-                                <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                            </a>
-                        @endif
-                    @elseif ($rekamLatest->status==2)
-                       @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Dokter")
-                            <a href="{{Route('rekam.status',[$rekamLatest->id,3])}}" class="btn btn-primary btn-sm">
-                                Selesaikan Pemeriksaan & Perawatan
-                                <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                            </a>
-                       @endif
-                    @elseif ($rekamLatest->status==4)
-                       @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
-                            <a href="{{Route('rekam.status',[$rekamLatest->id,5])}}" class="btn btn-primary btn-sm">
-                                Selesaikan Pembayaran & Rekam Medis ini
-                                <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                            </a>
-                       @endif
-                    @elseif ($rekamLatest->status==3)
-                       @if (auth()->user()->role_display()=="Admin")
-                            <a href="{{Route('rekam.status',[$rekamLatest->id,5])}}" class="btn btn-primary btn-sm">
-                                Selesaikan Rekam Medis Ini
-                                <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                            </a>
-                       @endif
-                    @endif
-                @endif
-            </div>
             <div class="card-body">
                 @if(request()->filled('section'))
                 <div class="py-3 w-100 overflow-auto">
@@ -499,8 +441,10 @@
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Pembayaran</b></div>
                                     <div class="card-body">
-                                        <form>
+                                        <form method="post" action="{{$update_url}}">
                                             @csrf
+                                            <input type="hidden" name="biaya_tindakan" value="{{$total_tindakan}}">
+                                            <input type="hidden" name="biaya_resep" value="{{$total_resep}}">
                                             <h5 class="mb-2">Tagihan</h5>
                                             <h2 class="text-success mb-4">
                                                 <input type="hidden" class="form-control" id="tagihan"
@@ -509,24 +453,33 @@
                                             </h2>
                                             <div class="form-group mb-4">
                                                 <label>Diskon</label>
-                                                <input type="number" class="form-control formatNumber" name="diskon">
+                                                <input type="number" class="form-control formatNumber" id="totalDiscount" name="diskon" value="{{$rekam->diskon}}">
                                             </div>
                                             <h5 class="mb-2">Total Tagihan</h5>
                                             <h2 class="text-success mb-4" id="totalTagihan">Rp 0</h2>
                                             <h5 class="mb-2">Metode Pembayaran</h5>
                                             <div class="d-flex mb-4">
-                                                <button class="btn btn-outline-success btn-rounded btn-sm mr-3 active">Tunai</button>
-                                                <button class="btn btn-outline-success btn-rounded btn-sm">Non Tunai</button>
+                                                <input type="hidden" name="cara_bayar" value="{{$rekam->cara_bayar == 'non_tunai' ? 'non_tunai' : 'tunai'}}" id="caraBayar">
+                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-3 {{$rekam->cara_bayar == 'tunai' ? 'active' : ''}}" id="btnTunai">Tunai</button>
+                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm {{$rekam->cara_bayar == 'non_tunai' ? 'active' : ''}}" id="btnNonTunai">Non Tunai</button>
                                             </div>
-                                            <div class="form-group mb-4">
-                                                <label>Jumlah Uang</label>
-                                                <input type="number" class="form-control formatNumber" name="jumlah_uang">
+                                            <div class="form-group mb-4" id="componentNonTunai" style="{{$rekam->cara_bayar == 'tunai' ? 'display: none' : ''}}">
+                                                <label>Platform Pembayaran</label>
+                                                <input type="text" class="form-control" id="platformPembayaran"
+                                                       name="platform_pembayaran" placeholder="Qris"
+                                                       value="{{$rekam->platform_pembayaran}}">
                                             </div>
-                                            <div class="form-group mb-5">
-                                                <label>Kembalian</label>
-                                                <input type="text" class="form-control" id="totalKembalian" disabled>
+                                            <div id="componentTunai" style="{{$rekam->cara_bayar == 'non_tunai' ? 'display: none' : ''}}">
+                                                <div class="form-group mb-4">
+                                                    <label>Jumlah Uang</label>
+                                                    <input type="number" class="form-control formatNumber" id="jumlahUang" name="jumlah_uang" value="{{$rekam->jumlah_uang}}">
+                                                </div>
+                                                <div class="form-group mb-5">
+                                                    <label>Kembalian</label>
+                                                    <input type="text" class="form-control" id="totalKembalian" disabled>
+                                                </div>
                                             </div>
-                                            <button class="btn btn-success btn-rounded btn-block">Konfirmasi Pembayaran</button>
+                                            <button class="btn btn-success btn-rounded btn-block" id="btnPaymentConfirm">Konfirmasi Pembayaran</button>
                                         </form>
                                     </div>
                                 </div>
@@ -562,7 +515,22 @@
             if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
         })
 
-        let jumlahUang = 0
+        $(document).on("click", `#btnTunai`, function () {
+            $(`#btnTunai`).toggleClass('active')
+            $(`#btnNonTunai`).toggleClass('active')
+            $(`#componentNonTunai`).hide()
+            $(`#componentTunai`).show()
+            $(`#caraBayar`).val('tunai')
+        })
+        $(document).on("click", `#btnNonTunai`, function () {
+            $(`#btnTunai`).toggleClass('active')
+            $(`#btnNonTunai`).toggleClass('active')
+            $(`#componentNonTunai`).show()
+            $(`#componentTunai`).hide()
+            $(`#jumlahUang`).val(Number($(`#tagihan`).val()) - Number($(`#totalDiscount`).val()))
+            $(`#caraBayar`).val('non_tunai')
+        })
+
         let discount = 0
         let tagihan = Number($('#tagihan').val())
         let totalTagihan = $('#totalTagihan')
@@ -580,6 +548,7 @@
                 clone.hide()
             })
             let totalKembalian = $('#totalKembalian')
+            let btnPaymentConfirm = $('#btnPaymentConfirm')
             setInterval(()=>{
                 let newv=Number(ele1.val()).toLocaleString("id")
                 if(clone.val()!=newv){
@@ -589,13 +558,17 @@
                     discount = Number(ele1.val())
                     totalTagihan.text(`Rp ${(tagihan-discount).toLocaleString('id')}`)
                 }
-                if (ele1.attr('name') === 'jumlah_uang') jumlahUang = Number(ele1.val())
-                console.log(ele1.attr('name'), discount, jumlahUang)
-                if (Number(ele1.val()) > tagihan) {
-                    totalKembalian.val((Number(ele1.val()) - tagihan).toLocaleString("id"))
-                } else
-                    totalKembalian.val('')
-            },2000)
+                if (ele1.attr('name') === 'jumlah_uang') {
+                    let jumlahUang = Number(ele1.val())
+                    if (jumlahUang >= (tagihan - discount)) {
+                        totalKembalian.val((jumlahUang - (tagihan - discount)).toLocaleString("id"))
+                        btnPaymentConfirm.attr('disabled', false)
+                    } else {
+                        totalKembalian.val('0')
+                        btnPaymentConfirm.attr('disabled', true)
+                    }
+                }
+            },1500)
             $(ele).mouseleave(()=>{
                 $(clone).show()
                 $(ele1).hide()

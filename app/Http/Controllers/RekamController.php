@@ -305,7 +305,6 @@ class RekamController extends Controller
                     'jumlah_uang' => 'numeric|nullable',
                     'tipe_pasien' => 'string|max:255|nullable',
                     'cara_bayar' => 'string|max:255|nullable',
-                    'platform_pembayaran' => 'string|max:255|nullable',
                     'status' => 'numeric|nullable',
                 ],
                 'general' => [
@@ -470,10 +469,7 @@ class RekamController extends Controller
     public function detail(Request $request, $id)
     {
         $rekam = Rekam::query()->find($id);
-        $pasien = Pasien::find($rekam->pasien_id);
-
-        $rekamLatest = Rekam::latest()->where('status','!=',5)->where('pasien_id',$rekam->pasien_id)->first();
-        if($rekamLatest) auth()->user()->notifications->where('data.no_rekam',$rekamLatest->no_rekam)->markAsRead();
+        $pasien = Pasien::query()->find($rekam->pasien_id);
 
         $fields = [];
         $data_section = [];
@@ -553,7 +549,6 @@ class RekamController extends Controller
         return view('rekam.detail-rekam', [
             'rekam' => $rekam,
             'pasien' => $pasien,
-            'rekamLatest' => $rekamLatest,
             'fields' => $fields,
             'data_section' => $data_section,
             'data_options' => $data_options,
@@ -577,12 +572,6 @@ class RekamController extends Controller
                                 ->withErrors(['pasien_id' => 'Pasien ini masih belum selesai periksa,
                                  harap selesaikan pemeriksaan sebelumnya']);
         }
-        // $dokter = Dokter::where('poli',$request->poli)->first();
-        // if($dokter){
-        //     $request->merge([
-        //         'dokter_id' => $dokter->id
-        //     ]);
-        // }
         $request->merge([
             'no_rekam' => "REG#".date('Ymd').$request->pasien_id,
             'petugas_id' => auth()->user()->id
@@ -597,6 +586,9 @@ class RekamController extends Controller
     function update(Request $request,$id){
         $request->validate(self::rules()['update']['parent']);
         $rekam = Rekam::query()->find($id);
+        $rekam->petugas_id = auth()->user()->id;
+        $rekam->platform_pembayaran = $request->exists('cara_bayar') ? $request->platform_pembayaran : null;
+        if ($rekam->jumlah_uang) $rekam->status = 5;
         foreach (self::rules()['update']['parent'] as $key => $value) {
             if ($request->exists($key)) {
                 $rekam->{$key} = $request->{$key};
@@ -616,19 +608,29 @@ class RekamController extends Controller
             return back()->withInput()->with('message', "Rekam not found")->with('status_type', 'danger');
         try {
             DB::beginTransaction();
-            if ($section == 'general')
+            if ($section == 'general') {
+                $rekam->status = 2;
                 $model = RekamUmum::query()->findOrNew($request->filled('id') ? $request->id : '');
-            elseif ($section == 'radiograph')
+            }
+            elseif ($section == 'radiograph') {
+                $rekam->status = 2;
                 $model = RekamRadiologi::query()->findOrNew($request->filled('id') ? $request->id : '');
-            elseif ($section == 'odontogram')
+            }
+            elseif ($section == 'odontogram') {
+                $rekam->status = 2;
                 $model = RekamOdontogram::query()->findOrNew($request->filled('id') ? $request->id : '');
-            elseif ($section == 'diagnosis')
+            }
+            elseif ($section == 'diagnosis') {
+                $rekam->status = 2;
                 $model = RekamDiagnosa::query()->findOrNew($request->filled('id') ? $request->id : '');
+            }
             elseif ($section == 'tindakan') {
+                $rekam->status = 3;
                 $model = RekamTindakan::query()->where('rekam_id', $rekam_id)->where('tindakan_id', $request->tindakan_id)->first();
                 if (!$model) $model = new RekamTindakan;
             }
             elseif ($section == 'resep') {
+                $rekam->status = 4;
                 $model = RekamResep::query()->where('rekam_id', $rekam_id)->where('obat_id', $request->obat_id)->first();
                 if ($model) {
                     $model->quantity = $model->quantity + $request->quantity;
@@ -651,6 +653,7 @@ class RekamController extends Controller
                 }
             }
             $model->save();
+            $rekam->save();
             if ($section == 'resep') {
                 $obat = Obat::query()->find($request->obat_id);
                 $obat->stok = $obat->stok - $request->quantity;

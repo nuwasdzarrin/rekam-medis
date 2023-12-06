@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Rekam extends Model
 {
     protected $table = "rekam";
-    protected $fillable = ["tgl_rekam","pasien_id","keluhan","poli_id","dokter_id","pemeriksaan",
-    "no_rekam","tindakan","status","petugas_id","biaya_pemeriksaan","biaya_tindakan",
-    "biaya_obat","total_biaya","cara_bayar","resep_obat","pemeriksaan_file","tindakan_file"];
+    protected $fillable = ["no_rekam","pasien_id","dokter_id","petugas_id","poli_id","tgl_rekam","biaya_tindakan",
+        "biaya_resep","diskon","jumlah_uang","tipe_pasien","cara_bayar","platform_pembayaran","status"];
 
     function getFilePemeriksaan(){
         return $this->pemeriksaan_file != null ? asset('images/pemeriksaan/'.$this->pemeriksaan_file) : null;
