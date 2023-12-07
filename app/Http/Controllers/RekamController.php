@@ -600,7 +600,8 @@ class RekamController extends Controller
         $request->validate(self::rules()['update']['parent']);
         $rekam = Rekam::query()->find($id);
         $rekam->petugas_id = auth()->user()->id;
-        $rekam->platform_pembayaran = $request->exists('cara_bayar') ? $request->platform_pembayaran : null;
+        $rekam->platform_pembayaran = $request->exists('cara_bayar') && ($request->cara_bayar == 'non_tunai') ?
+            $request->platform_pembayaran : null;
         if ($rekam->jumlah_uang && $rekam->status < 5) $rekam->status = 5;
         foreach (self::rules()['update']['parent'] as $key => $value) {
             if ($request->exists($key)) {

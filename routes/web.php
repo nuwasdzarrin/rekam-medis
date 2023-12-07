@@ -16,6 +16,7 @@ use App\Http\Controllers\RekamController;
 use App\Http\Controllers\RekamGigiController;
 use App\Http\Controllers\RekamPemeriksaanController;
 use App\Http\Controllers\TindakanController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', [AuthController::class, 'page_login'])->name('login');
 Route::post('/login', [AuthController::class, 'auth'])->name('login.auth');
@@ -124,9 +125,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/obat/pengeluaran/store', [PengeluaranObatController::class, 'store'])->name('obat.pengeluaran.store');
     Route::get('/obat/riwayat', [PengeluaranObatController::class, 'riwayat'])->name('obat.riwayat');
 
-
     Route::get('/rekam/file/{id}/{type}', [RekamPemeriksaanController::class, 'file'])->name('pem.file');
 
+    Route::get('/report', [ReportController::class, 'index'])->name('report');
 });
 
 
