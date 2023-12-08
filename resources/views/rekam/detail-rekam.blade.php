@@ -564,14 +564,15 @@
                                             <h5 class="mb-2">Metode Pembayaran</h5>
                                             <div class="d-flex mb-4">
                                                 <input type="hidden" name="cara_bayar" value="{{$rekam->cara_bayar == 'non_tunai' ? 'non_tunai' : 'tunai'}}" id="caraBayar">
-                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-3 {{$rekam->cara_bayar == 'tunai' ? 'active' : ''}}" id="btnTunai">Tunai</button>
+                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-3 {{$rekam->cara_bayar == 'non_tunai' ? '' : 'active'}}" id="btnTunai">Tunai</button>
                                                 <button type="button" class="btn btn-outline-success btn-rounded btn-sm {{$rekam->cara_bayar == 'non_tunai' ? 'active' : ''}}" id="btnNonTunai">Non Tunai</button>
                                             </div>
-                                            <div class="form-group mb-4" id="componentNonTunai" style="{{$rekam->cara_bayar == 'tunai' ? 'display: none' : ''}}">
+                                            <div class="form-group mb-4" id="componentNonTunai" style="{{$rekam->cara_bayar == 'non_tunai' ? 'display: block' : 'display: none'}}">
                                                 <label>Platform Pembayaran</label>
                                                 <input type="text" class="form-control" id="platformPembayaran"
-                                                       name="platform_pembayaran" placeholder="Qris"
+                                                       name="platform_pembayaran"
                                                        value="{{$rekam->platform_pembayaran}}">
+                                                <span class="text-secondary" style="font-size: 11px;">Contoh: QRIS, Dana, TF BRI</span>
                                             </div>
                                             <div id="componentTunai" style="{{$rekam->cara_bayar == 'non_tunai' ? 'display: none' : ''}}">
                                                 <div class="form-group mb-4">
@@ -595,7 +596,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 @endsection
 @section('script')

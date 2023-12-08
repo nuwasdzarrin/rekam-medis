@@ -9579,7 +9579,6 @@ a {
     -webkit-transform: scale(1);
     transform: scale(1); } }
 .footer {
-  padding-left: 21.563rem;
   background-color: #F9F9F9; }
   @media only screen and (max-width: 1400px) {
     .footer {

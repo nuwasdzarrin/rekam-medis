@@ -602,7 +602,7 @@ class RekamController extends Controller
         $rekam->petugas_id = auth()->user()->id;
         $rekam->platform_pembayaran = $request->exists('cara_bayar') && ($request->cara_bayar == 'non_tunai') ?
             $request->platform_pembayaran : null;
-        if ($rekam->jumlah_uang && $rekam->status < 5) $rekam->status = 5;
+        if ($request->jumlah_uang && $rekam->status < 5) $rekam->status = 5;
         foreach (self::rules()['update']['parent'] as $key => $value) {
             if ($request->exists($key)) {
                 $rekam->{$key} = $request->{$key};
@@ -640,8 +640,9 @@ class RekamController extends Controller
             }
             elseif ($section == 'tindakan') {
                 if ($rekam->status < 3) $rekam->status = 3;
-                $model = RekamTindakan::query()->where('rekam_id', $rekam_id)->where('tindakan_id', $request->tindakan_id)->first();
-                if (!$model) $model = new RekamTindakan;
+//                $model = RekamTindakan::query()->where('rekam_id', $rekam_id)->where('tindakan_id', $request->tindakan_id)->first();
+//                if (!$model) $model = new RekamTindakan;
+                $model = new RekamTindakan;
             }
             elseif ($section == 'resep') {
                 if ($rekam->status < 4) $rekam->status = 4;

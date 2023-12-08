@@ -6,12 +6,10 @@
                     <span class="nav-text">Dashboard</span>
                 </a>
             </li>
-            
-            
-            @if (auth()->user()->role_display()=='Admin' 
-            || auth()->user()->role_display()=='Pendaftaran'
-            )
-             <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+
+
+            @if (in_array(auth()->user()->role_display(), ['Admin','Pendaftaran']))
+             <li><a class="has-arrow ai-icon" href="javascript:void(0)" aria-expanded="false">
                     <i class="flaticon-381-television"></i>
                     <span class="nav-text">Pasien</span>
                 </a>
@@ -20,15 +18,18 @@
                     <li><a href="{{Route('pasien.add')}}">Pasien Baru</a></li>
                 </ul>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role_display(), ['Admin','Dokter']))
             <li><a href="{{Route('rekam')}}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-notepad"></i>
                     <span class="nav-text">Rekam Medis</span>
                 </a>
             </li>
-            @elseif (auth()->user()->role_display()=='Dokter')
-            <li><a href="{{Route('rekam',['tab'=>2])}}" class="ai-icon" aria-expanded="false">
-                    <i class="flaticon-381-notepad"></i>
-                    <span class="nav-text">Rekam Medis</span>
+            @endif
+            @if (in_array(auth()->user()->role_display(), ['Admin']))
+            <li><a href="{{Route('report')}}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-newspaper"></i>
+                    <span class="nav-text">Laporan</span>
                 </a>
             </li>
             @endif
@@ -44,7 +45,7 @@
 
                     </ul>
                 </li>
-              
+
             @endif
             {{-- @if (auth()->user()->role_display()=='Pendaftaran' || auth()->user()->role_display()=="Admin")
                 <li><a href="{{Route('pembayaran')}}" class="ai-icon" aria-expanded="false">
@@ -67,12 +68,6 @@
                 </ul>
                 </li>
             @endif
-           
-          
         </ul>
-        
-        <div class="copyright">
-            <p><strong>Klinik Medishina</strong> © 2023 All Rights Reserved</p>
-        </div>
     </div>
 </div>

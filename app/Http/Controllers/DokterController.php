@@ -23,7 +23,7 @@ class DokterController extends Controller
     {
         $this->validate($request,[
             'nama' => 'required',
-            'no_hp' => 'required',
+            'no_hp' => 'required|max:14',
             'poli' => 'required',
             'password' => 'required'
         ]);
