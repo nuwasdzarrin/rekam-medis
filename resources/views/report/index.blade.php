@@ -24,19 +24,19 @@
                             $default_to = request()->get('end_at') ?? \Carbon\Carbon::now()->lastOfMonth()->format('Y-m-d');
                             @endphp
                             <div class="d-none d-md-flex align-items-center justify-content-between">
-                                <input class="form-control" type="date" placeholder="start" name="start_at" value="{{$default_from}}">
+                                <input class="form-control timeBig" type="date" placeholder="start" name="start_at" value="{{$default_from}}">
                                 <div>&nbsp;-&nbsp;</div>
-                                <input class="form-control" type="date" placeholder="end" name="end_at" value="{{$default_to}}">
+                                <input class="form-control timeBig" type="date" placeholder="end" name="end_at" value="{{$default_to}}">
                             </div>
-{{--                            <div class="row d-md-none">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    <input class="form-control" type="date" placeholder="start" name="start_at" value="{{request()->get('start_at')}}">--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-2 text-center">&nbsp;-&nbsp;</div>--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    <input class="form-control" type="date" placeholder="end" name="end_at" value="{{request()->get('end_at')}}">--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            <div class="row d-md-none">
+                                <div class="col-md-5">
+                                    <input class="form-control timeSmall" type="date" placeholder="start" name="start_at" value="{{request()->get('start_at')}}">
+                                </div>
+                                <div class="col-md-2 text-center">&nbsp;-&nbsp;</div>
+                                <div class="col-md-5">
+                                    <input class="form-control timeSmall" type="date" placeholder="end" name="end_at" value="{{request()->get('end_at')}}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -143,4 +143,18 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        let width = window.innerWidth;
+        if(width < 750) {
+            $(".timeBig").each((i,element)=>{
+                $(element).attr('disabled', true)
+            })
+        } else {
+            $(".timeSmall").each((i,element)=>{
+                $(element).attr('disabled', true)
+            })
+        }
+    </script>
 @endsection
