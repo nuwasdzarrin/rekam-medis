@@ -3,7 +3,7 @@
 <div class="mr-auto">
     <h2 class="text-black font-w600">Petugas</h2>
 </div>
-    
+
 
 <!-- Add -->
 <div class="modal fade" id="addOrderModal">
@@ -17,7 +17,7 @@
             <div class="modal-body">
                 <form action="{{Route('petugas.store')}}" method="POST">
                     {{ csrf_field() }}
-                   
+
                     <div class="form-group">
                         <label class="text-black font-w500">Nama*</label>
                         <input type="text" name="name" required class="form-control">
@@ -26,7 +26,7 @@
                         style="display: block;">{{$message}}</div>
                         @enderror
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="text-black font-w500">No HP (Login)*</label>
                         <input type="text" name="phone" required class="form-control">
@@ -49,15 +49,15 @@
                         <select name="role" class="form-control">
                             <option value="1">Admin</option>
                             <option value="2">Pendaftaran</option>
-                            <option value="4">Apotek</option>
+{{--                            <option value="4">Apotek</option>--}}
                         </select>
                         @error('role')
                         <div class="invalid-feedback animated fadeInUp"
                         style="display: block;">{{$message}}</div>
                         @enderror
                     </div>
-                    
-                    
+
+
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">BUAT</button>
                     </div>
@@ -93,7 +93,7 @@
                     <table  class="table table-responsive-md">
                         <thead>
                             <tr>
-                                
+
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>No. HP</th>
@@ -114,7 +114,7 @@
                                     <td>{{$row->status_display()}}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#key{{$row->id}}" 
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#key{{$row->id}}"
                                                 class="btn btn-warning shadow btn-xs sharp mr-1"><i class="fa fa-key"></i></a>
 
                                             <a href="javascript:void(0)" data-toggle="modal" data-target="#edit{{$row->id}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-pencil"></i></a>
@@ -132,7 +132,7 @@
                                                         <div class="modal-body">
                                                             <form action="{{Route('gantipassword',$row->id)}}" method="POST">
                                                                 {{ csrf_field() }}
-                                                               
+
                                                                 <div class="form-group">
                                                                     <label class="text-black font-w500">Password Baru*</label>
                                                                     <input type="password" name="password"
@@ -152,7 +152,7 @@
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
                                                                 </div>
-                                                                
+
                                                                 <div class="form-group">
                                                                     <button type="submit" class="btn btn-primary">GANTI PASSWORD</button>
                                                                 </div>
@@ -173,7 +173,7 @@
                                                         <div class="modal-body">
                                                             <form action="{{Route('petugas.update',$row->id)}}" method="POST">
                                                                 {{ csrf_field() }}
-                                                               
+
                                                                 <div class="form-group">
                                                                     <label class="text-black font-w500">Nama*</label>
                                                                     <input type="text" name="name" value="{{$row->name}}" required class="form-control">
@@ -182,7 +182,7 @@
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
                                                                 </div>
-                                                                
+
                                                                 <div class="form-group">
                                                                     <label class="text-black font-w500">No HP (Login)*</label>
                                                                     <input type="text" name="phone" required class="form-control" value="{{$row->phone}}">
@@ -191,7 +191,7 @@
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
                                                                 </div>
-                                                               
+
                                                                 <div class="form-group">
                                                                     <label class="text-black font-w500">Role Akses*</label>
                                                                     <select name="role" class="form-control">
@@ -204,7 +204,7 @@
                                                                     style="display: block;">{{$message}}</div>
                                                                     @enderror
                                                                 </div>
-                                                                
+
                                                                 <div class="form-group">
                                                                     <button type="submit" class="btn btn-primary">UPDATE</button>
                                                                 </div>
@@ -218,7 +218,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+
                     </table>
                 </div>
             </div>
