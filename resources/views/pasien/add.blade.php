@@ -16,7 +16,24 @@
                 <div class="basic-form">
                     <form action="{{Route('pasien.store')}}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
-
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">No.RM*</label>
+                            <div class="col-sm-2">
+                                <select name="code" class="form-control" id="code">
+                                    <option value="D">Dewasa</option>
+                                    <option value="A">Anak</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       name="no_rm" required id="no_rm"
+                                       value="{{old('no_rm')}}">
+                                @error('no_rm')
+                                <div class="invalid-feedback animated fadeInUp"
+                                     style="display: block;">{{$message}}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Nama Pasien*</label>
                             <div class="col-sm-10">
@@ -27,26 +44,18 @@
                                 style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
-
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">No.RM*</label>
-                            <div class="col-sm-2">
-                                <select name="code" class="form-control" id="code">
-                                    <option value="D">Dewasa</option>
-                                    <option value="A">Anak</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control"
-                                 name="no_rm" required id="no_rm"
-                                 value="{{old('no_rm')}}">
-                                @error('no_rm')
+                            <label class="col-sm-2 col-form-label">No HP*</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="no_hp" required value="{{old('no_hp')}}">
+                                @error('no_hp')
                                 <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
+                                     style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
                         </div>
+                        <hr/>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Tempat Lahir</label>
                             <div class="col-sm-4">
@@ -86,7 +95,6 @@
                             </div>
                             <label class="col-sm-2 col-form-label">Status Menikah</label>
                             <div class="col-sm-4">
-
                                 <select name="status_menikah" class="form-control">
                                     <option value="">--Pilih--</option>
                                     <option value="Belum Menikah">Belum Menikah</option>
@@ -100,8 +108,7 @@
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="form-group row">
+                        <div class="form-group row align-items-center">
                             <label class="col-sm-2 col-form-label">Agama</label>
                             <div class="col-sm-2">
                                 <select name="agama" class="form-control">
@@ -115,7 +122,7 @@
                                 </select>
                                 @error('agama')
                                 <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
+                                     style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
                             <label class="col-sm-2 col-form-label">Pendidikan</label>
@@ -133,10 +140,9 @@
                                 </select>
                                 @error('pendidikan')
                                 <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
+                                     style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
-
                             <label class="col-sm-2 col-form-label">Pekerjaan</label>
                             <div class="col-sm-2">
                                 <select name="pekerjaan" class="form-control">
@@ -152,15 +158,14 @@
                                 </select>
                                 @error('pendidikan')
                                 <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
+                                     style="display: block;">{{$message}}</div>
                                 @enderror
                             </div>
                         </div>
-
+                        <hr/>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Alamat Lengkap</label>
                             <div class="col-sm-10">
-
                                 <textarea name="alamat_lengkap" class="form-control" rows="4">{{old('alamat_lengkap')}}</textarea>
                                 @error('alamat_lengkap')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -168,7 +173,6 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Kelurahan</label>
                             <div class="col-sm-4">
@@ -205,24 +209,15 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">No HP*</label>
-                            <div class="col-sm-4">
-                                <input type="number" class="form-control" name="no_hp" required value="{{old('no_hp')}}">
-                                @error('no_hp')
-                                <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
-                                @enderror
-                            </div>
-                            <label class="col-sm-3 col-form-label">Kewarganegaraan</label>
-                            <div class="col-sm-3">
-                                <div class="form-check">
+                            <label class="col-sm-2 col-form-label">Kewarganegaraan</label>
+                            <div class="col-sm-8 d-flex">
+                                <div class="form-check-inline mr-4">
                                     <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNI" checked>
                                     <label class="form-check-label">WNI</label>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check-inline mr-4">
                                     <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNA">
                                     <label class="form-check-label">WNA</label>
@@ -233,7 +228,7 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <hr/>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Tipe Pasien *</label>
                             <div class="col-sm-4">

@@ -19,13 +19,11 @@
                 </ul>
             </li>
             @endif
-            @if (in_array(auth()->user()->role_display(), ['Admin','Dokter']))
             <li><a href="{{Route('rekam')}}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-notepad"></i>
                     <span class="nav-text">Rekam Medis</span>
                 </a>
             </li>
-            @endif
             @if (in_array(auth()->user()->role_display(), ['Admin']))
             <li><a href="{{Route('report')}}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-newspaper"></i>

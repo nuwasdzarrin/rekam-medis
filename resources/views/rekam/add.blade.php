@@ -159,7 +159,7 @@
 
                         <hr>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">SIMPAN</button>
+                            <button type="submit" class="btn btn-primary btn-rounded">SIMPAN</button>
                         </div>
                     </form>
                 </div>

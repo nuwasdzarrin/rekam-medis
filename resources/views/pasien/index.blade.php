@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="form-group col-lg-6" style="float: left">
-                    <a href="{{Route('pasien.add')}}" class="btn btn-primary mr-3">+Pasien Baru</a>
+                    <a href="{{Route('pasien.add')}}" class="btn btn-primary btn-rounded btn-sm mr-3">+ Pasien Baru</a>
                 </div>
                 <div class="form-group col-lg-6" style="float: right">
                     <form method="get" action="{{ url()->current() }}">
@@ -35,7 +35,7 @@
 
                 </div>
 
-                <div class="table-responsive card-table"> 
+                <div class="table-responsive card-table">
                     <table class="table table-responsive-md">
                         <thead>
                             <tr>
@@ -46,41 +46,36 @@
                                 <th>Alamat</th>
                                 <th>JK</th>
                                 <th>No. HP</th>
-                                <th>Pengobatan</th>
+                                <th>Tipe Pasien</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                             @foreach ($datas as $key=>$row)
                                 <tr>
                                     <td>{{$datas->firstItem() + $key}}</td>
                                    <td><a href="{{Route('rekam.detail',$row->id)}}">{{$row->no_rm}}</a></td>
                                    <td>{{$row->nama}}</td>
-                                   <td>{{$row->tmp_lahir}},{{$row->tgl_lahir}}</td>
-                                   <td>{{$row->alamat_lengkap}}</td>
-                                   <td>{{$row->jk}}</td>
-                                   <td>{{$row->no_hp}}</td>
-                                   <td>{{$row->cara_bayar}}
-                                           <br>{{$row->no_bpjs}}
-                                   </td>
+                                   <td>{{$row->tmp_lahir}}{{$row->tmp_lahir ? ',' : ''}}{{$row->tgl_lahir ?? '-'}}</td>
+                                   <td>{{$row->alamat_lengkap ?? '-'}}</td>
+                                   <td>{{$row->jk ?? '-'}}</td>
+                                   <td>{{$row->no_hp ?? '-'}}</td>
+                                   <td>{{$row->cara_bayar}}<br>{{$row->no_bpjs}}</td>
+                                   <td>{!! $row->statusPasien() !!}</td>
                                    <td>
-                                      {!! $row->statusPasien() !!}
+                                        <a href="{{Route('rekam.detail',$row->id)}}" class="btn btn-primary shadow btn-xs sharp mr-1">
+                                           <i class="fa fa-eye"></i></a>
+                                        <a href="{{Route('pasien.edit',$row->id)}}" class="btn btn-info shadow btn-xs sharp mr-1">
+                                            <i class="fa fa-pencil"></i></a>
+                                        <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('pasien.delete',$row->id)}}"
+                                         r-name="{{$row->nama}}" r-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
                                    </td>
-                                   <td>                                           
-                                    <a href="{{Route('rekam.detail',$row->id)}}" class="btn btn-primary shadow btn-xs sharp mr-1">
-                                       <i class="fa fa-eye"></i></a>
-                                    <a href="{{Route('pasien.edit',$row->id)}}" class="btn btn-info shadow btn-xs sharp mr-1">
-                                        <i class="fa fa-pencil"></i></a>
-                                    <a href="#" class="btn btn-danger shadow btn-xs sharp delete" r-link="{{Route('pasien.delete',$row->id)}}"
-                                     r-name="{{$row->nama}}" r-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
-
-                               </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        
+
                     </table>
                     <div class="dataTables_info" id="example_info" role="status"
                     aria-live="polite">Showing {{$datas->firstItem()}} to {{$datas->perPage() * $datas->currentPage()}} of {{$datas->total()}} entries</div>

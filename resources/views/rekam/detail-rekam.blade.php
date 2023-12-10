@@ -1,7 +1,9 @@
 @extends('layout.apps')
 @section('content')
-
-{{-- DATA --}}
+@php
+$is_allow = true;
+if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
+@endphp
 <div class="row">
     @if(session()->has('message'))
         <div class="alert alert-{{session()->get('status_type')}} alert-dismissible fade show w-100" role="alert">
@@ -113,6 +115,7 @@
         </div>
     </div>
 </div>
+@if (in_array(auth()->user()->role_display(), ['Admin','Dokter']))
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -122,31 +125,45 @@
                     <ul class="nav nav-tabs" style="flex-wrap: unset">
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'general' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'general'])}}">Data Medis Umum</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'general'])}}">
+                                Data Medis Umum
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'radiograph' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'radiograph'])}}">EO, IO, Radiografi</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'radiograph'])}}">
+                                EO, IO, Radiografi
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'odontogram' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'odontogram'])}}">Odontogram</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'odontogram'])}}">
+                                Odontogram
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'diagnosis' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'diagnosis'])}}">Diagnosis & Terapi</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'diagnosis'])}}">
+                                Diagnosis & Terapi
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'tindakan' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'tindakan'])}}">Tindakan</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'tindakan'])}}">
+                                Tindakan
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'resep' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'resep'])}}">Resep Elektronik</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'resep'])}}">
+                                Resep Elektronik
+                            </a>
                         </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link {{request()->section == 'payment' ? 'active' : ''}}"
-                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'payment'])}}">Pembayaran</a>
+                               href="{{route(Route::currentRouteName(), ['id'=>request('id'), 'section'=>'payment'])}}">
+                                Pembayaran
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -233,7 +250,8 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <img src="{{asset('images/odontogram/master_odontogram.jpeg')}}" alt="odontogram" class="img-fluid" />
+                            <img src="{{asset('images/odontogram/master_odontogram.jpeg')}}" alt="odontogram"
+                                 class="img-fluid" />
                             @if($fields['lower'])
                                 <div class="row">
                                     @foreach($fields['lower'] as $columns)
@@ -263,7 +281,9 @@
                                                                 value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
                                                                 class="form-control">
                                                             @error($field['name'])
-                                                            <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                                            <div class="invalid-feedback animated fadeInUp d-block">
+                                                                {{$message}}
+                                                            </div>
                                                             @enderror
                                                         </div>
                                                     </div>
@@ -277,7 +297,8 @@
                             <div class="form-group">
                                 <label>File tambahan</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="additional_file" accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
+                                    <input type="file" class="custom-file-input" name="additional_file"
+                                           accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
                                     <label class="custom-file-label" for="customFile">Choose file</label>
                                 </div>
                                 @error('additional_file')
@@ -310,9 +331,11 @@
                                                         <input type="hidden" name="kode" value="{{$option->kode}}">
                                                         <input type="hidden" name="nama" value="{{$option->nama}}">
                                                         <input type="hidden" name="harga" value="{{$option->harga}}">
-                                                        <button type="submit" class="btn btn-success btn-rounded btn-sm">
-                                                            Pilih
-                                                        </button>
+                                                        @if($is_allow)
+                                                            <button type="submit" class="btn btn-success btn-rounded btn-sm">
+                                                                Pilih
+                                                            </button>
+                                                        @endif
                                                     </form>
                                                 </div>
                                                 <hr/>
@@ -332,28 +355,35 @@
                                                     <td><b>No</b></td>
                                                     <td><b>Name</b></td>
                                                     <td class="text-right"><b>Price</b></td>
-                                                    <td class="text-right"><b>Remove</b></td>
+                                                    @if($is_allow)
+                                                        <td class="text-right"><b>Remove</b></td>
+                                                    @endif
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($data_section as $key => $ds)
+                                                @foreach($data_section as $kay => $ds)
                                                     <tr>
-                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$kay+1}}</td>
                                                         <td>{{$ds->nama}}</td>
                                                         <td class="text-right">{{number_format($ds->harga, 0, '', '.')}}</td>
-                                                        <td class="text-right">
-                                                            <form method="post" action="{{route('rekam.destroy_tindakan', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'tindakan'])])}}">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{$ds->id}}">
-                                                                <button
-                                                                    class="btn btn-danger btn-rounded btn-sm"
-                                                                    title="Delete" type="submit" name="_method"
-                                                                    value="delete"
+                                                        @if($is_allow)
+                                                            <td class="text-right">
+                                                                <form
+                                                                    method="post"
+                                                                    action="{{route('rekam.destroy_tindakan', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'tindakan'])])}}"
                                                                 >
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </td>
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{$ds->id}}">
+                                                                    <button
+                                                                        class="btn btn-danger btn-rounded btn-sm"
+                                                                        title="Delete" type="submit" name="_method"
+                                                                        value="delete"
+                                                                    >
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -374,14 +404,16 @@
                                                 <tr>
                                                     <td><b>Nama</b></td>
                                                     <td><b>Stok</b></td>
-                                                    <td class="text-center"><b>Qty</b></td>
-                                                    <td>&nbsp;</td>
+                                                    @if($is_allow)
+                                                        <td class="text-center"><b>Qty</b></td>
+                                                        <td>&nbsp;</td>
+                                                    @endif
                                                 </tr>
                                                 @foreach($data_options as $option)
                                                 <tr>
                                                     <td style="min-width: 100px;">{{$option->nama . ' (' . $option->kd_obat . ')'}}</td>
                                                     <td>{{$option->stok}}</td>
-                                                    <td class="d-flex justify-content-center">
+                                                    <td class="{{$is_allow ? 'd-flex' : 'd-none'}} justify-content-center">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <button data-id="{{$option->id}}"
                                                                     class="btn btn-rounded btn-xs btn-outline-success minusQuantity">
@@ -399,7 +431,7 @@
                                                             </button>
                                                         </div>
                                                     </td>
-                                                    <td class="text-right">
+                                                    <td class="text-right {{$is_allow ? 'd-flex' : 'd-none'}}">
                                                         <form method="post" action="{{$update_url}}">
                                                             @csrf
                                                             <input type="hidden" name="obat_id" value="{{$option->id}}">
@@ -434,7 +466,9 @@
                                                     <td class="text-right"><b>Price (@)</b></td>
                                                     <td class="text-right"><b>Quantity</b></td>
                                                     <td class="text-right"><b>Sub Total</b></td>
-                                                    <td class="text-right"><b>Remove</b></td>
+                                                    @if($is_allow)
+                                                        <td class="text-right"><b>Remove</b></td>
+                                                    @endif
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -445,19 +479,23 @@
                                                         <td class="text-right">{{number_format($ds->harga_satuan, 0, '', '.')}}</td>
                                                         <td class="text-right">{{$ds->quantity}}</td>
                                                         <td class="text-right">{{number_format($ds->harga_satuan * $ds->quantity, 0, '', '.')}}</td>
-                                                        <td class="text-right">
-                                                            <form method="post" action="{{route('rekam.destroy_resep', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'resep'])])}}">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{$ds->id}}">
-                                                                <button
-                                                                    class="btn btn-danger btn-rounded btn-sm"
-                                                                    title="Delete" type="submit" name="_method"
-                                                                    value="delete"
+                                                        @if($is_allow)
+                                                            <td class="text-right">
+                                                                <form method="post"
+                                                                      action="{{route('rekam.destroy_resep', ['id' => $rekam->id,'redirect' => route('rekam.detail', ['id' => $rekam->id, 'section' => 'resep'])])}}"
                                                                 >
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </td>
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{$ds->id}}">
+                                                                    <button
+                                                                        class="btn btn-danger btn-rounded btn-sm"
+                                                                        title="Delete" type="submit" name="_method"
+                                                                        value="delete"
+                                                                    >
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -557,34 +595,51 @@
                                             </h2>
                                             <div class="form-group mb-4">
                                                 <label>Diskon</label>
-                                                <input type="number" class="form-control formatNumber" id="totalDiscount" name="diskon" value="{{$rekam->diskon}}">
+                                                <input type="number" class="form-control formatNumber" id="totalDiscount"
+                                                       name="diskon"
+                                                       value="{{$rekam->diskon}}" {{$is_allow ? '' : 'disabled'}}>
                                             </div>
                                             <h5 class="mb-2">Total Tagihan</h5>
                                             <h2 class="text-success mb-4" id="totalTagihan">Rp 0</h2>
                                             <h5 class="mb-2">Metode Pembayaran</h5>
                                             <div class="d-flex mb-4">
-                                                <input type="hidden" name="cara_bayar" value="{{$rekam->cara_bayar == 'non_tunai' ? 'non_tunai' : 'tunai'}}" id="caraBayar">
-                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-3 {{$rekam->cara_bayar == 'non_tunai' ? '' : 'active'}}" id="btnTunai">Tunai</button>
-                                                <button type="button" class="btn btn-outline-success btn-rounded btn-sm {{$rekam->cara_bayar == 'non_tunai' ? 'active' : ''}}" id="btnNonTunai">Non Tunai</button>
+                                                <input type="hidden" name="cara_bayar"
+                                                       value="{{$rekam->cara_bayar == 'non_tunai' ? 'non_tunai' : 'tunai'}}"
+                                                       id="caraBayar">
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-rounded btn-sm mr-3 {{$rekam->cara_bayar == 'non_tunai' ? '' : 'active'}}"
+                                                        id="btnTunai"
+                                                    {{$is_allow || $rekam->cara_bayar == 'tunai' ? '' : 'disabled'}}
+                                                >Tunai</button>
+                                                <button type="button"
+                                                        class="btn btn-outline-success btn-rounded btn-sm {{$rekam->cara_bayar == 'non_tunai' ? 'active' : ''}}"
+                                                        id="btnNonTunai"
+                                                    {{$is_allow || $rekam->cara_bayar == 'non_tunai'  ? '' : 'disabled'}}>
+                                                    Non Tunai
+                                                </button>
                                             </div>
                                             <div class="form-group mb-4" id="componentNonTunai" style="{{$rekam->cara_bayar == 'non_tunai' ? 'display: block' : 'display: none'}}">
                                                 <label>Platform Pembayaran</label>
                                                 <input type="text" class="form-control" id="platformPembayaran"
                                                        name="platform_pembayaran"
-                                                       value="{{$rekam->platform_pembayaran}}">
+                                                       value="{{$rekam->platform_pembayaran}}" {{$is_allow ? '' : 'disabled'}}>
                                                 <span class="text-secondary" style="font-size: 11px;">Contoh: QRIS, Dana, TF BRI</span>
                                             </div>
                                             <div id="componentTunai" style="{{$rekam->cara_bayar == 'non_tunai' ? 'display: none' : ''}}">
                                                 <div class="form-group mb-4">
                                                     <label>Jumlah Uang</label>
-                                                    <input type="number" class="form-control formatNumber" id="jumlahUang" name="jumlah_uang" value="{{$rekam->jumlah_uang}}">
+                                                    <input type="number" class="form-control formatNumber" id="jumlahUang"
+                                                           name="jumlah_uang"
+                                                           value="{{$rekam->jumlah_uang}}" {{$is_allow ? '' : 'disabled'}}>
                                                 </div>
                                                 <div class="form-group mb-5">
                                                     <label>Kembalian</label>
                                                     <input type="text" class="form-control" id="totalKembalian" disabled>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-success btn-rounded btn-block" id="btnPaymentConfirm">Konfirmasi Pembayaran</button>
+                                            <button
+                                                class="btn btn-success btn-rounded btn-block {{$is_allow ? '' : 'd-none'}}"
+                                                id="btnPaymentConfirm">Konfirmasi Pembayaran</button>
                                         </form>
                                     </div>
                                 </div>
@@ -597,8 +652,10 @@
         </div>
     </div>
 </div>
+@endif
 @endsection
 @section('script')
+    @if (in_array(auth()->user()->role_display(), ['Admin','Pendaftaran']))
     <script>
         $(document).on("click", ".plusQuantity", function () {
             let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
@@ -679,4 +736,5 @@
             })
         })
     </script>
+    @endif
 @endsection

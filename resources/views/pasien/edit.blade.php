@@ -18,8 +18,8 @@
                         {{ csrf_field() }}
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">No.RM*</label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" 
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control"
                                 name="no_rm"  readonly
                                 required value="{{old('no_rm') ? old('no_rm') : $data->no_rm}}">
                                 @error('no_rm')
@@ -31,7 +31,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Nama Pasien*</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="nama" required 
+                                <input type="text" class="form-control" name="nama" required
                                 value="{{old('nama') ? old('nama') : $data->nama}}">
                                 @error('nama')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -39,6 +39,17 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">No HP*</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="no_hp" required value="{{old('no_hp') ? old('no_hp') : $data->no_hp}}">
+                                @error('no_hp')
+                                <div class="invalid-feedback animated fadeInUp"
+                                     style="display: block;">{{$message}}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <hr/>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Tempat Lahir</label>
                             <div class="col-sm-4">
@@ -51,7 +62,7 @@
                             </div>
                             <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
                             <div class="col-sm-4">
-                                <input type="date" class="form-control" name="tgl_lahir" 
+                                <input type="date" class="form-control" name="tgl_lahir"
                                 value="{{old('tgl_lahir') ? old('tgl_lahir') : $data->tgl_lahir}}">
                                 @error('tgl_lahir')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -64,14 +75,14 @@
                             <label class="col-sm-2 col-form-label">Jenis Kelamin*</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="jk" class="form-check-input" 
+                                    <input type="radio" name="jk" class="form-check-input"
                                     value="Laki-Laki" {{$data->jk=="Laki-Laki" ? 'checked' : ''}}>
-                                    <label class="form-check-label">Laki-Laki</label>     
+                                    <label class="form-check-label">Laki-Laki</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="jk" class="form-check-input"
                                     value="Perempuan" {{$data->jk=="Perempuan" ? 'checked' : ''}}>
-                                    <label class="form-check-label">Perempuan</label>   
+                                    <label class="form-check-label">Perempuan</label>
                                 </div>
                                 @error('jk')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -80,7 +91,7 @@
                             </div>
                             <label class="col-sm-2 col-form-label">Status Menikah</label>
                             <div class="col-sm-4">
-                                
+
                                 <select name="status_menikah" class="form-control">
                                     <option value="">--Pilih--</option>
                                     <option value="Belum Menikah" {{$data->status_menikah =="Belum Menikah" ? 'selected' : ''}}>Belum Menikah</option>
@@ -143,7 +154,7 @@
                                     <option value="Guru/Pengajar" {{$data->pekerjaan =="Guru/Pengajar" ? 'selected' : ''}}>Guru/Pengajar</option>
                                     <option value="IRT" {{$data->pekerjaan =="IRT" ? 'selected' : ''}}>IRT</option>
                                     <option value="Lain-Lain" {{$data->pekerjaan =="Lain-Lain" ? 'selected' : ''}}>Lain-Lain</option>
-                                    
+
                                 </select>
                                 @error('pendidikan')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -151,11 +162,11 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <hr/>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Alamat Lengkap</label>
                             <div class="col-sm-10">
-                            
+
                                 <textarea name="alamat_lengkap" class="form-control" rows="4">
                                     {{old('alamat_lengkap') ? old('alamat_lengkap') : $data->alamat_lengkap}}</textarea>
                                 @error('alamat_lengkap')
@@ -164,7 +175,6 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Kelurahan</label>
                             <div class="col-sm-4">
@@ -201,47 +211,38 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">No HP*</label>
-                            <div class="col-sm-4">
-                                <input type="number" class="form-control" name="no_hp" required value="{{old('no_hp') ? old('no_hp') : $data->no_hp}}">
-                                @error('no_hp')
-                                <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
-                                @enderror
-                            </div>
-                            <label class="col-sm-3 col-form-label">Kewarganegaraan</label>
-                            <div class="col-sm-3">
-                                <div class="form-check">
-                                    <input type="radio" name="kewarganegaraan" class="form-check-input" 
+                            <label class="col-sm-2 col-form-label">Kewarganegaraan</label>
+                            <div class="col-sm-8 d-flex">
+                                <div class="form-check-inline mr-5">
+                                    <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNI" checked>
-                                    <label class="form-check-label">WNI</label>     
+                                    <label class="form-check-label">WNI</label>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check-inline">
                                     <input type="radio" name="kewarganegaraan" class="form-check-input"
                                     value="WNA">
-                                    <label class="form-check-label">WNA</label>   
+                                    <label class="form-check-label">WNA</label>
                                 </div>
-                                @error('kewarganegaraan')
-                                <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
-                                @enderror
                             </div>
+                            @error('kewarganegaraan')
+                            <div class="invalid-feedback animated fadeInUp"
+                                 style="display: block;">{{$message}}</div>
+                            @enderror
                         </div>
-
+                        <hr/>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Cara Bayar *</label>
+                            <label class="col-sm-2 col-form-label">Tipe Pasien*</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="cara_bayar" class="form-check-input" 
+                                    <input type="radio" name="cara_bayar" class="form-check-input"
                                     value="Umum/Mandiri" {{$data->cara_bayar=="Umum/Mandiri" ? 'checked' : ''}}>
-                                    <label class="form-check-label">Umum/Mandiri</label>     
+                                    <label class="form-check-label">Umum/Mandiri</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="cara_bayar" class="form-check-input"
                                     value="Jaminan Kesehatan" {{$data->cara_bayar=="Jaminan Kesehatan" ? 'checked' : ''}}>
-                                    <label class="form-check-label">Jaminan Kesehatan</label>   
+                                    <label class="form-check-label">Jaminan Kesehatan</label>
                                 </div>
                                 @error('cara_bayar')
                                 <div class="invalid-feedback animated fadeInUp"
@@ -266,7 +267,6 @@
                                 <div class="invalid-feedback animated fadeInUp"
                                 style="display: block;">{{$message}}</div>
                                 @enderror
-                               
                             </div>
                             @if ($data->general_uncent)
                                 <div>
@@ -279,8 +279,6 @@
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">UPDATE</button>
                         </div>
-
-                        
                     </form>
                 </div>
             </div>
