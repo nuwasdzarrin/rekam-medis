@@ -29,16 +29,20 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                         <input type="hidden" id="pasien_id" value="{{$pasien->id}}">
                         <h3 class="fs-18 font-w600 mb-1"><a href="javascript:void(0)"
                              class="text-black">{{$pasien->nama}}</a></h3>
-                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.", ".$pasien->tgl_lahir}}</h4>
+                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.($pasien->tmp_lahir ?', ': '').$pasien->tgl_lahir}}</h4>
                         @php
                             $b_day = \Carbon\Carbon::parse($pasien->tgl_lahir); // Tanggal Lahir
                             $now = \Carbon\Carbon::now();
                         @endphp
-                        <h4 class="fs-14 font-w600 mb-1">{{"Usia : ".$b_day->diffInYears($now) }}</h4>
+                        <h4 class="fs-14 font-w600 mb-1">{{"Usia : " . ($pasien->tgl_lahir ? $b_day->diffInYears($now) : '-') }}</h4>
 
-                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->jk.", ".$pasien->status_menikah}}</h4>
+                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->jk.($pasien->jk ? ', ' : '').$pasien->status_menikah}}</h4>
                         <span class="fs-14">{{$pasien->alamat_lengkap}}</span>
-                        <span class="fs-14">{{$pasien->keluhan.", ".$pasien->kecamatan.", ".$pasien->kabupaten.", ".$pasien->kewarganegaraan}}</span>
+                        <span class="fs-14">
+                            {{$pasien->keluhan . ($pasien->kelurahan ? ', ' : '') . $pasien->kecamatan
+                                . ($pasien->kecamatan ? ', ' : '') . $pasien->kabupaten
+                                . ($pasien->kabupaten ? ', ' : '') . $pasien->kewarganegaraan}}
+                        </span>
                         {{-- <textarea name="analysis" class="form-control" id="editor" cols="30" rows="10"></textarea> --}}
                         <br>
                         @if ($pasien->isRekamGigi())
@@ -66,9 +70,8 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
             </div>
             <div class="card-body">
                 <div class="row align-items-center">
-
                     <div class="col-xl-12 col-xxl-6 col-sm-6">
-                        <div class="d-flex mb-3 align-items-center">
+                        <div class="d-flex align-items-center mb-2">
                             <span class="fs-12 col-6 p-0 text-black">
                                 <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="19" height="19" fill="#5F74BF"/>
@@ -76,26 +79,25 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 No HP
                             </span>
                             <div class="col-8 p-0">
-                               <p>{{$pasien->no_hp}}</p>
+                               <p>{{$pasien->no_hp ?? '-'}}</p>
                             </div>
                         </div>
-
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center mb-2">
                             <span class="fs-12 col-6 p-0 text-black">
                                 <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="19" height="19" fill="#5FBF91"/>
                                 </svg>
-                                Pembayaran
+                                Tipe Pasien
                             </span>
                             <div class="col-8 p-0">
                                 <p>{{$pasien->cara_bayar}}</p>
                                 <p>{{$pasien->no_bpjs}}</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center mb-2">
                             <span class="fs-12 col-6 p-0 text-black">
                                 <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="19" height="19" fill="#5FBF91"/>
+                                    <rect width="19" height="19" fill="#5F74BF"/>
                                 </svg>
                                 File General
                             </span>
@@ -106,7 +108,17 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                               @else
                                 Belum Tersedia
                               @endif
-
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="fs-12 col-6 p-0 text-black">
+                                <svg class="mr-2" width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="19" height="19" fill="#5FBF91"/>
+                                </svg>
+                                Dokter
+                            </span>
+                            <div class="col-8 p-0">
+                                <p>{{$rekam->dokter->nama}}</p>
                             </div>
                         </div>
                     </div>
