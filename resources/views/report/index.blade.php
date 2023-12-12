@@ -118,6 +118,7 @@
                     <tr>
                         <td><b>No</b></td>
                         <td><b>Tanggal</b></td>
+                        <td><b>Pasien</b></td>
                         <td><b>Dokter</b></td>
                         <td><b>Biaya Tindakan</b></td>
                         <td><b>Biaya Resep</b></td>
@@ -129,6 +130,7 @@
                         <tr>
                             <td>{{$key+1}}</td>
                             <td>{{$rekam->created_at}}</td>
+                            <td>{{$rekam->pasien->nama}}</td>
                             <td>{{$rekam->dokter->nama}}</td>
                             <td>{{number_format($rekam->biaya_tindakan, 0, '', '.')}}</td>
                             <td>{{number_format($rekam->biaya_resep, 0, '', '.')}}</td>
