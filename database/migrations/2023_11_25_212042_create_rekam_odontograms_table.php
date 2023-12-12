@@ -50,6 +50,7 @@ class CreateRekamOdontogramsTable extends Migration
             $table->string('lr_47')->nullable();
             $table->string('lr_48')->nullable();
             $table->string('additional_file')->nullable();
+            $table->string('additional_file_1')->nullable();
             $table->timestamps();
         });
     }

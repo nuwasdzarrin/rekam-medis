@@ -8,7 +8,7 @@ class DashboardQuery
 {
     public function totalObat()
     {
-        return  Obat::count();
+        return Obat::count();
     }
     public function totalObatKeluar(){
         return PengeluaranObat::count();
@@ -28,14 +28,12 @@ class DashboardQuery
     {
         $user = auth()->user();
         $role = $user->role_display();
-        return Rekam::whereDate('tgl_rekam',date('Y-m-d'))
-                        ->when($role, function ($query) use ($role,$user){
-                            if($role=="Dokter"){
-                                $dokterId = Dokter::where('user_id',$user->id)->where('status',1)->first()->id;
-                                $query->where('dokter_id', '=', $dokterId);
-                            }
-                        })
-                        ->count();
+        return Rekam::whereDate('tgl_rekam',date('Y-m-d'))->when($role, function ($query) use ($role,$user){
+            if($role=="Dokter"){
+                $dokterId = Dokter::where('user_id',$user->id)->where('status',1)->first()->id;
+                $query->where('dokter_id', '=', $dokterId);
+            }
+        })->count();
     }
     public function pasienAntri(){
         $user = auth()->user();

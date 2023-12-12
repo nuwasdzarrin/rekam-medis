@@ -15,23 +15,19 @@ class PasienController extends Controller
 {
     public function json(Request $request)
     {
-        // return DataTables::of(Icd::query())->toJson();
         if ($request->ajax()) {
-            return DataTables::of(Pasien::query())
-                    ->addColumn('action',function($data){
-                        $button = '<a href="javascript:void(0)"
-                            data-id="'.$data->id.'"
-                            data-nama="'.$data->nama.'"
-                            data-no="'.$data->no_rm.'"
-                            data-metode="'.$data->cara_bayar.'"
-                            class="btn btn-primary shadow btn-xs pilihPasien">
-                            Pilih</a>';
-                        return $button;
-                    })->rawColumns(['action'])
-                    ->toJson();
+            return DataTables::of(Pasien::query())->addColumn('action',function($data){
+                $button = '<a href="javascript:void(0)"
+                    data-id="'.$data->id.'"
+                    data-nama="'.$data->nama.'"
+                    data-no="'.$data->no_rm.'"
+                    data-metode="'.$data->cara_bayar.'"
+                    class="btn btn-primary shadow btn-xs pilihPasien">
+                    Pilih</a>';
+                return $button;
+            })->rawColumns(['action'])->toJson();
         }
-        return DataTables::of(Pasien::query())
-        ->addColumn('action',function($data){
+        return DataTables::of(Pasien::query())->addColumn('action',function($data) {
             $button = '<a href="javascript:void(0)"
                 data-id="'.$data->id.'"
                 data-nama="'.$data->nama.'"

@@ -308,20 +308,38 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                             <hr />
                             <div class="form-group">
                                 <label>File tambahan</label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="additional_file"
-                                           accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
-                                    <label class="custom-file-label" for="customFile">Choose file</label>
-                                </div>
-                                @error('additional_file')
-                                <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
-                                @enderror
-                                @if($data_section['additional_file'])
-                                    <div class="text-right mt-1">
-                                        <a href="{{asset('app/public/'.$data_section['additional_file'])}}" target="_blank"
-                                           class="text-primary">Show</a>
+                                <div class="mb-3">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="additional_file"
+                                               accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
+                                        <label class="custom-file-label" for="customFile">Choose file 1</label>
                                     </div>
-                                @endif
+                                    @error('additional_file')
+                                    <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                    @enderror
+                                    @if($data_section && $data_section['additional_file'])
+                                        <div class="text-right mt-1">
+                                            <a href="{{asset('app/public/'.$data_section['additional_file'])}}" target="_blank"
+                                               class="text-primary">Show</a>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="mb-3">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="additional_file_1"
+                                               accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps">
+                                        <label class="custom-file-label" for="customFile">Choose file 2</label>
+                                    </div>
+                                    @error('additional_file_1')
+                                    <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
+                                    @enderror
+                                    @if($data_section && $data_section['additional_file_1'])
+                                        <div class="text-right mt-1">
+                                            <a href="{{asset('app/public/'.$data_section['additional_file_1'])}}" target="_blank"
+                                               class="text-primary">Show</a>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                             <div class="form-group mt-5">
                                 <button class="btn btn-primary btn-sm btn-block">Submit</button>

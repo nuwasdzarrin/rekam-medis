@@ -400,7 +400,8 @@ class RekamController extends Controller
                     'lr_46' => 'string|max:255|nullable',
                     'lr_47' => 'string|max:255|nullable',
                     'lr_48' => 'string|max:255|nullable',
-                    'additional_file' => 'mimes:jpg,jpeg,png,pdf|nullable'
+                    'additional_file' => 'mimes:jpg,jpeg,png,pdf|nullable',
+                    'additional_file_1' => 'mimes:jpg,jpeg,png,pdf|nullable',
                 ],
                 'diagnosis' => [
                     'diagnosa_utama' => 'required|string|max:255',
@@ -575,15 +576,17 @@ class RekamController extends Controller
             'pasien_id' => 'required|exists:pasien,id',
             'poli_id' => 'required|exists:poli,id',
             'dokter_id' => 'required|exists:dokter,id',
-            'cara_bayar' => 'required',
+            'tipe_pasien' => 'required',
         ]);
         $rekam_ada = Rekam::where('pasien_id',$request->pasien_id)
                             ->whereIn('status',[1,2,3,4])
                             ->first();
         if($rekam_ada){
             return redirect()->back()->withInput($request->input())
-                                ->withErrors(['pasien_id' => 'Pasien ini masih belum selesai periksa,
-                                 harap selesaikan pemeriksaan sebelumnya']);
+                ->withErrors(['pasien_id' => 'Pasien ini masih belum selesai periksa, harap selesaikan pemeriksaan
+                sebelumnya, <a href="'. route('rekam.detail', [
+                    'id' => $rekam_ada->id, 'section' => 'general']) .'" target="_blank">disini</a>'
+                ]);
         }
         $request->merge([
             'no_rekam' => "REG#".date('Ymd').$request->pasien_id,

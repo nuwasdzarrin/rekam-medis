@@ -35,8 +35,6 @@
                                 <th>No BPJS/KTP</th>
                             </tr>
                         </thead>
-
-
                     </table>
                 </div>
             </div>
@@ -48,7 +46,7 @@
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+                <li>{!! $error !!}</li>
             @endforeach
         </ul>
     </div>
@@ -88,15 +86,15 @@
                                 </div>
                                 @error('pasien_id')
                                 <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
+                                style="display: block;">{!! $message !!}</div>
                                 @enderror
                             </div>
                             <label class="col-sm-2 col-form-label">Cara Bayar*</label>
                             <div class="col-sm-3">
-                                <select name="cara_bayar" id="cara_bayar" required class="form-control">
+                                <select name="tipe_pasien" id="tipe_pasien" required class="form-control">
                                     <option value=""></option>
-                                    <option value="Umum/Mandiri" {{old('cara_bayar')=="Umum/Mandiri" ? 'selected' : ''}}>Umum/Mandiri</option>
-                                    <option value="Jaminan Kesehatan" {{old('cara_bayar')=="Jaminan Kesehatan" ? 'selected' : ''}}>Jaminan Kesehatan</option>
+                                    <option value="Umum/Mandiri" {{old('tipe_pasien')=="Umum/Mandiri" ? 'selected' : ''}}>Umum/Mandiri</option>
+                                    <option value="Jaminan Kesehatan" {{old('tipe_pasien')=="Jaminan Kesehatan" ? 'selected' : ''}}>Jaminan Kesehatan</option>
                                 </select>
                             </div>
                         </div>
@@ -215,11 +213,10 @@
      $(document).on("click", ".pilihPasien", function () {
         var id = $(this).data('id');
         var nama = $(this).data('nama');
-        var no = $(this).data('no');
         var metode = $(this).data('metode');
         $("#pasien_nama").val(nama);
         $("#pasien_id").val(id);
-        $("#cara_bayar").val(metode).change();
+        $("#tipe_pasien").val(metode).change();
 
         $("#modalPasien").modal('hide');
 
