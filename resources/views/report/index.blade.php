@@ -131,7 +131,8 @@
                             <td>{{$key+1}}</td>
                             <td>{{$rekam->created_at}}</td>
                             <td>{{$rekam->pasien->nama}}</td>
-                            <td>{{$rekam->dokter->nama}}</td>
+                            <td>{{$rekam->pasien ? $rekam->pasien->nama : '-'}}</td>
+                            <td>{{$rekam->dokter ? $rekam->dokter->nama : '-'}}</td>
                             <td>{{number_format($rekam->biaya_tindakan, 0, '', '.')}}</td>
                             <td>{{number_format($rekam->biaya_resep, 0, '', '.')}}</td>
                             <td>{{number_format($rekam->diskon, 0, '', '.')}}</td>
