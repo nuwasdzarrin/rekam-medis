@@ -63,30 +63,30 @@ class Rekam extends Model
     function status_display(){
         switch ($this->status) {
             case 1:
-                return '<span class="badge badge-outline-warning">
+                return '<span class="badge badge-rounded badge-outline-warning">
                             <i class="fa fa-circle text-warning mr-1"></i>
                              Antrian
                         </span>';
             break;
             case 2:
-                return '<span class="badge badge-info light">
+                return '<span class="badge badge-rounded badge-info light">
                             <i class="fa fa-circle text-info mr-1"></i>
                             Pemeriksaan
                         </span>';
             break;
             case 3:
-                return '<span class="badge badge-warning light" style="width:100px">
+                return '<span class="badge badge-rounded badge-warning light" style="width:100px">
                            Di Apotek
                         </span>';
             break;
             case 4:
-                return '<span class="badge badge-danger light">
+                return '<span class="badge badge-rounded badge-danger light">
                             <i class="fa fa-circle text-danger mr-1"></i>
                             Pembayaran
                         </span>';
             break;
             case 5:
-                return '<span class="badge badge-primary light" style="width:100px">
+                return '<span class="badge badge-rounded badge-primary light" style="width:100px">
                             <i class="fa fa-check text-primary mr-1"></i>
                             Selesai
                         </span>';
