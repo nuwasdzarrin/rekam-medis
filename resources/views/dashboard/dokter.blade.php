@@ -125,7 +125,6 @@
                     <div class="card appointment-schedule">
                         <div class="card-header pb-0 border-0">
                             <h3 class="fs-20 text-black mb-0">Pasien Perlu Anda Periksa</h3>
-
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -136,27 +135,8 @@
                                 </div>
                                 <div class="col-xl-6 col-xxl-12  col-md-12 dz-scroll">
                                     <div id="antrian-list-notif">
-{{--                                        @if ($query->rekam_antrian()->count() > 0)--}}
-{{--                                            @foreach ($query->rekam_antrian() as $item)--}}
-{{--                                                <div class="d-flex pb-3 border-bottom mb-3 align-items-end">--}}
-{{--                                                    <div class="mr-auto">--}}
-{{--                                                        <p class="text-black font-w600 mb-2"><a href="{{Route('rekam.detail',$item->pasien_id)}}">{{$item->pasien->nama}}</a></p>--}}
-{{--                                                        <ul>--}}
-{{--                                                            <li><i class="las la-clock"></i>Time : {{$item->updated_at->diffForHumans()}}</li>--}}
-{{--                                                            <li><i class="las la-clock"></i>Status : {!!$item->status_display()!!}</li>--}}
-{{--                                                            <li><i class="las la-user"></i>Keluhan : {{$item->keluhan}}</li>--}}
-{{--                                                            <li><i class="las la-user"></i>Dokter : {{$item->dokter->nama}}</li>--}}
-{{--                                                        </ul>--}}
-{{--                                                    </div>--}}
-{{--                                                    <a href="{{Route('rekam.detail',$item->pasien_id)}}" --}}
-{{--                                                        class="btn-rounded btn-primary btn-xs"><i class="fa fa-user-md"></i> Periksa</a>--}}
-{{--                                                </div>--}}
-{{--                                            @endforeach--}}
-{{--                                        @endif--}}
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -175,71 +155,7 @@
                                         <input type='text' class="form-control d-none" id='datetimepicker1' />
                                     </div>
                                 </div>
-{{--                                @if ($query->rekam_day2()->count() > 0)--}}
-{{--                                <div class="table-responsive card-table"> --}}
-{{--                                    <table class="table table-responsive-md">--}}
-{{--                                        <thead>--}}
-{{--                                            <tr>--}}
-{{--                                                --}}
-{{--                                                <th>No</th>--}}
-{{--                                                <th>Waktu</th>--}}
-{{--                                                <th>Nama Pasien</th>--}}
-{{--                                                <th>Keluhan </th>--}}
-{{--                                                <th>Diagnosa</th>--}}
-{{--                                                <th>Status</th>--}}
-{{--                                                <th>Aksi</th>--}}
-{{--                                            </tr>--}}
-{{--                                        </thead>--}}
-{{--                                        <tbody>--}}
-{{--                                            @foreach ($query->rekam_day2() as $key=>$row)--}}
-{{--                                                <tr>--}}
-{{--                                                    <td align="center">{{ $key +1}}</td>--}}
-{{--                                                <td>{{$row->created_at->diffForHumans()}}</td>--}}
-{{--                                                <td><a href="{{Route('rekam.detail',$row->pasien_id)}}">{{$row->pasien->nama}}</a></td>--}}
-{{--                                               --}}
-{{--                                                <td>{{$row->keluhan}}</td>--}}
-{{--                                                <td>--}}
-{{--                                                @if ($row->poli=="Poli Gigi")--}}
-{{--                                                    @foreach ($row->gigi() as $item)--}}
-{{--                                                        <li>{{$item->diagnosa.", ".$item->diagnosis->name_id}}</li>--}}
-{{--                                                    @endforeach--}}
-{{--                                                @else --}}
-{{--                                                <table>--}}
-{{--                                                    @foreach ($row->diagnosa() as $item)--}}
-{{--                                                    <tr>--}}
-{{--                                                        <td> {{$item->diagnosis->code}}</td>--}}
-{{--                                                       <td></td>--}}
-{{--                                                    </tr>--}}
-{{--                                                    <tr>--}}
-{{--                                                        <td colspan="2">{{$item->diagnosis->name_id}}</td>--}}
-{{--                                                    </tr>--}}
-{{--                                                    @endforeach--}}
 
-{{--                                                </table>--}}
-{{--                                                @endif--}}
-{{--                                                </td>--}}
-{{--                                                <td>{!!$row->status_display()!!}</td>--}}
-{{--                                                <td>--}}
-{{--                                                    <div class="d-flex">--}}
-{{--                                                        <a href="{{Route('rekam.detail',$row->pasien_id)}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-user-md"></i></a>--}}
-{{--                --}}
-{{--                                                    </div>--}}
-{{--                                                </td>--}}
-{{--                                                </tr>--}}
-{{--                                            @endforeach--}}
-{{--                                        </tbody>--}}
-{{--                                        --}}
-{{--                                    </table>--}}
-{{--                --}}
-{{--                                </div>--}}
-{{--                                @else --}}
-{{--                                    <div class="alert alert-info alert-dismissible fade show">--}}
-{{--                                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>	--}}
-{{--                                        <strong>Info!</strong> Tidak Ada List--}}
-{{--                                        <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>--}}
-{{--                                        </button>--}}
-{{--                                    </div>--}}
-{{--                                @endif--}}
                             </div>
                         </div>
                     </div>
@@ -271,18 +187,6 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="tab-pane fade" id="YearlyDiagnosa" role="tabpanel">
-{{--                            @foreach ($query->diagnosaYearly() as $item)--}}
-{{--                                <div class="d-flex mb-4 align-items-center">--}}
-{{--                                    <span class="mr-auto pr-3 font-w500 fs-30 text-black">--}}
-{{--                                        <svg class="mr-3" width="8" height="30" viewBox="0 0 8 30" fill="none" xmlns="http://www.w3.org/2000/svg">--}}
-{{--                                            <rect width="7.65957" height="30" fill="#BDA25C"/>--}}
-{{--                                        </svg>--}}
-{{--                                        {{$item->total}}--}}
-{{--                                    </span>--}}
-{{--                                    <span>{{$item->diagnosa." "}}</span>--}}
-{{--                                    <span style="width: 300px" class="font-w300">{{$item->name_id}}</span>--}}
-{{--                                </div>--}}
-{{--                            @endforeach--}}
                         </div>
                         <div class="tab-pane fade show active" id="MonthlyDiagnosa" role="tabpanel">
                             <div class="row align-items-center">
@@ -290,18 +194,6 @@
                                     <div id="radialBar3"></div>
                                 </div>
                                 <div class="col-xl-6 col-xxl-12 col-md-6">
-{{--                                    @foreach ($query->diagnosaBulanan() as $item)--}}
-{{--                                        <div class="d-flex mb-4 align-items-center">--}}
-{{--                                            <span class="mr-auto pr-3 font-w500 fs-30 text-black">--}}
-{{--                                                <svg class="mr-3" width="8" height="30" viewBox="0 0 8 30" fill="none" xmlns="http://www.w3.org/2000/svg">--}}
-{{--                                                    <rect width="7.65957" height="30" fill="#BDA25C"/>--}}
-{{--                                                </svg>--}}
-{{--                                                {{$item->total}}--}}
-{{--                                            </span>--}}
-{{--                                            <span>{{$item->diagnosa." ".$item->name_id}}</span>--}}
-
-{{--                                        </div>--}}
-{{--                                    @endforeach--}}
                                 </div>
                             </div>
                         </div>
