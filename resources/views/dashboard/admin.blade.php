@@ -164,7 +164,7 @@
                                         </p>
                                         <ul>
                                             <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
-                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->diffForHumans()}}</li>
+                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d M Y')}}</li>
                                             <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
                                             <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
@@ -240,7 +240,7 @@
                                         </p>
                                         <ul>
                                             <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
-                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->diffForHumans()}}</li>
+                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d M Y')}}</li>
                                             <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
                                             <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
