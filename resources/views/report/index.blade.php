@@ -117,7 +117,7 @@
                 <table class="table">
                     <tr>
                         <td><b>No</b></td>
-                        <td><b>Tanggal</b></td>
+                        <td><b>Tanggal Rekam</b></td>
                         <td><b>Pasien</b></td>
                         <td><b>Dokter</b></td>
                         <td><b>Biaya Tindakan</b></td>
@@ -129,14 +129,13 @@
                     @foreach($rekams as $key => $rekam)
                         <tr>
                             <td>{{$key+1}}</td>
-                            <td>{{$rekam->created_at}}</td>
-                            <td>{{$rekam->pasien->nama}}</td>
+                            <td>{{$rekam->tgl_rekam}}</td>
                             <td>{{$rekam->pasien ? $rekam->pasien->nama : '-'}}</td>
                             <td>{{$rekam->dokter ? $rekam->dokter->nama : '-'}}</td>
                             <td>{{number_format($rekam->biaya_tindakan, 0, '', '.')}}</td>
                             <td>{{number_format($rekam->biaya_resep, 0, '', '.')}}</td>
                             <td>{{number_format($rekam->diskon, 0, '', '.')}}</td>
-                            <td>{{number_format($rekam->biaya_tindakan + $rekam->biaya_resep - $rekam->diskon, 0, '', '.')}}</td>
+                            <td>{{number_format(($rekam->biaya_tindakan + $rekam->biaya_resep - $rekam->diskon), 0, '', '.')}}</td>
                             <td>
                                 {{$rekam->cara_bayar . ($rekam->cara_bayar == 'non_tunai' ? (' (' . $rekam->platform_pembayaran . ' )') : '')}}
                             </td>

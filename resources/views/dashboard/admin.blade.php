@@ -164,8 +164,8 @@
                                         </p>
                                         <ul>
                                             <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
-                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d M Y')}}</li>
-                                            <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
+                                            <li><i class="las la-calendar"></i>Date : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d F Y')}}</li>
+                                            <li><i class="las la-stethoscope"></i>Doktor : {{$item->dokter->nama}}</li>
                                             <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
                                     </div>
@@ -240,8 +240,8 @@
                                         </p>
                                         <ul>
                                             <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
-                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d M Y')}}</li>
-                                            <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
+                                            <li><i class="las la-calendar"></i>Date : {{\Carbon\Carbon::parse($item->tgl_rekam)->format('d F Y')}}</li>
+                                            <li><i class="las la-stethoscope"></i>Doktor : {{$item->dokter->nama}}</li>
                                             <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
                                     </div>
