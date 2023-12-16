@@ -430,7 +430,7 @@ class RekamController extends Controller
         $user = auth()->user();
         $role = $user->role_display();
         $rekams = Rekam::latest()
-                    ->select('rekam.*')
+                    ->select('rekam.*', 'pasien.nama')
                     ->leftJoin('pasien', function($join) {
                         $join->on('rekam.pasien_id', '=', 'pasien.id');
                     })
