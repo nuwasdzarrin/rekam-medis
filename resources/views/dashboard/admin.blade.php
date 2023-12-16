@@ -2,7 +2,8 @@
 @php
     $treatment = $query->mappingDate(app('request')->input('treatment'));
     $rekam_by_date = $query->rekamByDate($treatment['start'], $treatment['end']);
-    // dd($rekam_by_date->toArray());
+    $queue = $query->mappingDate(app('request')->input('queue'));
+    $rekam_queue_by_date = $query->rekamQueueByDate($queue['start'], $queue['end']);
 @endphp
 
 @extends('layout.apps')
@@ -53,7 +54,7 @@
                     <a href="{{route('rekam')}}" class="media align-items-center">
                         <div class="media-body mr-3">
                             <h2 class="fs-34 text-black font-w600">
-                                {{$query->totalCheckUp()}}
+                                {{$query->checkUpThisMonth()}}
                             </h2>
                             <div>Periksa bulan ini</div>
                             <div>({{date('M Y')}})</div>
@@ -124,11 +125,26 @@
                             </svg>
                         </div>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item text-black" href="?treatment=this_day">Hari Ini</a>
-                            <a class="dropdown-item text-black" href="?treatment=tomorrow">Kemarin</a>
-                            <a class="dropdown-item text-black" href="?treatment=two_days_ago">Lusa</a>
-                            <a class="dropdown-item text-black" href="?treatment=this_week">Minggu Ini</a>
-                            <a class="dropdown-item text-black" href="?treatment=this_month">Bulan Ini</a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['treatment' => 'this_day']))}}">
+                                Hari Ini
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['treatment' => 'tomorrow']))}}">
+                                Kemarin
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['treatment' => 'two_days_ago']))}}">
+                                Lusa
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['treatment' => 'this_week']))}}">
+                                Minggu Ini
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['treatment' => 'this_month']))}}">
+                                Bulan Ini
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -148,7 +164,7 @@
                                         </p>
                                         <ul>
                                             <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
-                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse($item->created_at)->diffForHumans()}}</li>
+                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->diffForHumans()}}</li>
                                             <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
                                             <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
@@ -175,56 +191,66 @@
         <div class="col-md-6">
             <div class="card rounded appointment-schedule">
                 <div class="card-header pb-0 border-0">
-                    <h3 class="fs-20 text-black mb-0">Antrian Hari ini</h3>
+                    <h3 class="fs-20 text-black mb-0">Antrian {{$queue['label']}}</h3>
+                    <div class="dropdown ml-auto">
+                        <div class="btn-link p-2 bg-light" data-toggle="dropdown">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['queue' => 'this_day']))}}">
+                                Hari Ini
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['queue' => 'tomorrow']))}}">
+                                Kemarin
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['queue' => 'two_days_ago']))}}">
+                                Lusa
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['queue' => 'this_week']))}}">
+                                Minggu Ini
+                            </a>
+                            <a class="dropdown-item text-black"
+                               href="{{route('dashboard', array_merge(app('request')->all(), ['queue' => 'this_month']))}}">
+                                Bulan Ini
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <hr/>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
-                            @if (true)
-{{--                                            @foreach ($query->rekam_day() as $item)--}}
+                            @if ($rekam_queue_by_date->count())
+                                @foreach ($rekam_queue_by_date as $item)
                                 <div class="d-flex pb-3 border-bottom mb-3 align-items-center">
                                     <div class="mr-auto">
-                                        <p class="text-black font-w600 mb-2"><a href="{{Route('rekam.detail',1)}}">Dana Pasi</a></p>
+                                        <p class="text-black font-w600 mb-2">
+                                            <a
+                                                href="{{Route('rekam.detail', ['id' => $item->id, 'section' => 'general'])}}">
+                                                {{$item->no_rekam}}
+                                            </a>
+                                        </p>
                                         <ul>
-                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse('2023-12-14')->diffForHumans()}}</li>
-                                            <li><i class="las la-clock"></i>Status : Antrian</li>
-                                            <li><i class="las la-user"></i>Keluhan : Sakit</li>
-                                            <li><i class="las la-user"></i>Doktor : Ramadhan</li>
+                                            <li><i class="las la-user"></i>Pasien : {{$item->pasien->nama}}</li>
+                                            <li><i class="las la-calendar"></i>Time : {{\Carbon\Carbon::parse($item->tgl_rekam)->diffForHumans()}}</li>
+                                            <li><i class="las la-user"></i>Doktor : {{$item->dokter->nama}}</li>
+                                            <li><i class="las la-certificate"></i><span class="mr-2">Status :</span> {!! $item->status_display() !!}</li>
                                         </ul>
                                     </div>
-                                    <a href="{{Route('rekam.detail',1)}}" class="text-warning mr-3 mb-2">
-                                        <i class="las la-check-square scale5"></i>
+                                    <a href="{{Route('rekam.detail', ['id' => $item->id, 'section' => 'general'])}}"
+                                       class="text-success mr-3 mb-2">
+                                        <i class="las la-arrow-right scale5"></i>
                                     </a>
                                 </div>
-                                <div class="d-flex pb-3 border-bottom mb-3 align-items-end">
-                                    <div class="mr-auto">
-                                        <p class="text-black font-w600 mb-2"><a href="{{Route('rekam.detail',1)}}">Dana Pasi</a></p>
-                                        <ul>
-                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse('2023-12-14')->diffForHumans()}}</li>
-                                            <li><i class="las la-clock"></i>Status : Antrian</li>
-                                            <li><i class="las la-user"></i>Keluhan : Sakit</li>
-                                            <li><i class="las la-user"></i>Doktor : Ramadhan</li>
-                                        </ul>
-                                    </div>
-                                    <a href="{{Route('rekam.detail',1)}}" class="text-success mr-3 mb-2">
-                                        <i class="las la-check-circle scale5"></i>
-                                    </a>
-                                </div>
-                                <div class="d-flex pb-3 border-bottom mb-3 align-items-end">
-                                    <div class="mr-auto">
-                                        <p class="text-black font-w600 mb-2"><a href="{{Route('rekam.detail',1)}}">Dana Pasi</a></p>
-                                        <ul>
-                                            <li><i class="las la-clock"></i>Time : {{\Carbon\Carbon::parse('2023-12-14')->diffForHumans()}}</li>
-                                            <li><i class="las la-clock"></i>Status : Antrian</li>
-                                            <li><i class="las la-user"></i>Keluhan : Sakit</li>
-                                            <li><i class="las la-user"></i>Doktor : Ramadhan</li>
-                                        </ul>
-                                    </div>
-                                    <a href="{{Route('rekam.detail',1)}}" class="text-success mr-3 mb-2">
-                                        <i class="las la-check-circle scale5"></i>
-                                    </a>
-                                </div>
+                                @endforeach
                             @else
                                 <div class="alert alert-info alert-dismissible fade show">
                                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>

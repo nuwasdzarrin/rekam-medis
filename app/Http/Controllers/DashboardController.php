@@ -8,14 +8,15 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        if(auth()->user()->role_display()=="Admin"){
-            return view('dashboard.admin');
-        }else if(auth()->user()->role_display()=="Pendaftaran"){
-            return view('dashboard.registrasi');
-        }else if(auth()->user()->role_display()=="Dokter"){
-            return view('dashboard.dokter');
-        }else if(auth()->user()->role_display()=="Apotek"){
-            return view('dashboard.obat');
-        }
+        return view('dashboard.admin');
+//        if(auth()->user()->role_display()=="Admin"){
+//            return view('dashboard.admin');
+//        }else if(auth()->user()->role_display()=="Pendaftaran"){
+//            return view('dashboard.registrasi');
+//        }else if(auth()->user()->role_display()=="Dokter"){
+//            return view('dashboard.dokter');
+//        }else if(auth()->user()->role_display()=="Apotek"){
+//            return view('dashboard.obat');
+//        }
     }
 }
