@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Print Invoice</title>
+  <style>
+    .invoice-box {
+      position: relative;
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      border: 1px solid #eee;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      font-size: 16px;
+      line-height: 24px;
+      font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+      color: #555;
+    }
+    .invoice-box-paid::after {
+      content: "";
+      background-image: url("./invoice/paid-label.svg");
+      -webkit-print-color-adjust: exact !important;   /* Chrome, Safari, Edge */
+      color-adjust: exact !important;
+      background-repeat: no-repeat;
+      background-position: center;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      z-index: -1;
+    }
+
+    .invoice-box-unpaid::after {
+      content: "";
+      background-image: url("./invoice/unpaid-label.svg");
+      -webkit-print-color-adjust: exact !important;   /* Chrome, Safari, Edge */
+      color-adjust: exact !important;
+      background-repeat: no-repeat;
+      background-position: center;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      z-index: -1;
+    }
+
+    .invoice-box .no-margin {
+      margin: 0;
+    }
+
+    .invoice-box table {
+      width: 100%;
+      line-height: inherit;
+      text-align: left;
+      border: none;
+    }
+
+    .invoice-box table td {
+      padding: 5px;
+      vertical-align: top;
+      border: none;
+    }
+
+    .invoice-box table tr td:last-child {
+      width: 40%;
+      text-align: right;
+      border: none;
+    }
+
+    .invoice-box table tr.top table td {
+      padding-bottom: 20px;
+      border: none;
+    }
+
+    .invoice-box table tr.top table td.title {
+      font-size: 45px;
+      line-height: 45px;
+      color: #333;
+    }
+
+    .invoice-box table tr.heading td {
+      background: #EAECF0;
+      border-bottom: 1px solid #EAECF0;
+      font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+      padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.payment td {
+      border-top: 1px solid #EAECF0;;
+      border-bottom: 1px solid #EAECF0;;
+    }
+
+    .invoice-box table tr.payment td.bank-logo {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .invoice-box table tr.item td {
+      border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+      border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:last-child {
+      border-top: 2px solid #eee;
+      font-weight: bold;
+    }
+
+    .invoice-box table .row-total {
+      background: #344054;
+      color: #FFFFFF;
+    }
+    .invoice-box .bold {
+      font-weight: 600;
+    }
+    .invoice-box .title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .invoice-box .subtitle {
+      font-weight: 500;
+    }
+
+    .rp {
+      min-width: 150px;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .invoice-box table tr.top table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+      .invoice-box table tr.information table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+    }
+    /** RTL **/
+
+    .rtl {
+      direction: rtl;
+      font-family: Tahoma, "Helvetica Neue", "Helvetica", Helvetica, Arial,
+      sans-serif;
+    }
+
+    .rtl table {
+      text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <div class="invoice-box invoice-box-paid" >
+<!--    section identity-->
+    <section>
+      <table class="no-margin" cellpadding="0" cellspacing="0">
+        <tr class="top">
+          <td colspan="3">
+            <table class="no-margin">
+              <tr>
+                <td>
+                  <img src="./invoice/logo_br.png" style="width:100%; max-width:120px;"/>
+                  <!-- <div class="title">Tagihan Pengiriman</div> -->
+                  <!-- <div class="subtitle">No. {{invoice.invoice_code}}</div> -->
+                </td>
+                <td>
+                  <div class="bold">Details:</div>
+                  Nomor Tagihan #: 12233333
+                  <br />Dibuat: 22 Juni 2023
+                  <br />
+                  Berakhir: 25 Juni 2023
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr class="information">
+          <td colspan="3">
+            <table class="no-margin">
+              <tr>
+                <td>
+                  <div class="bold">BLUERAY CARGO</div>
+                  <p>Jl. Mangga Besar VIII No. 12D, Kec Taman Sari, Kota Jakarta Barat, DKI Jakarta 11150</p>
+                </td>
+                <td>
+                  <div class="bold">Bill to:</div>
+                  Dimas Setiawan
+                  <!--              <br/>-->
+                  <!--              <span>-->
+                  <!--                {{ customer.company.company_address }}-->
+                  <!--              </span>-->
+                  <br />dimas@gmail.com
+                  <br />08111xxxxxxxxx
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </section>
+    <section>
+      <div class="bcFontSize18 bcFontWeight600 bcMarginTop20 mb-1">Additional invoice</div>
+      <div>
+        <table style="width: 100%; margin-bottom: 10px;">
+          <tr class="heading">
+            <td style="width: 320px">description</td>
+            <td style="text-align:right">quantity</td>
+            <td>invoice</td>
+          </tr>
+          <tr class="item">
+            <td>Biaya adwork fee</td>
+            <td style="text-align:right">2</td>
+            <td>Rp 100.000</td>
+          </tr>
+        </table>
+        <table class="no-margin" style="border-bottom: 3px groove;">
+          <tr class="rincian">
+            <td colspan="2" style="text-align:right"><b>Subtotal</b></td>
+            <td class="rp"><b>Rp 100.000</b></td>
+          </tr>
+        </table>
+      </div>
+    </section>
+    <section>
+      <div>
+        <div class="bcFontSize18 bcFontWeight600 bcMarginTop15 mb-1">Kiriman #1&nbsp;
+          <span class="bcTextBlue">WD66677</span>
+        </div>
+        <table style="margin-bottom: 5px;">
+          <tr class="heading">
+            <td>item name</td>
+            <td class="blueRayTextRight">quantity</td>
+            <td class="blueRayTextRight">price</td>
+          </tr>
+          <tr class="item">
+            <td>Product title</td>
+            <td class="blueRayTextRight">5</td>
+            <td class="blueRayTextRight">IDR 500.000</td>
+          </tr>
+        </table>
+        <table class="no-margin" style="border-bottom: 3px groove;">
+          <tr>
+            <td colspan="2" style="text-align:right">Goni</td>
+            <td class="rp">Rp 50.000</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align:right">international shipment}}</td>
+            <td class="rp"><b>Rp 19.000.000</b></td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align:right">Pengiriman Domestik</td>
+            <td class="rp"><b>Rp 120.000</b></td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align:right"><b>subtotal</b></td>
+            <td class="rp"><b>Rp 20.000.000</b></td>
+          </tr>
+        </table>
+      </div>
+      <table style="margin-bottom: 30px;">
+        <tr>
+          <td colspan="2" style="text-align:right">Admin Fee</td>
+          <td class="rp">Rp 4.400</td>
+        </tr>
+        <tr class="total">
+          <td colspan="2" style="text-align:right">discount</td>
+          <td class="rp">- Rp 69.000</td>
+        </tr>
+        <tr class="row-total">
+          <td colspan="2" style="text-align:right;border-bottom-left-radius: 5px;"><b>total</b></td>
+          <td class="rp" style="border-bottom-right-radius: 5px;"><b>Rp 22.000.000</b></td>
+        </tr>
+      </table>
+    </section>
+    <section>
+      <div>Please make payment to:</div>
+      <table style="margin-top: 5px">
+        <tr class="payment">
+          <td class="bank-logo">
+            <img src="https://devapi.blueraycargo.id/static/images/payments/bca.png" style="max-height:20px" alt="bank logo" />
+          </td>
+          <td>
+            <div class="bold">Garuda Express Indonesia</div>
+            <div>32165498777788969</div>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+</div>
+
+</body>
+</html>
