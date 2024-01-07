@@ -56,7 +56,7 @@ class PengeluaranObatController extends Controller
                 $query->where('created_at', 'LIKE', "%{$request->keyword}%")
                     ->orWhere('nama', 'LIKE', "%{$request->keyword}%");
             })
-            ->with(['rekam:id,cara_bayar', 'pasien:id,nama', 'obat:id,kd_obat'])->latest()->paginate(25);
+            ->with(['rekam:id,no_rekam,cara_bayar', 'pasien:id,nama', 'obat:id,kd_obat'])->latest()->paginate(25);
         return view('obat.riwayat',compact('data'));
     }
 
