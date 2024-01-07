@@ -7,6 +7,7 @@ use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\PengeluaranObat;
 use App\Models\Rekam;
+use App\Models\RekamResep;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,14 @@ class PengeluaranObatController extends Controller
 {
     public function resep(Request $request)
     {
-        $datas = Rekam::latest()
-                    ->where('status',3)
-                    ->get();
-
+        $datas = Rekam::query()->whereIn('status',[3,4,5])
+            ->with([
+                'pasien:id,nama',
+                'rekam_diagnosa:rekam_id,diagnosa_utama',
+                'rekam_reseps:rekam_id,nama,harga_satuan,quantity',
+            ])
+            ->latest()->paginate(25);
+//        dd($datas->toArray());
         return view('obat.resep',compact('datas'));
     }
 
@@ -38,14 +43,21 @@ class PengeluaranObatController extends Controller
 
     public function riwayat(Request $request)
     {
-        $datas = PengeluaranObat::latest()
-                            ->when($request->keyword, function ($query) use ($request) {
-                                $query->where('created_at', 'LIKE', "%{$request->keyword}%")
-                                    ->orWhere('kd_obat', 'LIKE', "%{$request->keyword}%");
-                            })
-                            ->whereNull('deleted_at')
-                            ->paginate(10);
-        return view('obat.riwayat',compact('datas'));
+//        $data = PengeluaranObat::latest()
+//                            ->when($request->keyword, function ($query) use ($request) {
+//                                $query->where('created_at', 'LIKE', "%{$request->keyword}%")
+//                                    ->orWhere('kd_obat', 'LIKE', "%{$request->keyword}%");
+//                            })
+//                            ->whereNull('deleted_at')
+//                            ->paginate(10);
+        $data = RekamResep::query()
+            ->select(['rekam_id', 'obat_id', 'pasien_id', 'nama', 'harga_satuan', 'quantity', 'satuan', 'created_at'])
+            ->when($request->keyword, function ($query) use ($request) {
+                $query->where('created_at', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('nama', 'LIKE', "%{$request->keyword}%");
+            })
+            ->with(['rekam:id,cara_bayar', 'pasien:id,nama', 'obat:id,kd_obat'])->latest()->paginate(25);
+        return view('obat.riwayat',compact('data'));
     }
 
     public function store(Request $request)
@@ -90,14 +102,14 @@ class PengeluaranObatController extends Controller
             $rekam->update([
                 'status' => $status
             ]);
-            
+
             return redirect()->route('obat.pengeluaran',$request->rekam_id)->with('sukses','Obat Berhasil diberikan');
 
         } catch (\PDOException $e) {
             DB::rollback();
             return redirect()->route('obat.pengeluaran',$request->rekam_id)->with('gagal','Data Gagal ditambahkan '.$e);
 
-        }   
+        }
     }
 
 

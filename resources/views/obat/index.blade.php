@@ -128,22 +128,22 @@
                                 <th>Kd Obat</th>
                                 <th>Nama Obat</th>
                                 <th>Satuan</th>
-                                <th>Stok</th>
-                                <th>Harga</th>
-                                <th>Untuk BPJS</th>
+                                <th class="text-right">Stok</th>
+                                <th class="text-right">Harga</th>
+                                <th class="text-center">Untuk BPJS</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($datas as $key=>$row)
                                 <tr>
-                                    <td align="center">{{ $datas->firstItem() + $key }}</td>
+                                    <td>{{ $datas->firstItem() + $key }}</td>
                                     <td>{{$row->kd_obat}}</td>
                                     <td>{{$row->nama}}</td>
                                     <td>{{$row->satuan}}</td>
-                                    <td align="center">{{$row->stok}}</td>
-                                    <td align="right">{{number_format($row->harga)}}</td>
-                                    <td align="center">{{$row->is_bpjs==1 ? 'Ya' : 'Tidak'}}</td>
+                                    <td class="text-right">{{$row->stok}}</td>
+                                    <td class="text-right">{{number_format($row->harga)}}</td>
+                                    <td class="text-center">{{$row->is_bpjs==1 ? 'Ya' : 'Tidak'}}</td>
                                     <td>
                                         <div class="d-flex">
                                             <a href="javascript:void(0)" data-toggle="modal" data-target="#editPoli{{$row->id}}" class="btn btn-primary shadow btn-xs sharp mr-1"><i class="fa fa-pencil"></i></a>

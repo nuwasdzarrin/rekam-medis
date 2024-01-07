@@ -132,6 +132,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                <div class="mb-4">ID Rekam: <b>{{$rekam->no_rekam}}</b></div>
                 @if(request()->filled('section'))
                 <div class="py-3 w-100 overflow-auto">
                     <ul class="nav nav-tabs" style="flex-wrap: unset">
@@ -425,7 +426,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                         </div>
                     @elseif(request()->section == 'resep')
                         <div class="row">
-                            <div class="col-lg-5 mb-4">
+                            <div class="col-lg-6 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Daftar Obat</b></div>
                                     <div class="card-body">
@@ -461,7 +462,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                                             </button>
                                                         </div>
                                                     </td>
-                                                    <td class="text-right {{$is_allow ? 'd-flex' : 'd-none'}}">
+                                                    <td class="text-right {{$is_allow ? '' : 'd-none'}}">
                                                         <form method="post" action="{{$update_url}}">
                                                             @csrf
                                                             <input type="hidden" name="obat_id" value="{{$option->id}}">
@@ -483,7 +484,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-7 mb-4">
+                            <div class="col-lg-6 mb-4">
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Obat Terpilih</b></div>
                                     <div class="card-body">

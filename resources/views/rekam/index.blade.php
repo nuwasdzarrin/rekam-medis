@@ -5,7 +5,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <ul class="nav nav-tabs" >
+                <ul class="nav nav-tabs mb-4" >
                     <div class="form-group col-lg-6" style="float: left">
                         <a href="{{Route('rekam.add')}}" class="btn btn-primary btn-sm btn-rounded mr-3">+ Rekam Medis Baru</a>
                     </div>
@@ -21,7 +21,6 @@
                                 </div>
                             </div>
                         </form>
-
                     </div>
                     {{-- @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
                         <li class="nav-item">
@@ -45,6 +44,10 @@
                     @else --}}
                     @if(auth()->user()->role_display()=="Dokter")
                         <li class="nav-item">
+                            <a href="{{Route('rekam')}}" class="nav-link {{Request('tab')=='' ? 'active' :''}}" >
+                                <i class="la la-list mr-2"></i> Semua</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{Route('rekam',['tab'=>2])}}" class="nav-link {{Request('tab')==2 ? 'active' :''}}" >
                                 <i class="la la-user mr-2"></i> Perlu Diperiksa</a>
                         </li>
@@ -53,7 +56,6 @@
                                 <i class="la la-envelope mr-2"></i> Selesai Diperiksa</a>
                         </li>
                     @endif
-
                 </ul>
 
                 <div class="table-responsive card-table">
@@ -64,7 +66,7 @@
                                 <th>No</th>
                                 <th>ID Rekam</th>
                                 <th>Nama Pasien</th>
-                                <th>Poli &<br>Dokter</th>
+                                <th>Dokter</th>
                                 <th>Cara Bayar</th>
                                 <th>Status</th>
                                 <th>Tanggal</th>
@@ -76,11 +78,9 @@
                                 <tr>
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
                                     <td>{{$row->no_rekam}}</td>
-                                    <td><a href="{{Route('rekam.detail',$row->pasien_id)}}">{{$row->pasien->nama}}</a></td>
-                                    <td>{{$row->poli}}
-                                        <br><strong>{{$row->dokter->nama}}</strong>
-                                    </td>
-                                    <td>{{$row->cara_bayar}}</td>
+                                    <td><a href="{{Route('rekam.detail',$row->pasien_id)}}">{{$row->nama}}</a></td>
+                                    <td><strong>{{$row->dokter ? $row->dokter->nama : '-'}}</strong></td>
+                                    <td>{{$row->cara_bayar ?? '-'}}</td>
                                     <td>{!!$row->status_display()!!}</td>
                                     <td>{{$row->tgl_rekam}}</td>
                                     <td>

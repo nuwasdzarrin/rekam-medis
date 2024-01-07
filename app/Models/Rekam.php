@@ -10,6 +10,19 @@ class Rekam extends Model
     protected $fillable = ["no_rekam","pasien_id","dokter_id","petugas_id","poli_id","tgl_rekam","biaya_tindakan",
         "biaya_resep","diskon","jumlah_uang","tipe_pasien","cara_bayar","platform_pembayaran","status"];
 
+
+    function rekam_diagnosa()
+    {
+        return $this->hasOne(RekamDiagnosa::class);
+    }
+    function rekam_tindakans()
+    {
+        return $this->hasMany(RekamTindakan::class);
+    }
+    function rekam_reseps()
+    {
+        return $this->hasMany(RekamResep::class);
+    }
     function getFilePemeriksaan(){
         return $this->pemeriksaan_file != null ? asset('images/pemeriksaan/'.$this->pemeriksaan_file) : null;
     }
@@ -24,16 +37,10 @@ class Rekam extends Model
 
     function diagnosa(){
         return  RekamDiagnosa::where('rekam_id',$this->id)->get();
-      }
-
+    }
     function pasien(){
         return $this->belongsTo(Pasien::class);
     }
-
-    // function diagnosis(){
-    //     return $this->belongsTo(Icd::class,'diagnosa','code');
-    // }
-
     function dokter(){
         return $this->belongsTo(Dokter::class);
     }
