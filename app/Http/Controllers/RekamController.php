@@ -307,10 +307,10 @@ class RekamController extends Controller
             ],
             'update' => [
                 'parent' => [
-                    'pasien_id' => 'numeric|exists:pasiens,id|nullable',
-                    'dokter_id' => 'numeric|exists:dokters,id|nullable',
+                    'pasien_id' => 'numeric|exists:pasien,id|nullable',
+                    'dokter_id' => 'numeric|exists:dokter,id|nullable',
                     'poli_id' => 'numeric|exists:polis,id|nullable',
-                    'tgl_rekam' => 'date|date_format:Y-m-d H:i:s|nullable',
+                    'tgl_rekam' => 'date|nullable',
                     'biaya_tindakan' => 'numeric|nullable',
                     'biaya_resep' => 'numeric|nullable',
                     'diskon' => 'numeric|nullable',
@@ -432,7 +432,7 @@ class RekamController extends Controller
         $rekams = Rekam::query()
             ->select([
                 'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.no_rekam', 'rekam.tgl_rekam', 'rekam.cara_bayar',
-                'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
+                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
             ])
             ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
             ->when($request->keyword, function ($query) use ($request) {
@@ -476,7 +476,7 @@ class RekamController extends Controller
     public function edit(Request $request,$id)
     {
         $poli = Poli::all();
-        $data = Rekam::find($id);
+        $data = Rekam::query()->with(['poli:id,nama', 'pasien:id,nama'])->find($id);
         return view('rekam.edit', [
             'poli' => $poli,
             'data' => $data,
@@ -611,8 +611,9 @@ class RekamController extends Controller
             $request->platform_pembayaran : null;
         if ($request->jumlah_uang && $rekam->status < 5) $rekam->status = 5;
         foreach (self::rules()['update']['parent'] as $key => $value) {
-            if ($request->exists($key)) {
-                $rekam->{$key} = $request->{$key};
+            if ($request->exists($key)) $rekam->{$key} = $request->{$key};
+            else {
+                if ($key == 'diskon') $rekam->{$key} = 0;
             }
         }
         $rekam->save();

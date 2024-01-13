@@ -44,6 +44,10 @@ class Rekam extends Model
     function dokter(){
         return $this->belongsTo(Dokter::class);
     }
+    public function poli()
+    {
+        return $this->belongsTo(Poli::class);
+    }
     function status_rekams(){
         switch ($this->status) {
             case 1:
