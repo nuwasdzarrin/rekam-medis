@@ -3,12 +3,13 @@
 
     <div class="row">
         <div class="col-xl-12">
-            <div class="card">
+            <div class="card rounded">
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-4">
                         <div class="form-group col-lg-6" style="float: left">
-                            <a href="{{Route('rekam.add')}}" class="btn btn-primary btn-sm btn-rounded mr-3">+ Rekam
-                                Medis Baru</a>
+                            <a href="{{Route('rekam.add')}}" class="btn btn-primary btn-sm btn-rounded mr-3">
+                                + Rekam Medis Baru
+                            </a>
                         </div>
                         <div class="form-group col-lg-6" style="float: right">
                             <form method="get" action="{{ url()->current() }}">

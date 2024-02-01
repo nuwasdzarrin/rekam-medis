@@ -17,15 +17,9 @@
                     <form action="{{Route('pasien.update',$data->id)}}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">No.RM*</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control"
-                                name="no_rm"  readonly
-                                required value="{{old('no_rm') ? old('no_rm') : $data->no_rm}}">
-                                @error('no_rm')
-                                <div class="invalid-feedback animated fadeInUp"
-                                style="display: block;">{{$message}}</div>
-                                @enderror
+                            <label class="col-sm-2 col-form-label">No. Pasien</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                {{$data->no_rm}}
                             </div>
                         </div>
                         <div class="form-group row">

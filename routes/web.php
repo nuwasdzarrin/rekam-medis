@@ -57,9 +57,10 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::get('/pasien', [PasienController::class, 'index'])->name('pasien');
     Route::get('/pasien/add', [PasienController::class, 'add'])->name('pasien.add');
+    Route::get('/pasien/json', [PasienController::class, 'json'])->name('pasien.json');
+    Route::get('/pasien/{id}', [PasienController::class, 'detail'])->name('pasien.detail');
     Route::get('/pasien/{id}/edit', [PasienController::class, 'edit'])->name('pasien.edit');
     Route::get('/pasien/{id}/delete', [PasienController::class, 'delete'])->name('pasien.delete');
-    Route::get('/pasien/json', [PasienController::class, 'json'])->name('pasien.json');
     Route::get('/pasien/{id}/file', [PasienController::class, 'file'])->name('pasien.file');
 
     Route::post('/pasien/store', [PasienController::class, 'store'])->name('pasien.store');

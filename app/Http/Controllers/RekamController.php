@@ -488,7 +488,6 @@ class RekamController extends Controller
     {
         $rekam = Rekam::query()->find($id);
         $pasien = Pasien::query()->find($rekam->pasien_id);
-
         $fields = [];
         $data_section = [];
         $data_options = [];
@@ -592,8 +591,10 @@ class RekamController extends Controller
                     'id' => $rekam_ada->id, 'section' => 'general']) .'" target="_blank">disini</a>'
                 ]);
         }
+        // RM-01/02/24/001
+        $rekam_last = Rekam::query()->whereDate('created_at', Carbon::today())->count();;
         $request->merge([
-            'no_rekam' => "REG#".date('Ymd').$request->pasien_id,
+            'no_rekam' => "RM-".date('d/m/y').'/'.str_pad(($rekam_last + 1), 4, '0', STR_PAD_LEFT),
             'petugas_id' => auth()->user()->id
         ]);
         $rekam = Rekam::query()->create($request->all());

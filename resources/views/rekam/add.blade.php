@@ -77,7 +77,7 @@
                                 <div class="input-group transparent-append">
                                     <input type="text" id="pasien_nama" class="form-control"
                                       data-toggle="modal" data-target="#modalPasien" value="{{old('pasien_nama') ? old('pasien_nama') : ''}}"
-                                     name="pasien_nama" placeholder="Pilih Pasien..">
+                                     name="pasien_nama" placeholder="Pilih Pasien.." autocomplete="off">
                                     <div class="input-group-append show-pass"  data-toggle="modal" data-target="#modalPasien">
                                         <span class="input-group-text">
                                             <a href="javascript:void(0)"  data-toggle="modal" data-target="#modalPasien"><i class="fa fa-search"></i></a>

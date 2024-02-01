@@ -41,15 +41,33 @@ class PasienController extends Controller
 
     public function index(Request $request)
     {
-        $datas = Pasien::whereNull('deleted_at')
+        $datas = Pasien::query()->whereNull('deleted_at')
                 ->when($request->keyword, function ($query) use ($request) {
                     $query->where('no_rm', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('nama', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('no_bpjs', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('no_hp', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('alamat_lengkap', 'LIKE', "%{$request->keyword}%");
-                })->paginate(10);
+                })->orderByDesc('id')->paginate(10);
         return view('pasien.index',compact('datas'));
+    }
+
+    public function detail($id)
+    {
+        $pasien = Pasien::query()
+            ->select(['no_rm as nomor_pasien', 'nama', 'tmp_lahir as tempat_lahir', 'tgl_lahir as tanggal_lahir',
+                'jk as Jenis Kelamin', 'alamat_lengkap', 'kelurahan', 'kecamatan', 'kabupaten', 'kodepos as kode_pos',
+                'agama', 'status_menikah as status_pernikahan', 'pendidikan', 'pekerjaan', 'kewarganegaraan', 'no_hp',
+                'no_bpjs'])
+            ->find($id);
+        $rekams = Rekam::query()
+            ->select([
+                'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.no_rekam', 'rekam.tgl_rekam', 'rekam.cara_bayar',
+                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
+            ])
+            ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
+            ->where('rekam.pasien_id', $id)->paginate(20);
+        return view('pasien.detail', ['pasien' => $pasien, 'rekams' => $rekams]);
     }
 
     function add(Request $request){
@@ -70,12 +88,15 @@ class PasienController extends Controller
         $this->validate($request,[
             'nama' => 'required',
             'no_hp' => 'required',
+            'code' => 'required',
             'tipe_pasien' => 'required',
             'jenis_kelamin' => 'required',
-//            'no_rm' => 'required|unique:pasien'
         ]);
+//        $patient_number = Pasien::query()->where('no_rm', 'like', $request->code.'%')->count();
+        $patient_number = Pasien::query()->select('id')->latest()->first();
         $pasien = Pasien::create($request->all() + [
-            'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien
+                'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien,
+                'no_rm' => $request->code . str_pad((($patient_number->id)+1), 4, '0', STR_PAD_LEFT)
             ]);
         if ($request->hasFile('file')) {
             $originName = $request->file('file')->getClientOriginalName();

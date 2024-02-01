@@ -40,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>No. RM</th>
+                                <th>No. Pasien</th>
                                 <th>Nama Pasien</th>
                                 <th>TTL</th>
                                 <th>Alamat</th>
@@ -56,7 +56,7 @@
                             @foreach ($datas as $key=>$row)
                                 <tr>
                                     <td>{{$datas->firstItem() + $key}}</td>
-                                   <td><a href="{{Route('rekam.detail',$row->id)}}">{{$row->no_rm}}</a></td>
+                                   <td><a href="{{Route('pasien.detail',$row->id)}}">{{$row->no_rm}}</a></td>
                                    <td>{{$row->nama}}</td>
                                    <td>{{$row->tmp_lahir}}{{$row->tmp_lahir ? ',' : ''}}{{$row->tgl_lahir ?? '-'}}</td>
                                    <td>{{$row->alamat_lengkap ?? '-'}}</td>
@@ -65,7 +65,7 @@
                                    <td>{{$row->cara_bayar}}<br>{{$row->no_bpjs}}</td>
                                    <td>{!! $row->statusPasien() !!}</td>
                                    <td>
-                                        <a href="{{Route('rekam.detail',$row->id)}}" class="btn btn-primary shadow btn-xs sharp mr-1">
+                                        <a href="{{Route('pasien.detail',$row->id)}}" class="btn btn-primary shadow btn-xs sharp mr-1">
                                            <i class="fa fa-eye"></i></a>
                                         <a href="{{Route('pasien.edit',$row->id)}}" class="btn btn-info shadow btn-xs sharp mr-1">
                                             <i class="fa fa-pencil"></i></a>

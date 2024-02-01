@@ -17,21 +17,12 @@
                     <form action="{{Route('pasien.store')}}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">No.RM*</label>
+                            <label class="col-sm-2 col-form-label">Kategori Pasien*</label>
                             <div class="col-sm-2">
-                                <select name="code" class="form-control" id="code">
+                                <select class="form-control" name="code">
                                     <option value="D">Dewasa</option>
                                     <option value="A">Anak</option>
                                 </select>
-                            </div>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control"
-                                       name="no_rm" required id="no_rm"
-                                       value="{{old('no_rm')}}">
-                                @error('no_rm')
-                                <div class="invalid-feedback animated fadeInUp"
-                                     style="display: block;">{{$message}}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-group row">
@@ -233,12 +224,12 @@
                             <label class="col-sm-2 col-form-label">Tipe Pasien *</label>
                             <div class="col-sm-4">
                                 <div class="form-check">
-                                    <input type="radio" name="tipe_pasien" required class="form-check-input"
+                                    <input type="radio" name="tipe_pasien" required checked class="form-check-input"
                                     value="Umum/Mandiri">
                                     <label class="form-check-label">Umum/Mandiri</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="radio" name="tipe_pasien" required checked class="form-check-input"
+                                    <input type="radio" name="tipe_pasien" required class="form-check-input"
                                     value="Jaminan Kesehatan">
                                     <label class="form-check-label">Jaminan Kesehatan</label>
                                 </div>
@@ -280,8 +271,6 @@
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">SIMPAN</button>
                         </div>
-
-
                     </form>
                 </div>
             </div>
@@ -292,13 +281,9 @@
 @section('script')
 <script>
      $(function () {
-
-
         $("#nama").change(function(){
            checkedChard();
-
         });
-
         $("#code").change(function(){
             checkedChard();
         });

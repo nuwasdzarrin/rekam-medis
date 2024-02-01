@@ -20,7 +20,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
             <div class="card-header border-0 pb-0">
                 <h4 class="fs-20 text-black mb-0">Detail Pasien</h4>
                 <div class="dropdown">
-                    RM#  {{$pasien->no_rm}}
+                    No. Pasien:  {{$pasien->no_rm}}
                 </div>
             </div>
             <div class="card-body">
@@ -197,7 +197,9 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                     </div>
                                 @else
                                 <div class="form-group row">
-                                    <label class="col-lg-2 col-form-label">
+                                    <label
+                                        class="col-lg-2 col-form-label {{$data_section && $data_section[$field['name']] ? 'text-primary' : ''}}"
+                                    >
                                         {{$field['label']}}
                                         @if(isset($field['required']) && $field['required'])
                                             <span class='text-danger'>*</span>
@@ -240,7 +242,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                                     </div>
                                                 @else
                                                     <div class="form-group row">
-                                                        <label class="col-lg-2 col-form-label">
+                                                        <label class="col-lg-2 col-form-label {{$data_section && $data_section[$field['name']] ? 'text-primary' : ''}}">
                                                             {{$field['label']}}
                                                             @if(isset($field['required']) && $field['required'])
                                                                 <span class='text-danger'>*</span>
