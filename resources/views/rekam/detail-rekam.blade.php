@@ -1,5 +1,6 @@
 @extends('layout.apps')
 @section('content')
+@if($pasien && $rekam)
 @php
 $is_allow = true;
 if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
@@ -20,33 +21,37 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
             <div class="card-header border-0 pb-0">
                 <h4 class="fs-20 text-black mb-0">Detail Pasien</h4>
                 <div class="dropdown">
-                    No. Pasien:  {{$pasien->no_rm}}
+                    No. Pasien:  {{$pasien ? $pasien->no_rm : '-'}}
                 </div>
             </div>
             <div class="card-body">
                 <div class="media mb-4 align-items-center">
                     <div class="media-body">
-                        <input type="hidden" id="pasien_id" value="{{$pasien->id}}">
+                        <input type="hidden" id="pasien_id" value="{{$pasien ? $pasien->id : 0}}">
                         <h3 class="fs-18 font-w600 mb-1"><a href="javascript:void(0)"
-                             class="text-black">{{$pasien->nama}}</a></h3>
-                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->tmp_lahir.($pasien->tmp_lahir ?', ': '').$pasien->tgl_lahir}}</h4>
+                             class="text-black">{{$pasien ? $pasien->nama : '-'}}</a></h3>
+                        @if($pasien)
+                        <h4 class="fs-14 font-w600 mb-1">{{ $pasien->tmp_lahir.( $pasien->tmp_lahir ?', ': ''). $pasien->tgl_lahir}}</h4>
+                        @endif
                         @php
-                            $b_day = \Carbon\Carbon::parse($pasien->tgl_lahir); // Tanggal Lahir
+                            $b_day = \Carbon\Carbon::parse($pasien ? $pasien->tgl_lahir : null); // Tanggal Lahir
                             $now = \Carbon\Carbon::now();
                         @endphp
-                        <h4 class="fs-14 font-w600 mb-1">{{"Usia : " . ($pasien->tgl_lahir ? $b_day->diffInYears($now) : '-') }}</h4>
-
-                        <h4 class="fs-14 font-w600 mb-1">{{$pasien->jk.($pasien->jk ? ', ' : '').$pasien->status_menikah}}</h4>
-                        <span class="fs-14">{{$pasien->alamat_lengkap}}</span>
-                        <span class="fs-14">
-                            {{$pasien->keluhan . ($pasien->kelurahan ? ', ' : '') . $pasien->kecamatan
+                        <h4 class="fs-14 font-w600 mb-1">{{"Usia : " . ($pasien && $pasien->tgl_lahir ? $b_day->diffInYears($now) : '-') }}</h4>
+                        @if($pasien)
+                            <h4 class="fs-14 font-w600 mb-1">{{ $pasien->jk.( $pasien->jk ? ', ' : ''). $pasien->status_menikah}}</h4>
+                        @endif
+                        <span class="fs-14">{{$pasien ? $pasien->alamat_lengkap : '-'}}</span>
+                        @if($pasien)
+                            <span class="fs-14">
+                                {{$pasien->keluhan . ($pasien->kelurahan ? ', ' : '') . $pasien->kecamatan
                                 . ($pasien->kecamatan ? ', ' : '') . $pasien->kabupaten
                                 . ($pasien->kabupaten ? ', ' : '') . $pasien->kewarganegaraan}}
-                        </span>
-                        {{-- <textarea name="analysis" class="form-control" id="editor" cols="30" rows="10"></textarea> --}}
+                            </span>
+                        @endif
                         <br>
-                        @if ($pasien->isRekamGigi())
-                            <a href="{{Route('rekam.gigi.odontogram',$pasien->id)}}" style="width: 120px"
+                        @if ($pasien && $pasien->isRekamGigi())
+                            <a href="{{Route('rekam.gigi.odontogram',$pasien ? $pasien->id : 0)}}" style="width: 120px"
                                 class="btn-rounded btn-info btn-xs "><i class="fa fa-eye"></i> Odontogram</a>
                         @endif
 
@@ -63,7 +68,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                 <div class="dropdown">
                     {!! $rekam->status_display() !!}
                     @if (auth()->user()->role_display()=="Admin" || auth()->user()->role_display()=="Pendaftaran")
-                    <a href="{{Route('pasien.edit',$pasien->id)}}" style="width: 120px"
+                    <a href="{{Route('pasien.edit',$pasien ? $pasien->id : 0)}}" style="width: 120px"
                         class="btn-rounded btn-info btn-xs "><i class="fa fa-pencil"></i> Edit Pasien</a>
                     @endif
                 </div>
@@ -79,7 +84,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 No HP
                             </span>
                             <div class="col-8 p-0">
-                               <p>{{$pasien->no_hp ?? '-'}}</p>
+                               <p>{{$pasien ? $pasien->no_hp : '-'}}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-2">
@@ -90,8 +95,8 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 Tipe Pasien
                             </span>
                             <div class="col-8 p-0">
-                                <p>{{$pasien->cara_bayar}}</p>
-                                <p>{{$pasien->no_bpjs}}</p>
+                                <p>{{$pasien ? $pasien->cara_bayar : '-'}}</p>
+                                <p>{{$pasien ? $pasien->no_bpjs : '-'}}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-2">
@@ -102,9 +107,9 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 File General
                             </span>
                             <div class="col-8 p-0">
-                              @if ($pasien->general_uncent != null)
+                              @if ($pasien && $pasien->general_uncent != null)
                                 <a style="width: 120px" class="btn-rounded btn-info btn-xs "
-                                   href="{{$pasien->getGeneralUncent()}}" target="_blank">Lihat Data</a>
+                                   href="{{$pasien && $pasien->getGeneralUncent()}}" target="_blank">Lihat Data</a>
                               @else
                                 Belum Tersedia
                               @endif
@@ -210,7 +215,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                             type="{{$field['type']}}" name="{{$field['name']}}"
                                            {{isset($field['required']) && $field['required'] ? 'required' : ''}}
                                            value="{{old($field['name']) ?? ($data_section ? $data_section[$field['name']] : '')}}"
-                                            class="form-control">
+                                            class="form-control {{$data_section && $data_section[$field['name']] ? 'fillable' : ''}}">
                                         @error($field['name'])
                                         <div class="invalid-feedback animated fadeInUp d-block">{{$message}}</div>
                                         @enderror
@@ -771,3 +776,4 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
     </script>
     @endif
 @endsection
+@endif

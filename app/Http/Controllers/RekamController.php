@@ -487,7 +487,7 @@ class RekamController extends Controller
     public function detail(Request $request, $id)
     {
         $rekam = Rekam::query()->find($id);
-        $pasien = Pasien::query()->find($rekam->pasien_id);
+        $pasien = Pasien::query()->find($rekam['pasien_id'] ?? 0);
         $fields = [];
         $data_section = [];
         $data_options = [];
@@ -565,7 +565,7 @@ class RekamController extends Controller
 
         return view('rekam.detail-rekam', [
             'rekam' => $rekam,
-            'pasien' => $pasien,
+            'pasien' => $pasien ?? [],
             'fields' => $fields,
             'data_section' => $data_section,
             'data_options' => $data_options,

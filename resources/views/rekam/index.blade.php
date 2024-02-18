@@ -84,7 +84,7 @@
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
                                     <td>{{$row->no_rekam}}</td>
                                     <td>
-                                        <a href="{{Route('rekam.detail',$row->pasien_id)}}">
+                                        <a href="{{Route('pasien.detail',$row->pasien_id)}}">
                                             <b>{{$row->nama}}</b>
                                             {!! $row->tipe_pasien ? ('<br/>('.$row->tipe_pasien.')') : ''!!}
                                         </a>
