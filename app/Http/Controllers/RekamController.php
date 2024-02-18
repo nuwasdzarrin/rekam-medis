@@ -581,20 +581,23 @@ class RekamController extends Controller
             'dokter_id' => 'required|exists:dokter,id',
             'tipe_pasien' => 'required',
         ]);
-        $rekam_ada = Rekam::where('pasien_id',$request->pasien_id)
+        $unfinished_rekam = Rekam::query()->select('id')->where('pasien_id',$request->pasien_id)
                             ->whereIn('status',[1,2,3,4])
                             ->first();
-        if($rekam_ada){
+        if($unfinished_rekam){
             return redirect()->back()->withInput($request->input())
                 ->withErrors(['pasien_id' => 'Pasien ini masih belum selesai periksa, harap selesaikan pemeriksaan
                 sebelumnya, <a href="'. route('rekam.detail', [
-                    'id' => $rekam_ada->id, 'section' => 'general']) .'" target="_blank">disini</a>'
+                    'id' => $unfinished_rekam->id, 'section' => 'general']) .'" target="_blank">disini</a>'
                 ]);
         }
         // RM-01/02/24/001
-        $rekam_last = Rekam::query()->whereDate('created_at', Carbon::today())->count();;
+        $available_rekam = Rekam::query()->select('id', 'no_rekam')->where('pasien_id',$request->pasien_id)
+            ->first();
+        if (!$available_rekam)
+            $rekam_last = Rekam::query()->select('id')->whereDate('created_at', Carbon::today())->count();
         $request->merge([
-            'no_rekam' => "RM-".date('d/m/y').'/'.str_pad(($rekam_last + 1), 4, '0', STR_PAD_LEFT),
+            'no_rekam' => $available_rekam ? $available_rekam->no_rekam : ("RM-".date('d/m/y').'/'.str_pad(($rekam_last + 1), 4, '0', STR_PAD_LEFT)),
             'petugas_id' => auth()->user()->id
         ]);
         $rekam = Rekam::query()->create($request->all());
