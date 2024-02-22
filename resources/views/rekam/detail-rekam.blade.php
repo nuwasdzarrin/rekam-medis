@@ -137,7 +137,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <div class="mb-4">ID Rekam: <b>{{$rekam->no_rekam}}</b></div>
+                <div class="mb-4">ID Rekam: <b>{{$pasien->medical_record_id}}</b></div>
                 @if(request()->filled('section'))
                 <div class="py-3 w-100 overflow-auto">
                     <ul class="nav nav-tabs" style="flex-wrap: unset">
@@ -438,7 +438,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                     <div class="card-header"><b>Daftar Obat</b></div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table">
+                                            <table class="table" id="resep-table">
                                                 <tr>
                                                     <td><b>Nama</b></td>
                                                     <td><b>Stok</b></td>
@@ -695,84 +695,109 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
 @section('script')
     @if (in_array(auth()->user()->role_display(), ['Admin','Pendaftaran']))
     <script>
-        $(document).on("click", ".plusQuantity", function () {
-            let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
-            if ($(this).data("stock") > parseInt(quantityViewer.val())){
-                const qty = parseInt(quantityViewer.val())+1
-                quantityViewer.val(qty)
-                $(`#inputQuantity${$(this).data("id")}`).val(qty)
-                $(`#submitSelected${$(this).data("id")}`).prop("disabled", false)
-            }
-        })
-        $(document).on("click", ".minusQuantity", function () {
-            let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
-            const qty = parseInt(quantityViewer.val())
-            if (qty > 0) {
-                quantityViewer.val(qty - 1)
-                $(`#inputQuantity${$(this).data("id")}`).val(qty - 1)
-            }
-            if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
-        })
+        @if(request()->section == 'resep')
+            $(function () {
+                $('#resep-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    paging:true,
+                    select: false,
+                    pageLength: 5,
+                    lengthChange:false ,
+                    ajax: "{{ route('pasien.json') }}",
+                    columns: [
+                        {data: 'action', name: 'action'},
+                        {data: 'no_rm', name: 'no_rm'},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'tgl_lahir', name: 'tgl_lahir'},
+                        {data: 'no_hp', name: 'no_hp'},
+                        {data: 'cara_bayar', name: 'cara_bayar'},
+                        {data: 'no_bpjs', name: 'no_bpjs'}  ,
+                    ]
+                });
+            });
 
-        $(document).on("click", `#btnTunai`, function () {
-            $(`#btnTunai`).toggleClass('active')
-            $(`#btnNonTunai`).toggleClass('active')
-            $(`#componentNonTunai`).hide()
-            $(`#componentTunai`).show()
-            $(`#caraBayar`).val('tunai')
-        })
-        $(document).on("click", `#btnNonTunai`, function () {
-            $(`#btnTunai`).toggleClass('active')
-            $(`#btnNonTunai`).toggleClass('active')
-            $(`#componentNonTunai`).show()
-            $(`#componentTunai`).hide()
-            $(`#jumlahUang`).val(Number($(`#tagihan`).val()) - Number($(`#totalDiscount`).val()))
-            $(`#caraBayar`).val('non_tunai')
-        })
-
-        let discount = 0
-        let tagihan = Number($('#tagihan').val())
-        let totalTagihan = $('#totalTagihan')
-        totalTagihan.text(`Rp ${tagihan.toLocaleString('id')}`)
-        $("input.formatNumber").each((i,ele)=>{
-            let clone=$(ele).clone(false)
-            clone.attr("type","text")
-            clone.attr("name","")
-            let ele1=$(ele)
-            clone.val(Number(ele1.val()).toLocaleString("id"))
-            $(ele).after(clone)
-            $(ele).hide()
-            clone.mouseenter(()=>{
-                ele1.show()
-                clone.hide()
+            $(document).on("click", ".plusQuantity", function () {
+                let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
+                if ($(this).data("stock") > parseInt(quantityViewer.val())){
+                    const qty = parseInt(quantityViewer.val())+1
+                    quantityViewer.val(qty)
+                    $(`#inputQuantity${$(this).data("id")}`).val(qty)
+                    $(`#submitSelected${$(this).data("id")}`).prop("disabled", false)
+                }
             })
-            let totalKembalian = $('#totalKembalian')
-            let btnPaymentConfirm = $('#btnPaymentConfirm')
-            setInterval(()=>{
-                let newv=Number(ele1.val()).toLocaleString("id")
-                if(clone.val()!=newv){
-                    clone.val(newv)
+            $(document).on("click", ".minusQuantity", function () {
+                let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
+                const qty = parseInt(quantityViewer.val())
+                if (qty > 0) {
+                    quantityViewer.val(qty - 1)
+                    $(`#inputQuantity${$(this).data("id")}`).val(qty - 1)
                 }
-                if (ele1.attr('name') === 'diskon') {
-                    discount = Number(ele1.val())
-                    totalTagihan.text(`Rp ${(tagihan-discount).toLocaleString('id')}`)
-                }
-                if (ele1.attr('name') === 'jumlah_uang') {
-                    let jumlahUang = Number(ele1.val())
-                    if (jumlahUang >= (tagihan - discount)) {
-                        totalKembalian.val((jumlahUang - (tagihan - discount)).toLocaleString("id"))
-                        btnPaymentConfirm.attr('disabled', false)
-                    } else {
-                        totalKembalian.val('0')
-                        btnPaymentConfirm.attr('disabled', true)
+                if (qty < 1) $(`#submitSelected${$(this).data("id")}`).prop("disabled", true)
+            })
+        @endif
+        @if(request()->section == 'payment')
+            $(document).on("click", `#btnTunai`, function () {
+                $(`#btnTunai`).toggleClass('active')
+                $(`#btnNonTunai`).toggleClass('active')
+                $(`#componentNonTunai`).hide()
+                $(`#componentTunai`).show()
+                $(`#caraBayar`).val('tunai')
+            })
+            $(document).on("click", `#btnNonTunai`, function () {
+                $(`#btnTunai`).toggleClass('active')
+                $(`#btnNonTunai`).toggleClass('active')
+                $(`#componentNonTunai`).show()
+                $(`#componentTunai`).hide()
+                $(`#jumlahUang`).val(Number($(`#tagihan`).val()) - Number($(`#totalDiscount`).val()))
+                $(`#caraBayar`).val('non_tunai')
+            })
+
+            let discount = 0
+            let tagihan = Number($('#tagihan').val())
+            let totalTagihan = $('#totalTagihan')
+            totalTagihan.text(`Rp ${tagihan.toLocaleString('id')}`)
+            $("input.formatNumber").each((i,ele)=>{
+                let clone=$(ele).clone(false)
+                clone.attr("type","text")
+                clone.attr("name","")
+                let ele1=$(ele)
+                clone.val(Number(ele1.val()).toLocaleString("id"))
+                $(ele).after(clone)
+                $(ele).hide()
+                clone.mouseenter(()=>{
+                    ele1.show()
+                    clone.hide()
+                })
+                let totalKembalian = $('#totalKembalian')
+                let btnPaymentConfirm = $('#btnPaymentConfirm')
+                setInterval(()=>{
+                    let newv=Number(ele1.val()).toLocaleString("id")
+                    if(clone.val()!=newv){
+                        clone.val(newv)
                     }
-                }
-            },1500)
-            $(ele).mouseleave(()=>{
-                $(clone).show()
-                $(ele1).hide()
+                    if (ele1.attr('name') === 'diskon') {
+                        discount = Number(ele1.val())
+                        totalTagihan.text(`Rp ${(tagihan-discount).toLocaleString('id')}`)
+                    }
+                    if (ele1.attr('name') === 'jumlah_uang') {
+                        let jumlahUang = Number(ele1.val())
+                        if (jumlahUang >= (tagihan - discount)) {
+                            totalKembalian.val((jumlahUang - (tagihan - discount)).toLocaleString("id"))
+                            btnPaymentConfirm.attr('disabled', false)
+                        } else {
+                            totalKembalian.val('0')
+                            btnPaymentConfirm.attr('disabled', true)
+                        }
+                    }
+                },1500)
+                $(ele).mouseleave(()=>{
+                    $(clone).show()
+                    $(ele1).hide()
+                })
             })
-        })
+        @endif
     </script>
     @endif
 @endsection

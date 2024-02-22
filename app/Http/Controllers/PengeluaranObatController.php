@@ -21,7 +21,7 @@ class PengeluaranObatController extends Controller
     {
         $datas = Rekam::query()->whereIn('status',[3,4,5])
             ->with([
-                'pasien:id,nama',
+                'pasien:id,nama,medical_record_id',
                 'rekam_diagnosa:rekam_id,diagnosa_utama',
                 'rekam_reseps:rekam_id,nama,harga_satuan,quantity',
             ])
@@ -43,20 +43,13 @@ class PengeluaranObatController extends Controller
 
     public function riwayat(Request $request)
     {
-//        $data = PengeluaranObat::latest()
-//                            ->when($request->keyword, function ($query) use ($request) {
-//                                $query->where('created_at', 'LIKE', "%{$request->keyword}%")
-//                                    ->orWhere('kd_obat', 'LIKE', "%{$request->keyword}%");
-//                            })
-//                            ->whereNull('deleted_at')
-//                            ->paginate(10);
         $data = RekamResep::query()
             ->select(['rekam_id', 'obat_id', 'pasien_id', 'nama', 'harga_satuan', 'quantity', 'satuan', 'created_at'])
             ->when($request->keyword, function ($query) use ($request) {
                 $query->where('created_at', 'LIKE', "%{$request->keyword}%")
                     ->orWhere('nama', 'LIKE', "%{$request->keyword}%");
             })
-            ->with(['rekam:id,no_rekam,cara_bayar', 'pasien:id,nama', 'obat:id,kd_obat'])->latest()->paginate(25);
+            ->with(['rekam:id,cara_bayar', 'pasien:id,nama,medical_record_id', 'obat:id,kd_obat'])->latest()->paginate(25);
         return view('obat.riwayat',compact('data'));
     }
 

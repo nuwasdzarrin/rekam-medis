@@ -15,18 +15,6 @@ class PasienController extends Controller
 {
     public function json(Request $request)
     {
-        if ($request->ajax()) {
-            return DataTables::of(Pasien::query())->addColumn('action',function($data){
-                $button = '<a href="javascript:void(0)"
-                    data-id="'.$data->id.'"
-                    data-nama="'.$data->nama.'"
-                    data-no="'.$data->no_rm.'"
-                    data-metode="'.$data->cara_bayar.'"
-                    class="btn btn-primary shadow btn-xs pilihPasien">
-                    Pilih</a>';
-                return $button;
-            })->rawColumns(['action'])->toJson();
-        }
         return DataTables::of(Pasien::query())->addColumn('action',function($data) {
             $button = '<a href="javascript:void(0)"
                 data-id="'.$data->id.'"
@@ -92,25 +80,36 @@ class PasienController extends Controller
             'tipe_pasien' => 'required',
             'jenis_kelamin' => 'required',
         ]);
-//        $patient_number = Pasien::query()->where('no_rm', 'like', $request->code.'%')->count();
-        $patient_number = Pasien::query()->select('id')->latest()->first();
-        $pasien = Pasien::create($request->all() + [
-                'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien,
-                'no_rm' => $request->code . str_pad((($patient_number->id)+1), 4, '0', STR_PAD_LEFT)
-            ]);
+
+        // RM-01/02/24/001
+        $pasien = Pasien::query()->create($request->all());
+        Pasien::query()->find($pasien->id)->update([
+            'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien,
+            'no_rm' => $request->code . str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
+            'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
+        ]);
         if ($request->hasFile('file')) {
             $originName = $request->file('file')->getClientOriginalName();
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
             $extension = $request->file('file')->getClientOriginalExtension();
-            $fileName = $pasien->no_rm.'.'.$extension;
+            $fileName = $fileName.'_'.$pasien->no_rm.'.'.$extension;
             $request->file('file')->move('images/pasien/',$fileName);
             $pasien->general_uncent = $fileName;
             $pasien->save();
         }
-
-
         return redirect()->route('pasien')->with('sukses','Data berhasil ditambahkan');
+    }
 
+    public function fill_medical_record()
+    {
+        $patients = Pasien::query()->select('id', 'no_rm')->get();
+        foreach ($patients as $patient) {
+            Pasien::query()->find($patient->id)->update([
+                'no_rm' => substr($patient->no_rm, 0, 1) . str_pad($patient->id, 4, '0', STR_PAD_LEFT),
+                'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($patient->id, 4, '0', STR_PAD_LEFT),
+            ]);
+        }
+        return redirect()->route('pasien')->with('sukses','Data berhasil diperbarui');
     }
 
     function update(Request $request,$id){

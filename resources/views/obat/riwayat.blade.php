@@ -53,7 +53,7 @@
                                             href="{{$row->rekam ? Route('rekam.detail', ['id'=>$row->rekam->id, 'section'=>'resep']) : '#'}}"
                                             target="_blank">
                                             {{$row->pasien ? $row->pasien->nama : '-'}}<br/>
-                                            {{$row->rekam ? ('rekam: ' . $row->rekam->no_rekam) : ''}}
+                                            {{$row->rekam ? ('rekam: ' . $row->pasien->medical_record_id) : ''}}
                                         </a>
                                     </td>
                                 </tr>

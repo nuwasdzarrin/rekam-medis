@@ -169,7 +169,7 @@
 @section('script')
 <script>
    $(function () {
-        var table = $('#pasien-table').DataTable({
+        $('#pasien-table').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -188,7 +188,6 @@
                 {data: 'no_bpjs', name: 'no_bpjs'}  ,
             ]
         });
-
     });
     $( document ).ready(function() {
         $("#poli").change(function(e) {

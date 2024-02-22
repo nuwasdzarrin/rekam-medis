@@ -431,8 +431,9 @@ class RekamController extends Controller
         $role = $user->role_display();
         $rekams = Rekam::query()
             ->select([
-                'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.no_rekam', 'rekam.tgl_rekam', 'rekam.cara_bayar',
+                'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.tgl_rekam', 'rekam.cara_bayar',
                 'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
+                'pasien.medical_record_id as no_rekam'
             ])
             ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
             ->when($request->keyword, function ($query) use ($request) {
@@ -591,13 +592,7 @@ class RekamController extends Controller
                     'id' => $unfinished_rekam->id, 'section' => 'general']) .'" target="_blank">disini</a>'
                 ]);
         }
-        // RM-01/02/24/001
-        $available_rekam = Rekam::query()->select('id', 'no_rekam')->where('pasien_id',$request->pasien_id)
-            ->first();
-        if (!$available_rekam)
-            $rekam_last = Rekam::query()->select('id')->whereDate('created_at', Carbon::today())->count();
         $request->merge([
-            'no_rekam' => $available_rekam ? $available_rekam->no_rekam : ("RM-".date('d/m/y').'/'.str_pad(($rekam_last + 1), 4, '0', STR_PAD_LEFT)),
             'petugas_id' => auth()->user()->id
         ]);
         $rekam = Rekam::query()->create($request->all());

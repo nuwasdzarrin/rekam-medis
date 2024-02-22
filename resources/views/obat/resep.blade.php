@@ -37,7 +37,7 @@
                                 <tr>
                                     <td>{{$key+1 }}</td>
                                     <td>{{$row->tgl_rekam}}</td>
-                                    <td>{{$row->no_rekam}}</td>
+                                    <td>{{$row->pasien ? $row->pasien->medical_record_id : '-'}}</td>
                                     <td>{{$row->pasien ? $row->pasien->nama : '-'}}</td>
                                     <td>
                                         {{$row->rekam_diagnosa ? $row->rekam_diagnosa->diagnosa_utama : '-'}}
