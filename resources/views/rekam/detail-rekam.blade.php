@@ -372,6 +372,9 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                                 </div>
                                             </div>
                                         </form>
+                                        @if(!$data_options->count())
+                                            <div class="text-center my-5">Data tidak ditemukan</div>
+                                        @endif
                                         @foreach($data_options as $option)
                                             <div>
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -463,57 +466,60 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                                 </div>
                                             </div>
                                         </form>
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <tr>
-                                                    <td><b>Nama</b></td>
-                                                    <td><b>Stok</b></td>
-                                                    @if($is_allow)
-                                                        <td class="text-center"><b>Qty</b></td>
-                                                        <td>&nbsp;</td>
-                                                    @endif
-                                                </tr>
-                                                @foreach($data_options as $option)
-                                                <tr>
-                                                    <td style="min-width: 100px;">{{$option->nama . ' (' . $option->kd_obat . ')'}}</td>
-                                                    <td>{{$option->stok}}</td>
-                                                    <td class="{{$is_allow ? 'd-flex' : 'd-none'}} justify-content-center">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <button data-id="{{$option->id}}"
-                                                                    class="btn btn-rounded btn-xs btn-outline-success minusQuantity">
-                                                                -
-                                                            </button>
-                                                            <input
-                                                                id="quantityViewer{{$option->id}}"
-                                                                class="form-control text-center mx-2"
-                                                                type="number" value="0" readonly
-                                                                style="min-width: 58px;max-width: 80px;"
-                                                            >
-                                                            <button data-id="{{$option->id}}" data-stock="{{$option->stok}}"
-                                                                class="btn btn-rounded btn-xs btn-outline-success plusQuantity" >
-                                                                +
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-right {{$is_allow ? '' : 'd-none'}}">
-                                                        <form method="post" action="{{$update_url}}">
-                                                            @csrf
-                                                            <input type="hidden" name="obat_id" value="{{$option->id}}">
-                                                            <input type="hidden" name="nama" value="{{$option->nama}}">
-                                                            <input type="hidden" name="harga_satuan" value="{{$option->harga}}">
-                                                            <input type="hidden" name="satuan" value="{{$option->satuan}}">
-                                                            <input type="hidden" name="quantity" id="inputQuantity{{$option->id}}" value="0">
-                                                            <button type="submit" id="submitSelected{{$option->id}}" disabled
-                                                                    class="btn btn-success btn-rounded btn-sm">
-                                                                Pilih
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </table>
-                                        </div>
-
+                                        @if(!$data_options->count())
+                                            <div class="text-center my-5">Data tidak ditemukan</div>
+                                        @else
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <tr>
+                                                        <td><b>Nama</b></td>
+                                                        <td><b>Stok</b></td>
+                                                        @if($is_allow)
+                                                            <td class="text-center"><b>Qty</b></td>
+                                                            <td>&nbsp;</td>
+                                                        @endif
+                                                    </tr>
+                                                    @foreach($data_options as $option)
+                                                    <tr>
+                                                        <td style="min-width: 100px;">{{$option->nama . ' (' . $option->kd_obat . ')'}}</td>
+                                                        <td>{{$option->stok}}</td>
+                                                        <td class="{{$is_allow ? 'd-flex' : 'd-none'}} justify-content-center">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <button data-id="{{$option->id}}"
+                                                                        class="btn btn-rounded btn-xs btn-outline-success minusQuantity">
+                                                                    -
+                                                                </button>
+                                                                <input
+                                                                    id="quantityViewer{{$option->id}}"
+                                                                    class="form-control text-center mx-2"
+                                                                    type="number" value="0" readonly
+                                                                    style="min-width: 58px;max-width: 80px;"
+                                                                >
+                                                                <button data-id="{{$option->id}}" data-stock="{{$option->stok}}"
+                                                                    class="btn btn-rounded btn-xs btn-outline-success plusQuantity" >
+                                                                    +
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-right {{$is_allow ? '' : 'd-none'}}">
+                                                            <form method="post" action="{{$update_url}}">
+                                                                @csrf
+                                                                <input type="hidden" name="obat_id" value="{{$option->id}}">
+                                                                <input type="hidden" name="nama" value="{{$option->nama}}">
+                                                                <input type="hidden" name="harga_satuan" value="{{$option->harga}}">
+                                                                <input type="hidden" name="satuan" value="{{$option->satuan}}">
+                                                                <input type="hidden" name="quantity" id="inputQuantity{{$option->id}}" value="0">
+                                                                <button type="submit" id="submitSelected{{$option->id}}" disabled
+                                                                        class="btn btn-success btn-rounded btn-sm">
+                                                                    Pilih
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </table>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
