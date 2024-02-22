@@ -359,6 +359,19 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Daftar Tindakan</b></div>
                                     <div class="card-body">
+                                        <form>
+                                            <div class="input-group mb-4">
+                                                <input type="hidden" name="section" value="{{request()->section}}">
+                                                <input type="text" class="form-control gp-search" name="keyword"
+                                                       value="{{request()->keyword}}" placeholder="Cari"
+                                                       autocomplete="off">
+                                                <div class="input-group-btn">
+                                                    <button type="submit" class="btn btn-outline-success">
+                                                        <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
                                         @foreach($data_options as $option)
                                             <div>
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -437,8 +450,21 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
                                 <div class="border rounded-xl">
                                     <div class="card-header"><b>Daftar Obat</b></div>
                                     <div class="card-body">
+                                        <form>
+                                            <div class="input-group mb-3">
+                                                <input type="hidden" name="section" value="{{request()->section}}">
+                                                <input type="text" class="form-control gp-search" name="keyword"
+                                                       value="{{request()->keyword}}" placeholder="Cari"
+                                                       autocomplete="off">
+                                                <div class="input-group-btn">
+                                                    <button type="submit" class="btn btn-outline-success">
+                                                        <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
                                         <div class="table-responsive">
-                                            <table class="table" id="resep-table">
+                                            <table class="table">
                                                 <tr>
                                                     <td><b>Nama</b></td>
                                                     <td><b>Stok</b></td>
@@ -696,28 +722,6 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
     @if (in_array(auth()->user()->role_display(), ['Admin','Pendaftaran']))
     <script>
         @if(request()->section == 'resep')
-            $(function () {
-                $('#resep-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    searching: true,
-                    paging:true,
-                    select: false,
-                    pageLength: 5,
-                    lengthChange:false ,
-                    ajax: "{{ route('pasien.json') }}",
-                    columns: [
-                        {data: 'action', name: 'action'},
-                        {data: 'no_rm', name: 'no_rm'},
-                        {data: 'nama', name: 'nama'},
-                        {data: 'tgl_lahir', name: 'tgl_lahir'},
-                        {data: 'no_hp', name: 'no_hp'},
-                        {data: 'cara_bayar', name: 'cara_bayar'},
-                        {data: 'no_bpjs', name: 'no_bpjs'}  ,
-                    ]
-                });
-            });
-
             $(document).on("click", ".plusQuantity", function () {
                 let quantityViewer = $(`#quantityViewer${$(this).data("id")}`)
                 if ($(this).data("stock") > parseInt(quantityViewer.val())){

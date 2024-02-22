@@ -21,6 +21,7 @@ use App\Models\Tindakan;
 use App\Notifications\RekamUpdateNotification;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Notifications\Notification;
@@ -537,7 +538,13 @@ class RekamController extends Controller
             elseif ($request->section == 'tindakan') {
                 $data_section = RekamTindakan::query()->select(['id', 'nama', 'harga'])->where('rekam_id', $id)
                     ->get();
-                $data_options = Tindakan::query()->select(['id', 'kode', 'nama', 'harga'])->get();
+                $data_options = Tindakan::query()->select(['id', 'kode', 'nama', 'harga'])
+                    ->when($request->keyword, function (Builder $query) use ($request) {
+                        return $query->where('nama', 'like', '%' . $request->keyword . '%')
+                            ->orWhere('kode', 'like', '%' . $request->keyword . '%')
+                            ->orWhere('harga', '=', $request->keyword);
+                    })
+                    ->get();
                 $update_url = route('rekam.update_tindakan', [
                     'id' => $id,
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'tindakan'])
@@ -546,7 +553,14 @@ class RekamController extends Controller
             elseif ($request->section == 'resep') {
                 $data_section = RekamResep::query()->select(['id', 'nama', 'harga_satuan', 'quantity'])
                     ->where('rekam_id', $id)->get();
-                $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga', 'satuan'])->get();
+                $data_options = Obat::query()->select(['id', 'kd_obat', 'nama', 'stok', 'harga', 'satuan'])
+                    ->when($request->keyword, function (Builder $query) use ($request) {
+                        return $query->where('nama', 'like', '%' . $request->keyword . '%')
+                            ->orWhere('kd_obat', 'like', '%' . $request->keyword . '%')
+                            ->orWhere('stok', '=', $request->keyword)
+                            ->orWhere('harga', '=', $request->keyword);
+                    })
+                    ->get();
                 $update_url = route('rekam.update_resep', [
                     'id' => $id,
                     'redirect' => route('rekam.detail', ['id' => $id, 'section' => 'resep'])
