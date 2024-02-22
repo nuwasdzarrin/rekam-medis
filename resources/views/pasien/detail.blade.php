@@ -6,16 +6,19 @@
         </div>
         <div class="card-body">
             <div class="row">
-                @php $paso = json_decode($pasien, TRUE) @endphp
-                @foreach($paso as $key => $pas)
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="text-capitalize mb-1">{{str_replace('_', ' ', $key)}}</div>
-                        <h6>{{$pas ?? '-'}}</h6>
-                    </div>
-                @endforeach
+                @if($pasien)
+                    @php $paso = json_decode($pasien, TRUE) @endphp
+                    @foreach($paso as $key => $pas)
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="text-capitalize mb-1">{{str_replace('_', ' ', $key)}}</div>
+                            <h6>{{$pas ?? '-'}}</h6>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
+    @if($pasien)
     <div class="row">
         <div class="col-xl-12">
             <div class="card rounded">
@@ -79,4 +82,5 @@
             </div>
         </div>
     </div>
+    @endif
 @endsection
