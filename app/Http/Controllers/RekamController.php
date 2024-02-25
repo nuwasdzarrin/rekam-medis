@@ -433,17 +433,16 @@ class RekamController extends Controller
         $rekams = Rekam::query()
             ->select([
                 'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.tgl_rekam', 'rekam.cara_bayar',
-                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
+                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs',
                 'pasien.medical_record_id as no_rekam'
             ])
             ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
             ->when($request->keyword, function ($query) use ($request) {
                 $query->where('rekam.tgl_rekam', 'LIKE', "%{$request->keyword}%")
-                    ->orwhere('rekam.no_rekam', 'LIKE', "%{$request->keyword}%")
                     ->orwhere('rekam.cara_bayar', 'LIKE', "%{$request->keyword}%")
                     ->orwhere('pasien.nama', 'LIKE', "%{$request->keyword}%")
                     ->orwhere('pasien.no_bpjs', 'LIKE', "%{$request->keyword}%")
-                    ->orwhere('pasien.no_rm', 'LIKE', "%{$request->keyword}%");
+                    ->orwhere('pasien.medical_record_id', 'LIKE', "%{$request->keyword}%");
             })
             ->when($role, function ($query) use ($role,$user){
                 if($role=="Dokter"){
@@ -464,7 +463,7 @@ class RekamController extends Controller
                 }
             })
             ->with(['dokter:id,nama'])
-            ->latest('rekam.created_at')->paginate(20);
+            ->latest('rekam.tgl_rekam')->paginate(20);
         return view('rekam.index',compact('rekams'));
     }
 

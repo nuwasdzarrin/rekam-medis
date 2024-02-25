@@ -9,6 +9,9 @@ class Rekam extends Model
     protected $table = "rekam";
     protected $fillable = ["pasien_id","dokter_id","petugas_id","poli_id","tgl_rekam","biaya_tindakan",
         "biaya_resep","diskon","jumlah_uang","tipe_pasien","cara_bayar","platform_pembayaran","status"];
+    /**
+     * @var mixed
+     */
 
 
     function rekam_diagnosa()
@@ -106,5 +109,13 @@ class Rekam extends Model
                 # code...
                 break;
         }
+    }
+
+    private $latest_month = 'lalaa';
+    public function getIdRekamAttribute(): string
+    {
+        $last_month = $this->latest_month;
+        $this->latest_month = $this->tgl_rekam;
+        return $last_month;
     }
 }

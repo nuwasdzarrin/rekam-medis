@@ -31,7 +31,7 @@ class PasienController extends Controller
     {
         $datas = Pasien::query()->whereNull('deleted_at')
                 ->when($request->keyword, function ($query) use ($request) {
-                    $query->where('no_rm', 'LIKE', "%{$request->keyword}%")
+                    $query->where('medical_record_id', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('nama', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('no_bpjs', 'LIKE', "%{$request->keyword}%")
                         ->orWhere('no_hp', 'LIKE', "%{$request->keyword}%")
@@ -43,17 +43,19 @@ class PasienController extends Controller
     public function detail($id)
     {
         $pasien = Pasien::query()
-            ->select(['no_rm as nomor_pasien', 'nama', 'tmp_lahir as tempat_lahir', 'tgl_lahir as tanggal_lahir',
+            ->select(['medical_record_id as no_rekam_medis', 'nama', 'tmp_lahir as tempat_lahir', 'tgl_lahir as tanggal_lahir',
                 'jk as Jenis Kelamin', 'alamat_lengkap', 'kelurahan', 'kecamatan', 'kabupaten', 'kodepos as kode_pos',
                 'agama', 'status_menikah as status_pernikahan', 'pendidikan', 'pekerjaan', 'kewarganegaraan', 'no_hp',
                 'no_bpjs'])
             ->find($id);
         $rekams = Rekam::query()
             ->select([
-                'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.no_rekam', 'rekam.tgl_rekam', 'rekam.cara_bayar',
-                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.no_rm',
+                'rekam.id', 'rekam.dokter_id', 'rekam.pasien_id', 'rekam.tgl_rekam', 'rekam.cara_bayar',
+                'rekam.tipe_pasien', 'rekam.status', 'pasien.nama', 'pasien.no_bpjs', 'pasien.medical_record_id',
+                'dokter.nama as doctor_name'
             ])
             ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
+            ->leftJoin('dokter', 'rekam.dokter_id', '=', 'dokter.id')
             ->where('rekam.pasien_id', $id)->paginate(20);
         return view('pasien.detail', ['pasien' => $pasien, 'rekams' => $rekams]);
     }
@@ -72,6 +74,16 @@ class PasienController extends Controller
         return view('pasien.file',compact('data'));
     }
 
+    function getFirstWords($sentence = ''): string
+    {
+        $words = preg_split("/\s+/", $sentence);
+        $acronym = "";
+        foreach ($words as $w) {
+            $acronym .= mb_substr($w, 0, 1);
+        }
+        return $acronym;
+    }
+
     function store(Request $request){
         $this->validate($request,[
             'nama' => 'required',
@@ -86,7 +98,8 @@ class PasienController extends Controller
         Pasien::query()->find($pasien->id)->update([
             'jk' => $request->jenis_kelamin, 'cara_bayar' => $request->tipe_pasien,
             'no_rm' => $request->code . str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
-            'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
+            'medical_record_id' => $this->getFirstWords($pasien->name)."/".date('dmy'),
+//            'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
         ]);
         if ($request->hasFile('file')) {
             $originName = $request->file('file')->getClientOriginalName();
@@ -102,11 +115,12 @@ class PasienController extends Controller
 
     public function fill_medical_record()
     {
-        $patients = Pasien::query()->select('id', 'no_rm')->get();
-        foreach ($patients as $patient) {
-            Pasien::query()->find($patient->id)->update([
-                'no_rm' => substr($patient->no_rm, 0, 1) . str_pad($patient->id, 4, '0', STR_PAD_LEFT),
-                'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($patient->id, 4, '0', STR_PAD_LEFT),
+        $patients = Pasien::query()->select('id', 'no_rm', 'nama')->get();
+        foreach ($patients as $pasien) {
+            Pasien::query()->find($pasien->id)->update([
+                'no_rm' => substr($pasien->no_rm, 0, 1) . str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
+                'medical_record_id' => $this->getFirstWords($pasien->nama)."/".Carbon::parse($pasien->created_at)->format('dmy'),
+//                'medical_record_id' => "RM-".date('d/m/y').'/'.str_pad($pasien->id, 4, '0', STR_PAD_LEFT),
             ]);
         }
         return redirect()->route('pasien')->with('sukses','Data berhasil diperbarui');
@@ -126,7 +140,7 @@ class PasienController extends Controller
             $originName = $request->file('file')->getClientOriginalName();
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
             $extension = $request->file('file')->getClientOriginalExtension();
-            $fileName = $data->no_rm.'.'.$extension;
+            $fileName = $fileName.'_'.$data->no_rm.'.'.$extension;
             $request->file('file')->move('images/pasien/',$fileName);
             $data->update([
                 'general_uncent' => $fileName

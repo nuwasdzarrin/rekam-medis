@@ -69,7 +69,8 @@
                             <tr>
 
                                 <th>No</th>
-                                <th>ID Rekam</th>
+                                <th>No. Rekam Medis</th>
+                                <th>No. ID Rekam</th>
                                 <th>Nama Pasien</th>
                                 <th>Dokter</th>
                                 <th>Cara Bayar</th>
@@ -83,6 +84,7 @@
                                 <tr>
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
                                     <td>{{$row->no_rekam}}</td>
+                                    <td>{{$row->id_rekam}}</td>
                                     <td>
                                         <a href="{{Route('pasien.detail',$row->pasien_id)}}">
                                             <b>{{$row->nama}}</b>

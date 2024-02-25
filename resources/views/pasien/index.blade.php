@@ -56,7 +56,7 @@
                             @foreach ($datas as $key=>$row)
                                 <tr>
                                     <td>{{$datas->firstItem() + $key}}</td>
-                                   <td><a href="{{Route('pasien.detail',$row->id)}}">{{$row->no_rm}}</a></td>
+                                   <td><a href="{{Route('pasien.detail',$row->id)}}">{{$row->medical_record_id}}</a></td>
                                    <td>{{$row->nama}}</td>
                                    <td>{{$row->tmp_lahir}}{{$row->tmp_lahir ? ',' : ''}}{{$row->tgl_lahir ?? '-'}}</td>
                                    <td>{{$row->alamat_lengkap ?? '-'}}</td>

@@ -39,7 +39,8 @@
                             <thead>
                             <tr>
                                 <th>No</th>
-                                <th>ID Rekam</th>
+                                <th>No. Rekam Medis</th>
+                                <th>No. ID Rekam</th>
                                 <th>Nama Pasien</th>
                                 <th>Dokter</th>
                                 <th>Cara Bayar</th>
@@ -52,14 +53,13 @@
                             @foreach ($rekams as $key => $row)
                                 <tr>
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
-                                    <td>{{$row->no_rekam}}</td>
+                                    <td>{{$row->medical_record_id}}</td>
+                                    <td>{{$row->id_rekam}}</td>
                                     <td>
-                                        <a href="{{Route('rekam.detail',$row->pasien_id)}}">
-                                            <b>{{$row->nama}}</b>
-                                            {!! $row->tipe_pasien ? ('<br/>('.$row->tipe_pasien.')') : ''!!}
-                                        </a>
+                                        <b>{{$row->nama}}</b>
+                                        {!! $row->tipe_pasien ? ('<br/>('.$row->tipe_pasien.')') : ''!!}
                                     </td>
-                                    <td><strong>{{$row->dokter ? $row->dokter->nama : '-'}}</strong></td>
+                                    <td><strong>{{$row->doctor_name}}</strong></td>
                                     <td>{{$row->cara_bayar ?  : '-'}}</td>
                                     <td>{!!$row->status_display()!!}</td>
                                     <td>{{$row->tgl_rekam}}</td>
