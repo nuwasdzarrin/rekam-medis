@@ -428,6 +428,16 @@ class RekamController extends Controller
     }
     public function index(Request $request)
     {
+//        Query sakti
+//        SELECT b1.id,
+//       b1.tgl_rekam,
+//       b1.pasien_id,
+//       (SELECT count(*) + 1
+//               FROM rekam b2
+//               WHERE b2.tgl_rekam >= date(b1.tgl_rekam)
+//    AND b2.tgl_rekam < date_add(date(b1.tgl_rekam), INTERVAL 1 DAY)
+//                     AND b2.id < b1.id) AS idday
+//       FROM rekam b1 WHERE b1.pasien_id = 14
         $user = auth()->user();
         $role = $user->role_display();
         $rekams = Rekam::query()
