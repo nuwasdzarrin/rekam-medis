@@ -91,7 +91,7 @@
                                             {!! $row->tipe_pasien ? ('<br/>('.$row->tipe_pasien.')') : ''!!}
                                         </a>
                                     </td>
-                                    <td><strong>{{$row->dokter ? $row->dokter->nama : '-'}}</strong></td>
+                                    <td><strong>{{$row->doctor_name}}</strong></td>
                                     <td>{{$row->cara_bayar ?  : '-'}}</td>
                                     <td>{!!$row->status_display()!!}</td>
                                     <td>{{$row->tgl_rekam}}</td>
