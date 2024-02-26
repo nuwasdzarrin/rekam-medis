@@ -54,7 +54,7 @@
                                 <tr>
                                     <td align="center">{{ $rekams->firstItem() + $key }}</td>
                                     <td>{{$row->medical_record_id}}</td>
-                                    <td>{{$row->id_rekam}}</td>
+                                    <td>{{$row->no_id_rekam}}</td>
                                     <td>
                                         <b>{{$row->nama}}</b>
                                         {!! $row->tipe_pasien ? ('<br/>('.$row->tipe_pasien.')') : ''!!}

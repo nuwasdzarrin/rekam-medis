@@ -21,7 +21,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
             <div class="card-header border-0 pb-0">
                 <h4 class="fs-20 text-black mb-0">Detail Pasien</h4>
                 <div class="dropdown">
-                    No. Pasien:  {{$pasien ? $pasien->no_rm : '-'}}
+                    No. Rekam Medis:  {{$pasien ? $pasien->medical_record_id : '-'}}
                 </div>
             </div>
             <div class="card-body">
@@ -137,7 +137,7 @@ if (auth()->user()->role == 3 && $rekam->status == 5) $is_allow = false;
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <div class="mb-4">ID Rekam: <b>{{$pasien->medical_record_id}}</b></div>
+{{--                <div class="mb-4">ID Rekam: <b>{{$pasien->medical_record_id}}</b></div>--}}
                 @if(request()->filled('section'))
                 <div class="py-3 w-100 overflow-auto">
                     <ul class="nav nav-tabs" style="flex-wrap: unset">

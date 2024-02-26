@@ -110,12 +110,4 @@ class Rekam extends Model
                 break;
         }
     }
-
-    private $latest_month = 'lalaa';
-    public function getIdRekamAttribute(): string
-    {
-        $last_month = $this->latest_month;
-        $this->latest_month = $this->tgl_rekam;
-        return $last_month;
-    }
 }
