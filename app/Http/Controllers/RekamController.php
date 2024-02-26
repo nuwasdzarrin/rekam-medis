@@ -446,10 +446,12 @@ class RekamController extends Controller
                 'rekam.tipe_pasien', 'rekam.status', 'dokter.nama as doctor_name', 'pasien.nama', 'pasien.no_bpjs',
                 'pasien.medical_record_id as no_rekam'
             ])
-            ->selectRaw('(SELECT CONCAT("RM/", DATE_FORMAT(date(rekam.tgl_rekam),"%d/%m/%y"), "/",(count(*) + 1))
-               FROM rekam rek_2
-               WHERE rek_2.tgl_rekam >= date(rekam.tgl_rekam) AND rek_2.tgl_rekam < date_add(date(rekam.tgl_rekam), INTERVAL 1 DAY) AND rek_2.id < rekam.id)
-               AS idday')
+            ->selectRaw('(SELECT CONCAT("RM/", DATE_FORMAT(rekam.tgl_rekam,"%d/%m/%y"), "/",
+            LPAD((count(*) + 1), 3, "0"))
+            FROM rekam rek_2
+            WHERE rek_2.tgl_rekam >= date(rekam.tgl_rekam)
+            AND rek_2.tgl_rekam < date_add(date(rekam.tgl_rekam), INTERVAL 1 DAY) AND rek_2.id < rekam.id)
+            AS no_id_rekam')
             ->leftJoin('pasien', 'rekam.pasien_id', '=', 'pasien.id')
             ->leftJoin('dokter', 'rekam.dokter_id', '=', 'dokter.id')
             ->when($request->keyword, function ($query) use ($request) {
@@ -477,10 +479,8 @@ class RekamController extends Controller
                     }
                 }
             })
-//            ->with(['dokter:id,nama'])
-            ->latest('rekam.tgl_rekam')->get();
-//            ->paginate(20);
-        dd($rekams->toArray());
+            ->latest('rekam.tgl_rekam')
+            ->paginate(20);
         return view('rekam.index',compact('rekams'));
     }
 
